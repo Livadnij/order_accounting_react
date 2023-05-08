@@ -2,7 +2,7 @@ import * as React from 'react';
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
 import { useDispatch, useSelector } from 'react-redux';
-import { openModal } from '../toolkitSlice';
+import { openModal, orderModalHandleClose } from '../toolkitSlice';
 import OrderTabs from './OrderTabs';
 import { Button } from '@mui/material';
 
@@ -11,6 +11,8 @@ const style = {
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
+  minWidth: '80vw',
+  minHeight: '50vh',
   width: "auto",
   height: 'auto',
   bgcolor: 'background.paper',
@@ -21,7 +23,9 @@ const style = {
 
 export default function OrderCreateModal() {
     const dispatch = useDispatch();
-    const handleClose = () => dispatch(openModal('orderModalState'));
+    const handleClose = () => {
+      dispatch(orderModalHandleClose())
+      dispatch(openModal('orderModalState'))};
 
   return (
     <div>

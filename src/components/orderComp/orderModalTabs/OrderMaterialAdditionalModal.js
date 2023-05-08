@@ -27,6 +27,9 @@ export default function OrderMaterialAdditionalModal() {
   const [valueTwo, setValueTwo] = useState("");
 
   const handleClose = () => {
+    setWork('')
+    setValueOne('')
+    setValueTwo('')
     dispatch(openModal("orderMaterialAdditionalState"));
   };
 
@@ -129,7 +132,7 @@ export default function OrderMaterialAdditionalModal() {
           ></TextField>
           <Select
             sx={{ display: [work === 5 ? "" : "none"] }}
-            value={valueTwo}
+            value={valueOne}
             size="small"
             onChange={(e) => {
               setValueOne(e.target.value);

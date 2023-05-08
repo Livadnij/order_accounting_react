@@ -13,10 +13,13 @@ const toolkitSlice = createSlice({
         orderMaterialAdditionalState: false,
         orderMaterialAdditionalIndex: '',
         clientsAllList: [],
+        orderMaterialDelete: false,
         tempOrderInfo: {
             ordID:'',
             ready:false,
             given:false,
+            dateStart: '',
+            dateFinish: '',
             clName:'',
             clDiscount:'',
             clPhoneNum:'+380',
@@ -36,6 +39,13 @@ const toolkitSlice = createSlice({
     reducers : {
         getClientsData(initialState, data) {
             initialState.clientsAllList = data
+        },
+        orderDeleteStatusUpdate(initialState){
+            initialState.orderMaterialDelete = !initialState.orderMaterialDelete
+        },
+        orderDeleteMaterial (initialState, {payload:index}) {
+            console.log(index)
+            initialState.tempMaterialInfo.splice(index, 1)
         },
         uploadNewClient(initialState, data){
             const id = data.payload.id.toString()
@@ -80,15 +90,11 @@ const toolkitSlice = createSlice({
         },
         orderMaterialUpdate(initialState, {payload:data}) {
             console.log(data)
-            if(data.propName === "checkbox"){
-                initialState.tempMaterialInfo[data.index][data.propName] = data.value;
-            } else {
             initialState.tempMaterialInfo[data.index][data.propName] = data.value;
-        }
         },
         orderMaterialAddNewObject(initialState) {
             console.log('object added')
-            const body = { checkbox: false, num: initialState.tempMaterialInfo.length + 1, count: '', material: '', thickness: '', width: '', height: '', edge: '', drilling: [], painting: [] }
+            const body = { num: initialState.tempMaterialInfo[initialState.tempMaterialInfo.length - 1] ? initialState.tempMaterialInfo[initialState.tempMaterialInfo.length - 1].num + 1 : 1, count: '', material: '', thickness: '', width: '', height: '', edge: '', drilling: [], painting: [] }
             initialState.tempMaterialInfo.push(body)
         },
         orderMaterialRemoveAddition(initialState, {payload:data}) {
@@ -98,9 +104,13 @@ const toolkitSlice = createSlice({
             console.log(rowIndex, propName, index)
             console.log(initialState.tempMaterialInfo[rowIndex][propName])
             initialState.tempMaterialInfo[rowIndex][propName].splice(index, 1)
+        },
+        orderModalHandleClose(initialState) {
+            Object.keys(initialState.tempOrderInfo).forEach(k => initialState.tempOrderInfo[k] = '')
+            initialState.tempMaterialInfo = [];            
         }
     }
 })
 
 export default toolkitSlice.reducer
-export const {orderMaterialRemoveAddition, additionalWorkPush, openModal, orderMaterialAddNewObject, orderMaterialUpdate, orderStateUpdate, tempOrderSave, userLogined, uploadNewClient, getClientsData} = toolkitSlice.actions
+export const {orderDeleteMaterial, orderDeleteStatusUpdate, orderModalHandleClose, orderMaterialRemoveAddition, additionalWorkPush, openModal, orderMaterialAddNewObject, orderMaterialUpdate, orderStateUpdate, tempOrderSave, userLogined, uploadNewClient, getClientsData} = toolkitSlice.actions

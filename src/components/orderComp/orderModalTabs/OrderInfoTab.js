@@ -1,10 +1,14 @@
 import { Divider, Switch } from "@mui/material";
+import dayjs from "dayjs";
+import "dayjs/locale/uk";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { TextField } from "@mui/material";
 import { Box } from "@mui/material";
 import React from "react";
 import styled from "styled-components";
 import { orderStateUpdate } from "../../toolkitSlice";
 import { useDispatch, useSelector } from "react-redux";
+import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers-pro";
 
 const InfoBlock = styled.div`
   display: flex;
@@ -13,7 +17,7 @@ const InfoBlock = styled.div`
   /* flex-wrap: wrap; */
   white-space: nowrap;
   padding-left: 30px;
-  padding-right:30px;
+  padding-right: 30px;
   width: 50%;
   justify-content: space-between;
   box-sizing: border-box;
@@ -24,8 +28,12 @@ const OrderInfoTab = () => {
   const tempOrdSave = useSelector((state) => state.toolkit.tempOrderInfo);
 
   const updateStatus = (propName, value) => {
-    const data = {propName, value};
-    dispatch(orderStateUpdate(data))
+    if (propName === 'dateStart' || propName=== 'dateFinish') {
+      console.log(propName, dayjs(value))
+    } else {
+      const data = { propName, value };
+      dispatch(orderStateUpdate(data));
+    }
   };
 
   return (
@@ -38,16 +46,23 @@ const OrderInfoTab = () => {
           flexWrap: "wrap",
         }}
       >
-        <Box sx={{width: "100%", display: "flex", justifyContent: "spaceBetween", padding: "0 0 20px 0"}}>
+        <Box
+          sx={{
+            width: "100%",
+            display: "flex",
+            justifyContent: "spaceBetween",
+            padding: "10px 0 20px 0",
+          }}
+        >
           <InfoBlock>
             <p>Номер Замовлення</p>
             <TextField
-            sx={{width: '60%'}}
+              sx={{ width: "60%" }}
               size="small"
               id="filled-basic"
               variant="outlined"
               value={tempOrdSave.ordID}
-              onChange={(e) => 
+              onChange={(e) =>
                 // setOrdID(e.target.value)
                 updateStatus("ordID", e.target.value)
               }
@@ -56,20 +71,34 @@ const OrderInfoTab = () => {
           <InfoBlock>
             <Box sx={{ display: "inline-flex", alignItems: "center" }}>
               <p>Виготовлено</p>
-              <Switch checked={tempOrdSave.ready} onChange={() => updateStatus("ready", !tempOrdSave.ready)} />
+              <Switch
+                checked={tempOrdSave.ready}
+                onChange={() => updateStatus("ready", !tempOrdSave.ready)}
+              />
             </Box>
             <Box sx={{ display: "inline-flex", alignItems: "center" }}>
               <p>Видано клієнту</p>
-              <Switch checked={tempOrdSave.given} onChange={() => updateStatus("given", !tempOrdSave.given)} />
+              <Switch
+                checked={tempOrdSave.given}
+                onChange={() => updateStatus("given", !tempOrdSave.given)}
+              />
             </Box>
           </InfoBlock>
         </Box>
-        <Divider sx={{width: '100%'}}/>
-        <Box sx={{width: "100%", display: "flex", flexDirection: "row", flexWrap: "wrap", padding: "20px 0 20px 0" }}>
+        <Divider sx={{ width: "100%" }} />
+        <Box
+          sx={{
+            width: "100%",
+            display: "flex",
+            flexDirection: "row",
+            flexWrap: "wrap",
+            padding: "20px 0 20px 0",
+          }}
+        >
           <InfoBlock>
             <p>Ім’я клієнта</p>
             <TextField
-            sx={{width: '60%'}}
+              sx={{ width: "60%" }}
               size="small"
               id="filled-basic"
               variant="outlined"
@@ -80,7 +109,7 @@ const OrderInfoTab = () => {
           <InfoBlock>
             <p>Скидка, %</p>
             <TextField
-            sx={{width: '60%'}}
+              sx={{ width: "60%" }}
               size="small"
               id="filled-basic"
               variant="outlined"
@@ -91,7 +120,7 @@ const OrderInfoTab = () => {
           <InfoBlock>
             <p>Телефон</p>
             <TextField
-            sx={{width: '60%'}}
+              sx={{ width: "60%" }}
               size="small"
               id="filled-basic"
               variant="outlined"
@@ -100,12 +129,53 @@ const OrderInfoTab = () => {
             />
           </InfoBlock>
         </Box>
-        <Divider sx={{width: '100%'}}/>
-        <Box sx={{width: "100%", display: "flex", flexDirection: "row", flexWrap: "wrap", padding: "20px 0 20px 0"  }}>
+        <Divider sx={{ width: "100%" }} />
+        <Box sx={{
+            width: "100%",
+            display: "flex",
+            flexDirection: "row",
+            flexWrap: "wrap",
+            padding: "20px 0 20px 0",
+          }}>
+          <InfoBlock>
+          <p>Дата початку</p>
+            <LocalizationProvider
+              dateAdapter={AdapterDayjs}
+              adapterLocale={"uk"}
+            >
+              <DatePicker
+              value={tempOrdSave.dateStart}
+              onChange={(newValue) => updateStatus("dateStart", newValue)}
+              />
+            </LocalizationProvider>
+          </InfoBlock>
+          <InfoBlock>
+          <p>Дата закінчення</p>
+            <LocalizationProvider
+              dateAdapter={AdapterDayjs}
+              adapterLocale={"uk"}
+            >
+              <DatePicker
+              value={tempOrdSave.dateFinish}
+              onChange={(newValue) => updateStatus("dateFinish", newValue)}
+              />
+            </LocalizationProvider>
+          </InfoBlock>
+        </Box>
+        <Divider sx={{ width: "100%" }} />
+        <Box
+          sx={{
+            width: "100%",
+            display: "flex",
+            flexDirection: "row",
+            flexWrap: "wrap",
+            padding: "20px 0 20px 0",
+          }}
+        >
           <InfoBlock>
             <p>Повна вартість</p>
             <TextField
-            sx={{width: '60%'}}
+              sx={{ width: "60%" }}
               size="small"
               id="filled-basic"
               variant="outlined"
@@ -116,7 +186,7 @@ const OrderInfoTab = () => {
           <InfoBlock>
             <p>Передплата</p>
             <TextField
-            sx={{width: '60%'}}
+              sx={{ width: "60%" }}
               size="small"
               id="filled-basic"
               variant="outlined"
@@ -127,7 +197,7 @@ const OrderInfoTab = () => {
           <InfoBlock>
             <p>Залишок до сплати</p>
             <TextField
-            sx={{width: '60%'}}
+              sx={{ width: "60%" }}
               size="small"
               id="filled-basic"
               variant="outlined"
@@ -136,12 +206,20 @@ const OrderInfoTab = () => {
             />
           </InfoBlock>
         </Box>
-        <Divider sx={{width: '100%'}}/>
-        <Box sx={{width: "100%", display: "flex", flexDirection: "row", flexWrap: "wrap" , padding: "20px 0 20px 0" }}>
+        <Divider sx={{ width: "100%" }} />
+        <Box
+          sx={{
+            width: "100%",
+            display: "flex",
+            flexDirection: "row",
+            flexWrap: "wrap",
+            padding: "20px 0 20px 0",
+          }}
+        >
           <InfoBlock>
             <p>Стан замовлення</p>
             <TextField
-            sx={{width: '60%'}}
+              sx={{ width: "60%" }}
               size="small"
               id="filled-basic"
               variant="outlined"
@@ -154,7 +232,9 @@ const OrderInfoTab = () => {
               <p>Монтаж</p>
               <Switch
                 checked={tempOrdSave.installation}
-                onChange={() => updateStatus("installation", !tempOrdSave.installation)}
+                onChange={() =>
+                  updateStatus("installation", !tempOrdSave.installation)
+                }
               />
             </Box>
             <Box
@@ -174,7 +254,7 @@ const OrderInfoTab = () => {
           <InfoBlock>
             <p>Адреса монтажу</p>
             <TextField
-            sx={{width: '60%'}}
+              sx={{ width: "60%" }}
               size="small"
               id="filled-basic"
               variant="outlined"
@@ -183,12 +263,19 @@ const OrderInfoTab = () => {
             />
           </InfoBlock>
         </Box>
-        <Divider sx={{width: '100%', margin: "10 10 10 10"}}/>
-        <Box sx={{display: "flex", flexDirection: "row", width: "100%", padding: "20px 0 0 0"  }}>
+        <Divider sx={{ width: "100%", margin: "10 10 10 10" }} />
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "row",
+            width: "100%",
+            padding: "20px 0 0 0",
+          }}
+        >
           <InfoBlock>
             <p>Коментарі</p>
             <TextField
-            sx={{width: '60%'}}
+              sx={{ width: "60%" }}
               size="small"
               id="filled-basic"
               variant="outlined"
