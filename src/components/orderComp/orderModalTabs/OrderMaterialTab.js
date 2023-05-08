@@ -1,4 +1,11 @@
-import { Box, Button, Checkbox, MenuItem, Select, TextField } from "@mui/material";
+import {
+  Box,
+  Button,
+  IconButton,
+  MenuItem,
+  Select,
+  TextField,
+} from "@mui/material";
 import * as React from "react";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -9,9 +16,16 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
-import { openModal, orderMaterialAddNewObject, orderMaterialUpdate } from "../../toolkitSlice";
+import {
+  openModal,
+  orderDeleteMaterial,
+  orderDeleteStatusUpdate,
+  orderMaterialAddNewObject,
+  orderMaterialUpdate,
+} from "../../toolkitSlice";
 import OrderMaterialAdditionalModal from "./OrderMaterialAdditionalModal";
 import OrderAdditionalMapping from "./OrderAdditionalMapping";
+import DeleteIcon from '@mui/icons-material/Delete';
 
 const MaterialBlock = styled.div`
   display: flex;
@@ -23,20 +37,26 @@ const MaterialBlock = styled.div`
 `;
 
 const OrderMaterialTab = () => {
-
-  const rows = useSelector((state) => state.toolkit.tempMaterialInfo)
+  const deleteElement = useSelector((state)=>state.toolkit.orderMaterialDelete)? '': 'none';
+  const rows = useSelector((state) => state.toolkit.tempMaterialInfo);
   const dispatch = useDispatch();
 
-  const materialChange = (index, propName, value ) => {
-    const data = {index, propName, value};
-    if (propName === 'count' && isNaN(value)){
-    } else if (propName === 'width' && isNaN(value)) {
-    } else if (propName === 'height' && isNaN(value)) {  
-    } else { dispatch(orderMaterialUpdate(data)) }
-  }
+  const materialChange = (index, propName, value) => {
+    const data = { index, propName, value };
+    if (propName === "count" && isNaN(value)) {
+    } else if (propName === "width" && isNaN(value)) {
+    } else if (propName === "height" && isNaN(value)) {
+    } else {
+      dispatch(orderMaterialUpdate(data));
+    }
+  };
 
-  const dispDrill = rows.filter(row => row.drilling.length ).length ? '' : 'none'
-  const dispPaint = rows.filter(row => row.painting.length ).length ? '' : 'none'
+  const dispDrill = rows.filter((row) => row.drilling.length).length
+    ? ""
+    : "none";
+  const dispPaint = rows.filter((row) => row.painting.length).length
+    ? ""
+    : "none";
 
   return (
     <div>
@@ -52,7 +72,7 @@ const OrderMaterialTab = () => {
               >
                 <TableHead>
                   <TableRow>
-                    <TableCell></TableCell>
+                    <TableCell sx={{ display: deleteElement }}></TableCell>
                     <TableCell>№</TableCell>
                     <TableCell align="center">Кіль.</TableCell>
                     <TableCell align="center">Матеріал</TableCell>
@@ -60,35 +80,38 @@ const OrderMaterialTab = () => {
                     <TableCell align="center">Шир.мм</TableCell>
                     <TableCell align="center">Вис.мм</TableCell>
                     <TableCell align="center">Обробка</TableCell>
-                    <TableCell align="center" sx={{display: dispDrill}}>Свердлення</TableCell>
-                    <TableCell align="center" sx={{display: dispPaint}}>Додатково</TableCell>
+                    <TableCell align="center" sx={{ display: dispDrill }}>
+                      Свердлення
+                    </TableCell>
+                    <TableCell align="center" sx={{ display: dispPaint }}>
+                      Додатково
+                    </TableCell>
                     <TableCell align="center"></TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {rows.map((row,index) => (
+                  {rows.map((row, index) => (
                     <TableRow
                       key={row.name}
                       sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                     >
-                      <TableCell>
-                        <Checkbox
-                        value={row.checkbox}
-                        onChange={() => {
-                          materialChange(index, 'checkbox' ,!row.checkbox);
-                        }}
-                        ></Checkbox>
+                      <TableCell sx={{ display: deleteElement }}>
+                        <IconButton
+                           onClick={() => {dispatch(orderDeleteMaterial(index))}}
+                        >
+                          <DeleteIcon />
+                        </IconButton>
                       </TableCell>
                       <TableCell component="th" scope="row">
                         {row.num}
                       </TableCell>
                       <TableCell align="center">
                         <TextField
-                        sx={{width: "50px"}}
-                           value={row.count}
-                           onChange={(e) => {
-                             materialChange(index, 'count' ,e.target.value);
-                           }}
+                          sx={{ width: "50px" }}
+                          value={row.count}
+                          onChange={(e) => {
+                            materialChange(index, "count", e.target.value);
+                          }}
                           size="small"
                         />
                       </TableCell>
@@ -97,7 +120,7 @@ const OrderMaterialTab = () => {
                           size="small"
                           value={row.material}
                           onChange={(e) => {
-                            materialChange(index, 'material' ,e.target.value);
+                            materialChange(index, "material", e.target.value);
                           }}
                         >
                           <MenuItem value={1}>Б\Ц</MenuItem>
@@ -113,7 +136,7 @@ const OrderMaterialTab = () => {
                           size="small"
                           value={row.thickness}
                           onChange={(e) => {
-                            materialChange(index, 'thickness' ,e.target.value);
+                            materialChange(index, "thickness", e.target.value);
                           }}
                         >
                           <MenuItem value={4}>4</MenuItem>
@@ -126,21 +149,21 @@ const OrderMaterialTab = () => {
                       </TableCell>
                       <TableCell align="center">
                         <TextField
-                        sx={{width: "70px"}}
-                          onChange={(e)=>{
-                            materialChange(index, 'width' ,e.target.value);
+                          sx={{ width: "70px" }}
+                          onChange={(e) => {
+                            materialChange(index, "width", e.target.value);
                           }}
-                          value = {row.width}
+                          value={row.width}
                           size="small"
                         />
                       </TableCell>
                       <TableCell align="center">
                         <TextField
-                        sx={{width: "70px"}}
-                          onChange={(e)=>{
-                            materialChange(index, 'height' ,e.target.value);
+                          sx={{ width: "70px" }}
+                          onChange={(e) => {
+                            materialChange(index, "height", e.target.value);
                           }}
-                          value = {row.height}
+                          value={row.height}
                           size="small"
                         />
                       </TableCell>
@@ -149,7 +172,7 @@ const OrderMaterialTab = () => {
                           size="small"
                           value={row.edge}
                           onChange={(e) => {
-                            materialChange(index, 'edge' ,e.target.value);
+                            materialChange(index, "edge", e.target.value);
                           }}
                         >
                           <MenuItem value={1}>Шліфовка</MenuItem>
@@ -160,19 +183,33 @@ const OrderMaterialTab = () => {
                           <MenuItem value={6}>Глубока фаска</MenuItem>
                         </Select>
                       </TableCell>
-                      <TableCell sx={{display: dispDrill}}>
+                      <TableCell sx={{ display: dispDrill }}>
                         {/* {row.drilling} */}
-                        <OrderAdditionalMapping rowIndex={index} propName={'drilling'}/>
+                        <OrderAdditionalMapping
+                          rowIndex={index}
+                          propName={"drilling"}
+                        />
                       </TableCell>
-                      <TableCell sx={{display: dispPaint}}>
-                      {/* {row.painting} */}
-                      <OrderAdditionalMapping rowIndex={index} propName={'painting'}/>
+                      <TableCell sx={{ display: dispPaint }}>
+                        {/* {row.painting} */}
+                        <OrderAdditionalMapping
+                          rowIndex={index}
+                          propName={"painting"}
+                        />
                       </TableCell>
                       <TableCell>
                         <Button
-                        onClick={()=>{dispatch(openModal({name: 'orderMaterialAdditionalState', index}))}}
-                        size="small"
-                        variant="contained">
+                          onClick={() => {
+                            dispatch(
+                              openModal({
+                                name: "orderMaterialAdditionalState",
+                                index,
+                              })
+                            );
+                          }}
+                          size="small"
+                          variant="contained"
+                        >
                           +
                         </Button>
                       </TableCell>
@@ -181,18 +218,32 @@ const OrderMaterialTab = () => {
                 </TableBody>
               </Table>
             </TableContainer>
+            <Box sx={{ marginTop: 2 }}>
             <Button
-            sx={{marginLeft: 3, marginTop: 1 }}
-            size="small"
-            variant="contained"
-            onClick={()=>{dispatch(orderMaterialAddNewObject())}}
+            sx={{marginLeft: 3}}
+              size="small"
+              variant="contained"
+              onClick={() => {
+                dispatch(orderMaterialAddNewObject());
+              }}
             >
               Додати Матеріал
             </Button>
+            <Button
+            sx={{marginLeft: 3}}
+              size="small"
+              variant="outlined"
+              onClick={() => {
+                dispatch(orderDeleteStatusUpdate());
+              }}
+            >
+              Видалити елемент
+            </Button>
+            </Box>
           </Box>
         </MaterialBlock>
       </Box>
-      <OrderMaterialAdditionalModal/>
+      <OrderMaterialAdditionalModal />
     </div>
   );
 };

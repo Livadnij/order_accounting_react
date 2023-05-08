@@ -6,6 +6,7 @@ import { orderMaterialRemoveAddition } from '../../toolkitSlice';
 
 const OrderAdditionalMapping = (props) => {
     const rows = useSelector((state) => state.toolkit.tempMaterialInfo)
+    const deleteElement = useSelector((state)=>state.toolkit.orderMaterialDelete)? '': 'none';
     const dispatch = useDispatch();
     const propName = props.propName
     const rowIndex = props.rowIndex
@@ -47,7 +48,7 @@ for(let i=0; i<=rows[rowIndex][propName].length-1; i++) {
             workObject[rows[rowIndex][propName][i][0]]+ " ",
             drillingDiam[rows[rowIndex][propName][i][1]]+ " ",
             "- ", 
-            rows[rowIndex][propName][i][2]+" "+'од.'
+            rows[rowIndex][propName][i][2]+" "+"од.",
         ])} else if (rows[rowIndex][propName][i][0] === 3 ) {
             data.push([
                 workObject[rows[rowIndex][propName][i][0]]+ " ",
@@ -74,6 +75,7 @@ console.log(data)
             <Box key={index} sx={{display: 'flex', alignItems: 'center'}}>
                 {row}
                 <IconButton
+                sx={{display: deleteElement}}
                 onClick={() => {dispatch(orderMaterialRemoveAddition({rowIndex, propName, index}))}}
                 >
                     <DeleteIcon/>
