@@ -29,7 +29,9 @@ const OrderInfoTab = () => {
 
   const updateStatus = (propName, value) => {
     if (propName === 'dateStart' || propName=== 'dateFinish') {
-      console.log(propName, dayjs(value))
+      console.log(propName,value.toString())
+      const data = { propName, value: value.toString() };
+      dispatch(orderStateUpdate(data));
     } else {
       const data = { propName, value };
       dispatch(orderStateUpdate(data));
@@ -144,7 +146,7 @@ const OrderInfoTab = () => {
               adapterLocale={"uk"}
             >
               <DatePicker
-              value={tempOrdSave.dateStart}
+              value={dayjs(tempOrdSave.dateStart)}
               onChange={(newValue) => updateStatus("dateStart", newValue)}
               />
             </LocalizationProvider>
@@ -156,7 +158,7 @@ const OrderInfoTab = () => {
               adapterLocale={"uk"}
             >
               <DatePicker
-              value={tempOrdSave.dateFinish}
+              value={dayjs(tempOrdSave.dateFinish)}
               onChange={(newValue) => updateStatus("dateFinish", newValue)}
               />
             </LocalizationProvider>
