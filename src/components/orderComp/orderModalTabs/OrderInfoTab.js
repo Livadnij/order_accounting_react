@@ -5,23 +5,13 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { TextField } from "@mui/material";
 import { Box } from "@mui/material";
 import React from "react";
-import styled from "styled-components";
-import { orderStateUpdate } from "../../toolkitSlice";
+import { orderStateUpdate, tempOrderSave } from "../../toolkitSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers-pro";
+import { InfoBlock } from "../../StyledComponents";
+import OrderClientSelectorComp from "../OrderClientSelectorComp";
 
-const InfoBlock = styled.div`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  /* flex-wrap: wrap; */
-  white-space: nowrap;
-  padding-left: 30px;
-  padding-right: 30px;
-  width: 50%;
-  justify-content: space-between;
-  box-sizing: border-box;
-`;
+
 
 const OrderInfoTab = () => {
   const dispatch = useDispatch();
@@ -37,6 +27,8 @@ const OrderInfoTab = () => {
       dispatch(orderStateUpdate(data));
     }
   };
+  
+  
 
   return (
     <div>
@@ -88,49 +80,7 @@ const OrderInfoTab = () => {
           </InfoBlock>
         </Box>
         <Divider sx={{ width: "100%" }} />
-        <Box
-          sx={{
-            width: "100%",
-            display: "flex",
-            flexDirection: "row",
-            flexWrap: "wrap",
-            padding: "20px 0 20px 0",
-          }}
-        >
-          <InfoBlock>
-            <p>Ім’я клієнта</p>
-            <TextField
-              sx={{ width: "60%" }}
-              size="small"
-              id="filled-basic"
-              variant="outlined"
-              value={tempOrdSave.clName}
-              onChange={(e) => updateStatus("clName", e.target.value)}
-            />
-          </InfoBlock>
-          <InfoBlock>
-            <p>Скидка, %</p>
-            <TextField
-              sx={{ width: "60%" }}
-              size="small"
-              id="filled-basic"
-              variant="outlined"
-              value={tempOrdSave.clDiscount}
-              onChange={(e) => updateStatus("clDiscount", e.target.value)}
-            />
-          </InfoBlock>
-          <InfoBlock>
-            <p>Телефон</p>
-            <TextField
-              sx={{ width: "60%" }}
-              size="small"
-              id="filled-basic"
-              variant="outlined"
-              value={tempOrdSave.clPhoneNum}
-              onChange={(e) => updateStatus("clPhoneNum", e.target.value)}
-            />
-          </InfoBlock>
-        </Box>
+        <OrderClientSelectorComp/>
         <Divider sx={{ width: "100%" }} />
         <Box sx={{
             width: "100%",
@@ -198,13 +148,12 @@ const OrderInfoTab = () => {
           </InfoBlock>
           <InfoBlock>
             <p>Залишок до сплати</p>
-            <TextField
+            <TextField disabled
               sx={{ width: "60%" }}
               size="small"
               id="filled-basic"
               variant="outlined"
-              value={tempOrdSave.leftover}
-              onChange={(e) => updateStatus("leftover", e.target.value)}
+              // value={leftover}
             />
           </InfoBlock>
         </Box>

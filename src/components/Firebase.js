@@ -23,8 +23,8 @@ async function getClients(db) {
     const clientsCol = collection(db, 'clients');
     const clientsSnapshot = await getDocs(clientsCol);
     const clientsList = clientsSnapshot.docs.map(doc => doc.data());
-    console.log(auth)
-   return clientsList
+    console.log(clientsList)
+    return clientsList
   };
 
   export default getClients

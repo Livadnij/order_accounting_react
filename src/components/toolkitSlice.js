@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { doc, setDoc } from "firebase/firestore";
 import { db } from "./Firebase";
+import { nanoid } from "nanoid";
 
 
 
@@ -12,20 +13,20 @@ const toolkitSlice = createSlice({
         orderModalState: false,
         orderMaterialAdditionalState: false,
         orderMaterialAdditionalIndex: '',
+        ordersAllList: [],
         clientsAllList: [],
         orderMaterialDelete: false,
         tempOrderInfo: {
+            ranID:'',
             ordID:'',
             ready:false,
             given:false,
             dateStart: '',
             dateFinish: '',
-            clName:'',
-            clDiscount:'',
-            clPhoneNum:'+380',
+            clID:'',
             fullPrice:'',
             paid:'',
-            leftover:'',
+            leftover: '',
             status:'',
             installation:false,
             delivery:false,
@@ -38,6 +39,7 @@ const toolkitSlice = createSlice({
     },
     reducers : {
         getClientsData(initialState, data) {
+            console.log(data)
             initialState.clientsAllList = data
         },
         orderDeleteStatusUpdate(initialState){
@@ -60,6 +62,26 @@ const toolkitSlice = createSlice({
                 phoneNum: cPhoneNum
             });
         },
+        uploadNewOrder(initialState){
+            const ranID = nanoid()
+            setDoc(doc(db, "orders", ranID), {
+            ranID,
+            ordID:initialState.tempOrderInfo.ordID,
+            ready:initialState.tempOrderInfo.ready,
+            given:initialState.tempOrderInfo.given,
+            dateStart:initialState.tempOrderInfo.dateStart,
+            dateFinish:initialState.tempOrderInfo.dateFinish,
+            clID:initialState.tempOrderInfo.clID,
+            fullPrice:initialState.tempOrderInfo.fullPrice,
+            paid:initialState.tempOrderInfo.paid,
+            status:initialState.tempOrderInfo.status,
+            installation:initialState.tempOrderInfo.installation,
+            delivery:initialState.tempOrderInfo.delivery,
+            adress:initialState.tempOrderInfo.adress,
+            comments:initialState.tempOrderInfo.comments,
+            material: initialState.tempMaterialInfo
+            });
+        },
         additionalWorkPush(initialState, {payload:data}) {
             console.log(data)
             console.log(initialState.tempMaterialInfo[initialState.orderMaterialAdditionalIndex].drilling)
@@ -77,7 +99,8 @@ const toolkitSlice = createSlice({
             console.log (propName)
             initialState[propName.name] = !initialState[propName.name]
             initialState.orderMaterialAdditionalIndex = propName.index
-            } else {
+        } else {
+            console.log (propName)
             initialState[propName] = !initialState[propName] 
         }
         },
