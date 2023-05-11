@@ -20,13 +20,18 @@ const openUserModal = async () => {
     dispatch(getClientsData(data));
     dispatch(openModal('clientModalState'))
 }
+const openOrderModal = async () => {
+  let data = await getClients(db);
+    dispatch(getClientsData(data));
+    dispatch(openModal('orderModalState'))
+}
 const noneTest = () => {
     console.log(`none`)
 }
 
 const actions = [
   { icon: <PersonAddIcon />, name: 'додати клієнта', onClick: openUserModal },
-  { icon: <LibraryAddIcon />, name: 'додати замовлення', onClick: function () {dispatch(openModal('orderModalState'))}},
+  { icon: <LibraryAddIcon />, name: 'додати замовлення', onClick: openOrderModal},
   { icon: <PrintIcon />, name: 'Print', onClick: noneTest},
   { icon: <ShareIcon />, name: 'Share', onClick: noneTest},
 ];
