@@ -7,6 +7,7 @@ import BasicSpeedDial from "../components/SpeedDialCustom";
 import OrderList from "../components/orderComp/OrderList";
 import OrderCreateModal from "../components/orderComp/OrderCreateModal";
 import CollapsibleTable from "../components/orderComp/OrderTableTest";
+import { ClientAddModal } from "../components/clientList/ClientAddModal";
 
 //проверка на вход в систему
 const MainPage = () => {
@@ -24,6 +25,7 @@ const MainPage = () => {
     <div>
       <Box style={{ position: "absolute", right: "5%", top: "-235px" }}>
         <NestedClientsListModal />
+        <ClientAddModal/>
         <OrderCreateModal/>
         <BasicSpeedDial />
       </Box>
