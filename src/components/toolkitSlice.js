@@ -9,6 +9,8 @@ const toolkitSlice = createSlice({
     name: "toolkit",
     initialState: {
         logined: "",
+        clientAddModalState: false,
+        clientAddModalName: '',
         clientModalState: false,
         orderModalState: false,
         orderMaterialAdditionalState: false,
@@ -95,10 +97,14 @@ const toolkitSlice = createSlice({
         initialState.logined = data
         },
         openModal(initialState, {payload:propName}){
-            if(typeof propName === 'object' && !Array.isArray(propName) && propName !== null){
+            if(typeof propName === 'object' && !Array.isArray(propName) && propName !== null && propName.name ==='orderMaterialAdditionalState'){
             console.log (propName)
             initialState[propName.name] = !initialState[propName.name]
             initialState.orderMaterialAdditionalIndex = propName.index
+            } else if (typeof propName === 'object' && !Array.isArray(propName) && propName !== null) {
+                console.log (propName)
+                initialState[propName.name] = !initialState[propName.name]
+                initialState.clientAddModalName = propName.value
         } else {
             console.log (propName)
             initialState[propName] = !initialState[propName] 
