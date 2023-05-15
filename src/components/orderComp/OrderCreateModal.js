@@ -2,7 +2,7 @@ import * as React from 'react';
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
 import { useDispatch, useSelector } from 'react-redux';
-import { openModal, orderModalHandleClose } from '../toolkitSlice';
+import { openModal, orderModalHandleClose, uploadNewOrder } from '../toolkitSlice';
 import OrderTabs from './OrderTabs';
 import { Button } from '@mui/material';
 
@@ -40,9 +40,7 @@ export default function OrderCreateModal() {
         <Button
         sx={{ margin: "10px 0 10px 25px" }}
         variant="contained"
-        // onClick={() => {
-        //   handleOpen();
-        // }}
+        onClick={() => {dispatch(uploadNewOrder())}}
       >
         Додати
       </Button>
