@@ -16,6 +16,7 @@ import OrderClientSelectorComp from "../OrderClientSelectorComp";
 const OrderInfoTab = () => {
   const dispatch = useDispatch();
   const tempOrdSave = useSelector((state) => state.toolkit.tempOrderInfo);
+  const paidCoeff = 0.7
 
   const updateStatus = (propName, value) => {
     if (propName === 'dateStart' || propName=== 'dateFinish') {
@@ -96,6 +97,7 @@ const OrderInfoTab = () => {
               adapterLocale={"uk"}
             >
               <DatePicker
+              sx={{ width: "60%" }}
               value={dayjs(tempOrdSave.dateStart)}
               onChange={(newValue) => updateStatus("dateStart", newValue)}
               />
@@ -108,6 +110,8 @@ const OrderInfoTab = () => {
               adapterLocale={"uk"}
             >
               <DatePicker
+              placeholder
+              sx={{ width: "60%" }}
               value={dayjs(tempOrdSave.dateFinish)}
               onChange={(newValue) => updateStatus("dateFinish", newValue)}
               />
@@ -142,6 +146,7 @@ const OrderInfoTab = () => {
               size="small"
               id="filled-basic"
               variant="outlined"
+              label={`${paidCoeff*100}% від вартості: ${tempOrdSave.fullPrice*paidCoeff}`}
               value={tempOrdSave.paid}
               onChange={(e) => updateStatus("paid", e.target.value)}
             />
@@ -153,7 +158,7 @@ const OrderInfoTab = () => {
               size="small"
               id="filled-basic"
               variant="outlined"
-              // value={leftover}
+              value={[tempOrdSave.fullPrice]-[tempOrdSave.paid]}
             />
           </InfoBlock>
         </Box>

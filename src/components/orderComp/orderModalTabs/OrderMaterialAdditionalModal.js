@@ -60,8 +60,10 @@ export default function OrderMaterialAdditionalModal() {
         aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
-          <p>Оберіть роботу:</p>
+          <p>Оберіть роботу: ДОБАВИТЬ PLACEHOLDER</p>
           <Select
+            label='Оберіть опцію'
+            labelId="additional-work-first-select"
             size="small"
             value={work}
             onChange={(e) => {
