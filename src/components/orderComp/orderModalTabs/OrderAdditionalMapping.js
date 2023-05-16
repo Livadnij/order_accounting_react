@@ -43,28 +43,28 @@ const OrderAdditionalMapping = (props) => {
       let data = []
 
 for(let i=0; i<=rows[rowIndex][propName].length-1; i++) {
-    if(rows[rowIndex][propName][i][0] === 1){
+    if(rows[rowIndex][propName][i].work === 1){
         data.push([
-            workObject[rows[rowIndex][propName][i][0]]+ " ",
-            drillingDiam[rows[rowIndex][propName][i][1]]+ " ",
+            workObject[rows[rowIndex][propName][i].work]+ " ",
+            drillingDiam[rows[rowIndex][propName][i].valueOne]+ " ",
             "- ", 
-            rows[rowIndex][propName][i][2]+" "+"од.",
-        ])} else if (rows[rowIndex][propName][i][0] === 3 ) {
+            rows[rowIndex][propName][i].valueTwo+" "+"од.",
+        ])} else if (rows[rowIndex][propName][i].work === 3 ) {
             data.push([
-                workObject[rows[rowIndex][propName][i][0]]+ " ",
-                rows[rowIndex][propName][i][1]
-        ])} else if (rows[rowIndex][propName][i][0] === 4 ) {
+                workObject[rows[rowIndex][propName][i].work]+ " ",
+                rows[rowIndex][propName][i].valueOne
+        ])} else if (rows[rowIndex][propName][i].work === 4 ) {
             data.push([
-                workObject[rows[rowIndex][propName][i][0]],
-                rows[rowIndex][propName][i][1],
-                rows[rowIndex][propName][i][2]
-        ])} else if (rows[rowIndex][propName][i][0] === 5 ) {
+                workObject[rows[rowIndex][propName][i].work],
+                rows[rowIndex][propName][i].valueOne,
+                rows[rowIndex][propName][i].valueTwo
+        ])} else if (rows[rowIndex][propName][i].work === 5 ) {
             data.push([
-                workObject[rows[rowIndex][propName][i][0]],
-                sandblasting[rows[rowIndex][propName][i][1]]
+                workObject[rows[rowIndex][propName][i].work],
+                sandblasting[rows[rowIndex][propName][i].valueOne]
         ])} else {
             data.push([
-                workObject[rows[rowIndex][propName][i][0]]
+                workObject[rows[rowIndex][propName][i].work]
             ])}
 console.log(data) 
 }

@@ -27,4 +27,12 @@ async function getClients(db) {
     return clientsList
   };
 
+async function getOrders(db) {
+    const ordersCol = collection(db, 'orderss');
+    const ordersSnapshot = await getDocs(ordersCol);
+    const ordersList = ordersSnapshot.docs.map(doc => doc.data());
+    console.log(ordersList)
+    return ordersList
+  };
+
   export default getClients

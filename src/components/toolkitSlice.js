@@ -15,7 +15,6 @@ const toolkitSlice = createSlice({
         orderModalState: false,
         orderMaterialAdditionalState: false,
         orderMaterialAdditionalIndex: '',
-        ordersAllList: [],
         clientsAllList: [],
         orderMaterialDelete: false,
         tempOrderInfo: {
@@ -86,7 +85,7 @@ const toolkitSlice = createSlice({
         additionalWorkPush(initialState, {payload:data}) {
             console.log(data)
             console.log(initialState.tempMaterialInfo[initialState.orderMaterialAdditionalIndex].drilling)
-            if(data[0] === 1) {
+            if(data.work === 1) {
                 initialState.tempMaterialInfo[initialState.orderMaterialAdditionalIndex].drilling.push(data)
             } else {
                 initialState.tempMaterialInfo[initialState.orderMaterialAdditionalIndex].painting.push(data)
