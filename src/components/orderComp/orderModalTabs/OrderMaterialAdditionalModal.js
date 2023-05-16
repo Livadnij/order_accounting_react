@@ -36,15 +36,15 @@ export default function OrderMaterialAdditionalModal() {
   const handleSave = () => {
     let value
     if(work === 1 && valueOne !== false && valueTwo !== false) {
-    value = [work, valueOne, valueTwo]
+    value = {work, valueOne, valueTwo}
   } else if (work === 3 && valueOne !== false) {
-    value = [work, valueOne]
+    value = {work, valueOne}
   } else if (work === 4 && valueOne !== false && valueTwo !== false) {
-    value = [work, valueOne, valueTwo]
+    value = {work, valueOne, valueTwo}
   } else if (work === 5 && valueOne !== false) {
-    value = [work, valueOne]
+    value = {work, valueOne}
   } else { 
-    value = [work]
+    value = {work}
   }
   dispatch(additionalWorkPush(value))
 }
