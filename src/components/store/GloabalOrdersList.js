@@ -1,21 +1,20 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { doc, setDoc } from "firebase/firestore";
-import { db } from "./Firebase";
 
 
 const GlobalOrderList = createSlice({
-    name: "toolkit",
+    name: "globalOrders",
     initialState: {
     orders: []
     },
     reducers : {
-        getOrders(initialState) {
-            initialState.clientsAllList = data
+        saveOrders(initialState, {payload:data}) {
+            console.log(data)
+            initialState.orders = data
         },
     }
 })
 
 export default GlobalOrderList.reducer
 export const {
-    getOrders
+    saveOrders
 } = GlobalOrderList.actions

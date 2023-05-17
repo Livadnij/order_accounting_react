@@ -19,7 +19,7 @@ export const db = getFirestore(app);
 export const auth = getAuth(app);
 
 // Getting clients list form clients collection
-async function getClients(db) {
+export default async function getClients(db) {
     const clientsCol = collection(db, 'clients');
     const clientsSnapshot = await getDocs(clientsCol);
     const clientsList = clientsSnapshot.docs.map(doc => doc.data());
@@ -27,12 +27,10 @@ async function getClients(db) {
     return clientsList
   };
 
-async function getOrders(db) {
-    const ordersCol = collection(db, 'orderss');
+export async function getOrders(db) {
+    const ordersCol = collection(db, 'orders');
     const ordersSnapshot = await getDocs(ordersCol);
     const ordersList = ordersSnapshot.docs.map(doc => doc.data());
     console.log(ordersList)
     return ordersList
   };
-
-  export default getClients

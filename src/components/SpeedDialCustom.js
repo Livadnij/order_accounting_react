@@ -6,10 +6,13 @@ import SpeedDialAction from '@mui/material/SpeedDialAction';
 import PrintIcon from '@mui/icons-material/Print';
 import ShareIcon from '@mui/icons-material/Share';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
-import getClients, { db } from './Firebase';
+import getClients, { db, getOrders } from './Firebase';
 import { getClientsData, openModal } from './toolkitSlice';
 import { useDispatch } from 'react-redux';
 import LibraryAddIcon from '@mui/icons-material/LibraryAdd';
+import { saveOrders } from './store/GloabalOrdersList';
+
+
 
 
 export default function BasicSpeedDial() {
@@ -21,8 +24,10 @@ const openUserModal = async () => {
     dispatch(openModal('clientModalState'))
 }
 const openOrderModal = async () => {
-  let data = await getClients(db);
-    dispatch(getClientsData(data));
+  let clientsData = await getClients(db);
+  let ordersData = await getOrders(db);
+    dispatch(saveOrders(ordersData))
+    dispatch(getClientsData(clientsData));
     dispatch(openModal('orderModalState'))
 }
 const noneTest = () => {
