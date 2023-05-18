@@ -1,4 +1,4 @@
-import { Divider, Switch } from "@mui/material";
+import { Divider, MenuItem, Select, Switch } from "@mui/material";
 import dayjs from "dayjs";
 import "dayjs/locale/uk";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -20,14 +20,21 @@ const OrderInfoTab = () => {
 
   const updateStatus = (propName, value) => {
     if (propName === 'dateStart' || propName=== 'dateFinish') {
-      console.log(propName,value.toString())
-      const data = { propName, value: value.toString() };
+      console.log(value)
+      const date = `${value.$M + 1}.${value.$D}.${value.$y}`
+      const data = { propName, value: date };
       dispatch(orderStateUpdate(data));
     } else {
       const data = { propName, value };
       dispatch(orderStateUpdate(data));
     }
   };
+
+  const lastOrderNum = useSelector((state) => state.globalOrders.orders).reduce((prevObj, currObj) => {
+    return prevObj.ordID > currObj.ordID ? prevObj : currObj;
+  });
+
+  console.log(lastOrderNum)
   
   
 
@@ -54,9 +61,10 @@ const OrderInfoTab = () => {
             <TextField
               sx={{ width: "60%" }}
               size="small"
+              label={`наступний номер ${Number(lastOrderNum.ordID)+1}`}
               id="filled-basic"
               variant="outlined"
-              value={tempOrdSave.ordID}
+              value={tempOrdSave.ordID?tempOrdSave.ordID:""}
               onChange={(e) =>
                 // setOrdID(e.target.value)
                 updateStatus("ordID", e.target.value)
@@ -64,20 +72,24 @@ const OrderInfoTab = () => {
             />
           </InfoBlock>
           <InfoBlock>
-            <Box sx={{ display: "inline-flex", alignItems: "center" }}>
-              <p>Виготовлено</p>
-              <Switch
-                checked={tempOrdSave.ready}
-                onChange={() => updateStatus("ready", !tempOrdSave.ready)}
-              />
-            </Box>
-            <Box sx={{ display: "inline-flex", alignItems: "center" }}>
-              <p>Видано клієнту</p>
-              <Switch
-                checked={tempOrdSave.given}
-                onChange={() => updateStatus("given", !tempOrdSave.given)}
-              />
-            </Box>
+            <p>Стан замовлення</p>
+            <Select
+            sx={{ width: "60%" }}
+            size="small"
+            label="Стан"
+            value={tempOrdSave.status}
+            onChange={(e) => updateStatus("status", e.target.value)}
+            >
+            {/* change MenuItems fro hardcode to .map() */}
+            <MenuItem value={1}>Офіс</MenuItem>
+            <MenuItem value={2}>Порізка</MenuItem>
+            <MenuItem value={3}>Обробка</MenuItem>
+            <MenuItem value={4}>Свердлення</MenuItem>
+            <MenuItem value={5}>Граф. роботи</MenuItem>
+            <MenuItem value={6}>Готово</MenuItem>
+            <MenuItem value={7}>Монтаж</MenuItem>
+            <MenuItem value={8}>Виконано</MenuItem>
+            </Select>
           </InfoBlock>
         </Box>
         <Divider sx={{ width: "100%" }} />
@@ -172,17 +184,6 @@ const OrderInfoTab = () => {
             padding: "20px 0 20px 0",
           }}
         >
-          <InfoBlock>
-            <p>Стан замовлення</p>
-            <TextField
-              sx={{ width: "60%" }}
-              size="small"
-              id="filled-basic"
-              variant="outlined"
-              value={tempOrdSave.status}
-              onChange={(e) => updateStatus("status", e.target.value)}
-            />
-          </InfoBlock>
           <InfoBlock>
             <Box sx={{ display: "inline-flex", alignItems: "center" }}>
               <p>Монтаж</p>

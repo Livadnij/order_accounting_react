@@ -20,14 +20,12 @@ const toolkitSlice = createSlice({
         tempOrderInfo: {
             ranID:'',
             ordID:'',
-            ready:false,
-            given:false,
+            clID:'',
+            status:'',
             dateStart: '',
             dateFinish: '',
-            clID:'',
             fullPrice:'',
             paid:'',
-            status:'',
             installation:false,
             delivery:false,
             adress:'',
@@ -67,8 +65,6 @@ const toolkitSlice = createSlice({
             setDoc(doc(db, "orders", ranID), {
             ranID,
             ordID:initialState.tempOrderInfo.ordID,
-            ready:initialState.tempOrderInfo.ready,
-            given:initialState.tempOrderInfo.given,
             dateStart:initialState.tempOrderInfo.dateStart,
             dateFinish:initialState.tempOrderInfo.dateFinish,
             clID:initialState.tempOrderInfo.clID,
@@ -81,6 +77,9 @@ const toolkitSlice = createSlice({
             comments:initialState.tempOrderInfo.comments,
             material: initialState.tempMaterialInfo
             });
+            Object.keys(initialState.tempOrderInfo).forEach(k => initialState.tempOrderInfo[k] = '')
+            initialState.tempMaterialInfo = [];      
+            initialState.orderModalState = !initialState.orderModalState
         },
         additionalWorkPush(initialState, {payload:data}) {
             console.log(data)
@@ -135,9 +134,15 @@ const toolkitSlice = createSlice({
         orderModalHandleClose(initialState) {
             Object.keys(initialState.tempOrderInfo).forEach(k => initialState.tempOrderInfo[k] = '')
             initialState.tempMaterialInfo = [];            
+        },
+        orderModalEdit(initialState, {payload:order}){
+            console.log(order)
+            initialState.tempOrderInfo = order
+            initialState.tempMaterialInfo = order.material
+            initialState.orderModalState = !initialState.orderModalState
         }
     }
 })
 
 export default toolkitSlice.reducer
-export const {orderDeleteMaterial, orderDeleteStatusUpdate, orderModalHandleClose, orderMaterialRemoveAddition, additionalWorkPush, openModal, orderMaterialAddNewObject, orderMaterialUpdate, orderStateUpdate, tempOrderSave, userLogined, uploadNewClient, getClientsData, uploadNewOrder} = toolkitSlice.actions
+export const {orderDeleteMaterial, orderDeleteStatusUpdate, orderModalHandleClose, orderMaterialRemoveAddition, additionalWorkPush, openModal, orderMaterialAddNewObject, orderMaterialUpdate, orderStateUpdate, tempOrderSave, userLogined, uploadNewClient, getClientsData, uploadNewOrder, orderModalEdit} = toolkitSlice.actions
