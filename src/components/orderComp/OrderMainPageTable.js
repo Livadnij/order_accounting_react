@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { useDispatch, useSelector } from "react-redux";
-import PropTypes from 'prop-types';
 import Box from '@mui/material/Box';
 import Collapse from '@mui/material/Collapse';
 import IconButton from '@mui/material/IconButton';
@@ -14,32 +13,11 @@ import Typography from '@mui/material/Typography';
 import Paper from '@mui/material/Paper';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
-import dayjs from 'dayjs';
-
-// function createData(name, calories, fat, carbs, protein, price) {
-//   return {
-//     name,
-//     calories,
-//     fat,
-//     carbs,
-//     protein,
-//     price,
-//     history: [
-//       {
-//         date: '2020-01-05',
-//         customerId: '11091700',
-//         amount: 3,
-//       },
-//       {
-//         date: '2020-01-02',
-//         customerId: 'Anonymous',
-//         amount: 1,
-//       },
-//     ],
-//   };
-// }
+import SettingsIcon from '@mui/icons-material/Settings';
+import { orderModalEdit } from '../toolkitSlice';
 
 function Row(props) {
+  const dispatch = useDispatch();
   const { row } = props;
   console.log(row)
   const [open, setOpen] = React.useState(false);
@@ -48,12 +26,11 @@ function Row(props) {
   );
   const foundClient = clientsList.find(obj => obj.id === row.clID)
   console.log(clientsList, foundClient)
-  const time = new Date(row.dateFinish)
   const deadline = new Date(row.dateFinish) - Date.now()
   const rowColor = () => {
-    if(deadline > 86400000 && !row.given){ return ''} 
-    else if (row.given){return 'LightGreen'} 
-    else if (deadline > 0 && !row.given) {return 'LemonChiffon'} 
+    if(deadline > 86400000 && row.status !== 8){ return ''} 
+    else if (row.status === 8){return 'LightGreen'} 
+    else if (deadline > 0 && row.status !== 8) {return 'LemonChiffon'} 
     else {return 'MistyRose'}}
     
   console.log(deadline)
@@ -71,77 +48,40 @@ function Row(props) {
           </IconButton>
         </TableCell>
         <TableCell component="th" scope="row"> {row.ordID}</TableCell>
-        <TableCell align="right">{foundClient.Name} {foundClient.phoneNum}</TableCell>
+        <TableCell align="right">{foundClient?foundClient.Name:""} {foundClient?foundClient.phoneNum:""}</TableCell>
         <TableCell align="right">{row.dateStart}</TableCell>
         <TableCell align="right">{row.dateFinish}</TableCell>
+        <TableCell align="right">{row.status}</TableCell>
         <TableCell align="right">{row.fullPrice}</TableCell>
         <TableCell align="right">{row.paid}</TableCell>
         <TableCell align="right">{row.fullPrice - row.paid}</TableCell>
       </TableRow>
-      {/* <TableRow>
-        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
+      <TableRow >
+        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={12}>
           <Collapse in={open} timeout="auto" unmountOnExit>
-            <Box sx={{ margin: 1 }}>
+            <Box sx={{width:"100%", margin: 1, display: "flex", justifyContent: "space-between" }}>
+              <Box>
               <Typography variant="h6" gutterBottom component="div">
-                History
+                Коментарі
               </Typography>
-              <Table size="small" aria-label="purchases">
-                <TableHead>
-                  <TableRow>
-                    <TableCell>Date</TableCell>
-                    <TableCell>Customer</TableCell>
-                    <TableCell align="right">Amount</TableCell>
-                    <TableCell align="right">Total price ($)</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {row.history.map((historyRow) => (
-                    <TableRow key={historyRow.date}>
-                      <TableCell component="th" scope="row">
-                        {historyRow.date}
-                      </TableCell>
-                      <TableCell>{historyRow.customerId}</TableCell>
-                      <TableCell align="right">{historyRow.amount}</TableCell>
-                      <TableCell align="right">
-                        {Math.round(historyRow.amount * row.price * 100) / 100}
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+              {row.comments?row.comments:"Нема коментарів"}
+              </Box>
+              <Box sx={{display: "flex", alignItems: "flex-end"}}>
+              <IconButton
+               size="small"
+               variant="contained"
+               onClick={()=>(dispatch(orderModalEdit(row)))}
+              >
+                <SettingsIcon/>
+              </IconButton>
+              </Box>
             </Box>
           </Collapse>
         </TableCell>
-      </TableRow> */}
+      </TableRow>
     </React.Fragment>
   );
 }
-
-// Row.propTypes = {
-//   row: PropTypes.shape({
-//     calories: PropTypes.number.isRequired,
-//     carbs: PropTypes.number.isRequired,
-//     fat: PropTypes.number.isRequired,
-//     history: PropTypes.arrayOf(
-//       PropTypes.shape({
-//         amount: PropTypes.number.isRequired,
-//         customerId: PropTypes.string.isRequired,
-//         date: PropTypes.string.isRequired,
-//       }),
-//     ).isRequired,
-//     name: PropTypes.string.isRequired,
-//     price: PropTypes.number.isRequired,
-//     protein: PropTypes.number.isRequired,
-//   }).isRequired,
-// };
-
-// const rows = [
-//   createData('Frozen yoghurt', 159, 6.0, 24, 4.0, 3.99),
-//   createData('Ice cream sandwich', 237, 9.0, 37, 4.3, 4.99),
-//   createData('Eclair', 262, 16.0, 24, 6.0, 3.79),
-//   createData('Cupcake', 305, 3.7, 67, 4.3, 2.5),
-//   createData('Gingerbread', 356, 16.0, 49, 3.9, 1.5),
-// ];
 
 export default function CollapsibleTable() {
   const orders = useSelector((state)=>state.globalOrders.orders)
@@ -154,10 +94,11 @@ export default function CollapsibleTable() {
         <TableHead>
           <TableRow>
             <TableCell />
-            <TableCell>Номер Замовлення</TableCell>
+            <TableCell>№</TableCell>
             <TableCell align="right">Ім'я Клієнта</TableCell>
             <TableCell align="right">Дата Початку</TableCell>
             <TableCell align="right">Дата Завршення</TableCell>
+            <TableCell align="right">Стан</TableCell>
             <TableCell align="right">Варість</TableCell>
             <TableCell align="right">Передплата</TableCell>
             <TableCell align="right">Залишок</TableCell>

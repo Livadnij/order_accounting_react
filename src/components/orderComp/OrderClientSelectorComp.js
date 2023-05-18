@@ -47,7 +47,7 @@ const [value, setValue] = React.useState(null);
     <InfoBlock>
       <p>Ім’я клієнта</p>
       <Autocomplete
-      value={foundClient.Name}
+      value={foundClient.Name?foundClient.Name:""}
       onChange={(event, newValue) => {
         console.log(newValue)
         if (newValue && newValue.id) {
