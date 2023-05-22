@@ -2,9 +2,10 @@ import * as React from 'react';
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
 import { useDispatch, useSelector } from 'react-redux';
-import { openModal, orderModalHandleClose, uploadNewOrder } from '../toolkitSlice';
+import { openModal, orderDelete, orderModalHandleClose, orderUpdate, uploadNewOrder } from '../toolkitSlice';
 import OrderTabs from './OrderTabs';
 import { Button } from '@mui/material';
+import { fetchOrders } from '../store/GloabalOrdersList';
 
 const style = {
   position: 'absolute',
@@ -22,6 +23,9 @@ const style = {
 };
 
 export default function OrderCreateModal() {
+    const tempOrdSave = useSelector((state) => state.toolkit.tempOrderInfo);
+    const editCheck = !tempOrdSave.ranID? 'none' : ''
+    console.log(editCheck)
     const dispatch = useDispatch();
     const handleClose = () => {
       dispatch(orderModalHandleClose())
@@ -37,13 +41,30 @@ export default function OrderCreateModal() {
       >
         <Box sx={style}>
         <OrderTabs/>
+        <Box sx={{display: "flex", justifyContent:"space-between"}}>
         <Button
-        sx={{ margin: "10px 0 10px 25px" }}
+        sx={{ margin: "10px 0 10px 25px",width:100, display: tempOrdSave.ranID? 'none' : '' }}
         variant="contained"
-        onClick={() => {dispatch(uploadNewOrder())}}
+        onClick={() => {dispatch(uploadNewOrder()); dispatch(fetchOrders())}}
       >
         Додати
       </Button>
+      <Button
+        sx={{ margin: "10px 0 10px 25px",width:100, display: editCheck }}
+        variant="contained"
+        onClick={() => {dispatch(orderUpdate());dispatch( fetchOrders())}}
+      >
+        Оновити
+      </Button>
+      <Button
+        color="error"
+        sx={{ margin: "10px 25px 10px 25px",width:100, display: editCheck }}
+        variant="contained"
+        onClick={() => {dispatch(orderDelete()); dispatch(fetchOrders())}}
+      >
+        Видалити
+      </Button>
+      </Box>
         </Box>
       </Modal>
     </div>

@@ -6,12 +6,11 @@ import SpeedDialAction from '@mui/material/SpeedDialAction';
 import PrintIcon from '@mui/icons-material/Print';
 import ShareIcon from '@mui/icons-material/Share';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
-import getClients, { db, getOrders } from './Firebase';
-import { getClientsData, openModal } from './toolkitSlice';
+import { fetchClients, getClientsData, openModal } from './toolkitSlice';
 import { useDispatch } from 'react-redux';
 import LibraryAddIcon from '@mui/icons-material/LibraryAdd';
-import { saveOrders } from './store/GloabalOrdersList';
-
+import { fetchOrders, saveOrders } from './store/GloabalOrdersList';
+import RefreshIcon from '@mui/icons-material/Refresh';
 
 
 
@@ -19,16 +18,17 @@ export default function BasicSpeedDial() {
     const dispatch = useDispatch();
 
 const openUserModal = async () => {
-    let data = await getClients(db);
-    dispatch(getClientsData(data));
+    dispatch(fetchClients());
     dispatch(openModal('clientModalState'))
 }
 const openOrderModal = async () => {
-  let clientsData = await getClients(db);
-  let ordersData = await getOrders(db);
-    dispatch(saveOrders(ordersData))
-    dispatch(getClientsData(clientsData));
+  dispatch(fetchClients());
+  dispatch(fetchOrders());
     dispatch(openModal('orderModalState'))
+}
+const updateDB = () => {
+  dispatch(fetchClients());
+  dispatch(fetchOrders());
 }
 const noneTest = () => {
     console.log(`none`)
@@ -38,7 +38,7 @@ const actions = [
   { icon: <PersonAddIcon />, name: 'додати клієнта', onClick: openUserModal },
   { icon: <LibraryAddIcon />, name: 'додати замовлення', onClick: openOrderModal},
   { icon: <PrintIcon />, name: 'Print', onClick: noneTest},
-  { icon: <ShareIcon />, name: 'Share', onClick: noneTest},
+  { icon: <RefreshIcon />, name: 'оновити базу', onClick: updateDB},
 ];
 
   return (

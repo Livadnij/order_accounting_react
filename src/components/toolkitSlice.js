@@ -1,13 +1,22 @@
-import { createSlice } from "@reduxjs/toolkit";
-import { doc, setDoc } from "firebase/firestore";
-import { db } from "./Firebase";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { deleteDoc, doc, setDoc } from "firebase/firestore";
+import getClients, { db } from "./Firebase";
 import { nanoid } from "nanoid";
 
-
+export const fetchClients = createAsyncThunk(
+    'toolkit/fetchClients',
+    async function () {
+        console.log('must work')
+        const data = await getClients(db);
+        return data
+    },
+  );
 
 const toolkitSlice = createSlice({
     name: "toolkit",
     initialState: {
+        err: "",
+        isLoading: "",
         logined: "",
         clientAddModalState: false,
         clientAddModalName: '',
@@ -140,9 +149,51 @@ const toolkitSlice = createSlice({
             initialState.tempOrderInfo = order
             initialState.tempMaterialInfo = order.material
             initialState.orderModalState = !initialState.orderModalState
-        }
+        },
+        orderDelete(initialState){
+            deleteDoc(doc(db, "orders", initialState.tempOrderInfo.ranID));
+            Object.keys(initialState.tempOrderInfo).forEach(k => initialState.tempOrderInfo[k] = '');
+            initialState.tempMaterialInfo = [];   
+            initialState.orderModalState = !initialState.orderModalState
+        },
+        orderUpdate(initialState){
+            deleteDoc(doc(db, "orders", initialState.tempOrderInfo.ranID));
+            setDoc(doc(db, "orders", initialState.tempOrderInfo.ranID), {
+                ranID:initialState.tempOrderInfo.ranID,
+                ordID:initialState.tempOrderInfo.ordID,
+                dateStart:initialState.tempOrderInfo.dateStart,
+                dateFinish:initialState.tempOrderInfo.dateFinish,
+                clID:initialState.tempOrderInfo.clID,
+                fullPrice:initialState.tempOrderInfo.fullPrice,
+                paid:initialState.tempOrderInfo.paid,
+                status:initialState.tempOrderInfo.status,
+                installation:initialState.tempOrderInfo.installation,
+                delivery:initialState.tempOrderInfo.delivery,
+                adress:initialState.tempOrderInfo.adress,
+                comments:initialState.tempOrderInfo.comments,
+                material: initialState.tempMaterialInfo
+                });
+                Object.keys(initialState.tempOrderInfo).forEach(k => initialState.tempOrderInfo[k] = '')
+                initialState.tempMaterialInfo = [];      
+                initialState.orderModalState = !initialState.orderModalState
+        },
+        },
+        extraReducers: {
+            [fetchClients.pending]: (initialState, action) => {
+                initialState.err = null;
+                initialState.isLoading = true;
+              },
+              [fetchClients.fulfilled]: (initialState, action) => {
+                initialState.clientsAllList = action.payload;
+                initialState.err = null;
+                initialState.isLoading = false;
+              },
+              [fetchClients.rejected]: (initialState, action) => {
+                initialState.err = 'error';
+                console.log('holidays fetch error');
+              },
     }
 })
 
 export default toolkitSlice.reducer
-export const {orderDeleteMaterial, orderDeleteStatusUpdate, orderModalHandleClose, orderMaterialRemoveAddition, additionalWorkPush, openModal, orderMaterialAddNewObject, orderMaterialUpdate, orderStateUpdate, tempOrderSave, userLogined, uploadNewClient, getClientsData, uploadNewOrder, orderModalEdit} = toolkitSlice.actions
+export const {orderDeleteMaterial, orderDeleteStatusUpdate, orderModalHandleClose, orderMaterialRemoveAddition, additionalWorkPush, openModal, orderMaterialAddNewObject, orderMaterialUpdate, orderStateUpdate, tempOrderSave, userLogined, uploadNewClient, getClientsData, uploadNewOrder, orderModalEdit, orderDelete, orderUpdate} = toolkitSlice.actions

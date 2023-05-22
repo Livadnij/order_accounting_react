@@ -1,9 +1,20 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { db, getOrders } from "../Firebase";
 
+export const fetchOrders = createAsyncThunk(
+    'toolkit/fetchOrders',
+    async function () {
+        console.log('must work')
+        const data = await getOrders(db);
+        return data
+    },
+  );
 
 const GlobalOrderList = createSlice({
     name: "globalOrders",
     initialState: {
+    err: "",
+    isLoading: "",
     orders: []
     },
     reducers : {
@@ -11,6 +22,22 @@ const GlobalOrderList = createSlice({
             console.log(data)
             initialState.orders = data
         },
+    },
+    extraReducers : {
+        [fetchOrders.pending]: (initialState, action) => {
+            initialState.err = null;
+            initialState.isLoading = true;
+          },
+          [fetchOrders.fulfilled]: (initialState, action) => {
+            initialState.orders = action.payload;
+            initialState.err = null;
+            initialState.isLoading = false;
+          },
+          [fetchOrders.rejected]: (initialState, action) => {
+            initialState.status = 'error';
+            initialState.err = 'error';
+            console.log('holidays fetch error');
+          },
     }
 })
 

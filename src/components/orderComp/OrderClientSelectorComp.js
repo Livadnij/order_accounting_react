@@ -2,21 +2,19 @@ import React from 'react'
 import { Autocomplete, Box, Button, TextField, createFilterOptions } from "@mui/material";
 import { InfoBlock } from '../StyledComponents';
 import { useDispatch, useSelector } from 'react-redux';
-import getClients, { db } from '../Firebase';
-import { getClientsData, openModal, orderStateUpdate } from '../toolkitSlice';
+import { fetchClients, openModal, orderStateUpdate } from '../toolkitSlice';
 
 const filter = createFilterOptions();
 
 const OrderClientSelectorComp = () => {
   const dispatch = useDispatch();
-  const clientsList = useSelector((state) => state.toolkit.clientsAllList.payload);
+  const clientsList = useSelector((state) => state.toolkit.clientsAllList);
   const clientsID = useSelector((state) => state.toolkit.tempOrderInfo.clID);
   const foundClient = clientsID ? clientsList.find(obj => obj.id === clientsID): {};
   console.log(clientsList, clientsID, foundClient)
 
   const openUserModal = async () => {
-    let data = await getClients(db);
-    dispatch(getClientsData(data));
+    dispatch(fetchClients());
     dispatch(openModal('clientModalState'))
 }
 

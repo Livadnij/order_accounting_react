@@ -47,7 +47,7 @@ const Layout = () => {
       <Box sx={{width: "90%"}}>
     <HeaderContainer>
       <HeaderBlock>
-      <h1>Company</h1>
+      <h1>Steklolux</h1>
       <h3 style={{textAlign: "right"}}>облік замовлень</h3>
       </HeaderBlock>
          </HeaderContainer>
