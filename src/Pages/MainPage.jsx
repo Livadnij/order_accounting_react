@@ -8,8 +8,8 @@ import OrderCreateModal from "../components/orderComp/OrderCreateModal";
 import CollapsibleTable from "../components/orderComp/OrderMainPageTable";
 import { ClientAddModal } from "../components/clientList/ClientAddModal";
 import getClients, { db, getOrders } from "../components/Firebase";
-import { saveOrders } from "../components/store/GloabalOrdersList";
-import { getClientsData } from "../components/toolkitSlice";
+import { fetchOrders, saveOrders } from "../components/store/GloabalOrdersList";
+import { fetchClients, getClientsData } from "../components/toolkitSlice";
 
 //проверка на вход в систему
 const MainPage = () => {
@@ -22,10 +22,12 @@ const onLogin = async () => {
     navigate("/login");
   } {
     console.log("bip")
-    let clientsData = await getClients(db);
-    let ordersData = await getOrders(db);
-      dispatch(saveOrders(ordersData))
-      dispatch(getClientsData(clientsData));
+    dispatch(fetchClients());
+    dispatch(fetchOrders());
+    // let clientsData = await getClients(db);
+    // let ordersData = await getOrders(db);
+    //   dispatch(saveOrders(ordersData))
+    //   dispatch(getClientsData(clientsData));
   }
 }
 

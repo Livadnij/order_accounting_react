@@ -25,7 +25,7 @@ const NestedClientsListModal = (state) => {
   const [searchInput, setSearchInput] = useState("");
   const dispatch = useDispatch();
   const clientsList = useSelector(
-    (state) => state.toolkit.clientsAllList.payload
+    (state) => state.toolkit.clientsAllList
   );
   const searchList = searchInput
     ? clientsList.filter((data) => data === searchInput)

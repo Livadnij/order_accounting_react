@@ -22,7 +22,7 @@ function Row(props) {
   console.log(row)
   const [open, setOpen] = React.useState(false);
   const clientsList = useSelector(
-    (state) => state.toolkit.clientsAllList.payload
+    (state) => state.toolkit.clientsAllList
   );
   const foundClient = clientsList.find(obj => obj.id === row.clID)
   console.log(clientsList, foundClient)
@@ -84,7 +84,8 @@ function Row(props) {
 }
 
 export default function CollapsibleTable() {
-  const orders = useSelector((state)=>state.globalOrders.orders)
+  const ordersData = useSelector((state)=>state.globalOrders.orders)
+  const orders = ordersData? ordersData : []
   console.log(orders)
 
   return (
@@ -95,7 +96,7 @@ export default function CollapsibleTable() {
           <TableRow>
             <TableCell />
             <TableCell>№</TableCell>
-            <TableCell align="right">Ім'я Клієнта</TableCell>
+            <TableCell align="right">Ім'я та Номер Телефону Клієнта</TableCell>
             <TableCell align="right">Дата Початку</TableCell>
             <TableCell align="right">Дата Завршення</TableCell>
             <TableCell align="right">Стан</TableCell>
