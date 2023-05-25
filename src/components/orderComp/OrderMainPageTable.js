@@ -14,7 +14,8 @@ import Paper from '@mui/material/Paper';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import SettingsIcon from '@mui/icons-material/Settings';
-import { orderModalEdit } from '../toolkitSlice';
+import { openModal, orderModalEdit } from '../toolkitSlice';
+import PrintIcon from '@mui/icons-material/Print';
 
 function Row(props) {
   const dispatch = useDispatch();
@@ -35,6 +36,13 @@ function Row(props) {
     
   console.log(deadline)
 
+  const dateConvert = (date) => {
+    const dateSplit = date.split(".")
+    const correctDate = `${dateSplit[1]}.${dateSplit[0]}.${dateSplit[2]}`
+    console.log(dateSplit, correctDate)
+    return correctDate
+  }
+
   return (
     <React.Fragment>
       <TableRow sx={{ '& > *': { borderBottom: 'unset' }, backgroundColor: rowColor }}>
@@ -49,8 +57,8 @@ function Row(props) {
         </TableCell>
         <TableCell component="th" scope="row"> {row.ordID}</TableCell>
         <TableCell align="right">{foundClient?foundClient.Name:""} {foundClient?foundClient.phoneNum:""}</TableCell>
-        <TableCell align="right">{row.dateStart}</TableCell>
-        <TableCell align="right">{row.dateFinish}</TableCell>
+        <TableCell align="right">{dateConvert(row.dateStart)}</TableCell>
+        <TableCell align="right">{dateConvert(row.dateFinish)}</TableCell>
         <TableCell align="right">{row.status}</TableCell>
         <TableCell align="right">{row.fullPrice}</TableCell>
         <TableCell align="right">{row.paid}</TableCell>
@@ -67,6 +75,13 @@ function Row(props) {
               {row.comments?row.comments:"Нема коментарів"}
               </Box>
               <Box sx={{display: "flex", alignItems: "flex-end"}}>
+                <IconButton
+                 size="small"
+                 variant="contained"
+                 onClick={()=>(dispatch(openModal({name: 'orderPrintModalState', value: row.ranID})))}
+                 >
+                  <PrintIcon/>
+                </IconButton>
               <IconButton
                size="small"
                variant="contained"

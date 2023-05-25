@@ -10,6 +10,7 @@ import { ClientAddModal } from "../components/clientList/ClientAddModal";
 import getClients, { db, getOrders } from "../components/Firebase";
 import { fetchOrders, saveOrders } from "../components/store/GloabalOrdersList";
 import { fetchClients, getClientsData } from "../components/toolkitSlice";
+import OrderPrintModal from "../components/orderComp/OrderPrintModal";
 
 //проверка на вход в систему
 const MainPage = () => {
@@ -41,6 +42,7 @@ const onLogin = async () => {
         <NestedClientsListModal />
         <ClientAddModal/>
         <OrderCreateModal/>
+        <OrderPrintModal/>
         <BasicSpeedDial />
       </Box>
       <Box sx={{zIndex: 2}}>
