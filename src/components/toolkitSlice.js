@@ -22,8 +22,10 @@ const toolkitSlice = createSlice({
         clientAddModalName: '',
         clientModalState: false,
         orderModalState: false,
+        orderPrintModalState: false,
         orderMaterialAdditionalState: false,
         orderMaterialAdditionalIndex: '',
+        orderPrintRanID: '',
         clientsAllList: [],
         orderMaterialDelete: false,
         tempOrderInfo: {
@@ -107,10 +109,14 @@ const toolkitSlice = createSlice({
             console.log (propName)
             initialState[propName.name] = !initialState[propName.name]
             initialState.orderMaterialAdditionalIndex = propName.index
+            } else if(typeof propName === 'object' && !Array.isArray(propName) && propName !== null && propName.name ==='orderPrintModalState'){
+            console.log (propName)
+            initialState[propName.name] = !initialState[propName.name]
+            initialState.orderMaterialAdditionalIndex = propName.index
             } else if (typeof propName === 'object' && !Array.isArray(propName) && propName !== null) {
                 console.log (propName)
                 initialState[propName.name] = !initialState[propName.name]
-                initialState.clientAddModalName = propName.value
+                initialState.orderPrintRanID = propName.value
         } else {
             console.log (propName)
             initialState[propName] = !initialState[propName] 
