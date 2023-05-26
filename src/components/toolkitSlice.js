@@ -25,7 +25,7 @@ const toolkitSlice = createSlice({
         orderPrintModalState: false,
         orderMaterialAdditionalState: false,
         orderMaterialAdditionalIndex: '',
-        orderPrintRanID: '',
+        orderPrintTable:"",
         clientsAllList: [],
         orderMaterialDelete: false,
         tempOrderInfo: {
@@ -116,7 +116,7 @@ const toolkitSlice = createSlice({
             } else if (typeof propName === 'object' && !Array.isArray(propName) && propName !== null) {
                 console.log (propName)
                 initialState[propName.name] = !initialState[propName.name]
-                initialState.orderPrintRanID = propName.value
+                initialState.orderPrint = propName.value
         } else {
             console.log (propName)
             initialState[propName] = !initialState[propName] 
@@ -183,6 +183,9 @@ const toolkitSlice = createSlice({
                 initialState.tempMaterialInfo = [];      
                 initialState.orderModalState = !initialState.orderModalState
         },
+        orderSaveTable(initialState, {payload:table}){
+            initialState.orderPrintTable = table
+        },
         },
         extraReducers: {
             [fetchClients.pending]: (initialState, action) => {
@@ -202,4 +205,4 @@ const toolkitSlice = createSlice({
 })
 
 export default toolkitSlice.reducer
-export const {orderDeleteMaterial, orderDeleteStatusUpdate, orderModalHandleClose, orderMaterialRemoveAddition, additionalWorkPush, openModal, orderMaterialAddNewObject, orderMaterialUpdate, orderStateUpdate, tempOrderSave, userLogined, uploadNewClient, getClientsData, uploadNewOrder, orderModalEdit, orderDelete, orderUpdate} = toolkitSlice.actions
+export const {orderDeleteMaterial, orderDeleteStatusUpdate, orderModalHandleClose, orderMaterialRemoveAddition, additionalWorkPush, openModal, orderMaterialAddNewObject, orderMaterialUpdate, orderStateUpdate, tempOrderSave, userLogined, uploadNewClient, getClientsData, uploadNewOrder, orderModalEdit, orderDelete, orderUpdate, orderSaveTable} = toolkitSlice.actions

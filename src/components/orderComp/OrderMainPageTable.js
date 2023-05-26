@@ -14,8 +14,9 @@ import Paper from '@mui/material/Paper';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import SettingsIcon from '@mui/icons-material/Settings';
-import { openModal, orderModalEdit } from '../toolkitSlice';
+import { openModal, orderModalEdit, orderSaveTable } from '../toolkitSlice';
 import PrintIcon from '@mui/icons-material/Print';
+import { OrderPrintTableGen } from './OrderPrintTableGen';
 
 function Row(props) {
   const dispatch = useDispatch();
@@ -41,6 +42,13 @@ function Row(props) {
     const correctDate = `${dateSplit[1]}.${dateSplit[0]}.${dateSplit[2]}`
     console.log(dateSplit, correctDate)
     return correctDate
+  }
+
+  const modalPrint = (row) => {
+    const table = OrderPrintTableGen(row, foundClient)
+    console.log(table)
+    dispatch(orderSaveTable(table));
+    dispatch(openModal('orderPrintModalState'));
   }
 
   return (
@@ -78,14 +86,14 @@ function Row(props) {
                 <IconButton
                  size="small"
                  variant="contained"
-                 onClick={()=>(dispatch(openModal({name: 'orderPrintModalState', value: row.ranID})))}
+                 onClick={()=>{modalPrint(row)}}
                  >
                   <PrintIcon/>
                 </IconButton>
               <IconButton
                size="small"
                variant="contained"
-               onClick={()=>(dispatch(orderModalEdit(row)))}
+               onClick={()=>{dispatch(orderModalEdit(row))}}
               >
                 <SettingsIcon/>
               </IconButton>
