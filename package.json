@@ -14,9 +14,7 @@
     "@testing-library/user-event": "^13.5.0",
     "dayjs": "^1.11.7",
     "firebase": "^9.19.1",
-    "jspdf": "^2.5.1",
     "nanoid": "^4.0.2",
-    "pdfobject": "^2.2.11",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-redux": "^8.0.5",
@@ -24,7 +22,8 @@
     "react-scripts": "5.0.1",
     "react-toastify": "^9.1.2",
     "styled-components": "^5.3.9",
-    "web-vitals": "^2.1.4"
+    "web-vitals": "^2.1.4",
+    "pdfmake": "^0.2.7"
   },
   "scripts": {
     "start": "react-scripts start",
