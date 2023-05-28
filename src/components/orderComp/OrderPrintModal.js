@@ -27,7 +27,14 @@ export default function OrderPrintModal() {
   };
 
 const dd = useSelector((state) => state.toolkit.orderPrintTable)
-console.log(dd)
+if(dd) {
+  dd.getDataUrl((data)=>{
+    if(data){
+      const currentElement = document.getElementById('testPdf')
+      if(currentElement) currentElement.src = data
+    }
+  })
+}
 
 
   return (
@@ -40,20 +47,10 @@ console.log(dd)
       >
         <Box sx={style}>
         <div style={{display: "flex", justifyContent: "center"}}>
-        <embed style={{width: "100%", height: "85vh"}} type='application/pdf' src={dd}/>
+        <embed id='testPdf' style={{width: "100%", height: "85vh"}} type='application/pdf'/>
         </div>
         </Box>
       </Modal>
     </div>
   );
 }
-
-  // useEffect(()=>{
-  //   const currentTarget = document.getElementById("testOne")
-  //   if (currentTarget){
-  //     console.log("1")
-  //     pdfMake.createPdf(docDefinition).getDataUrl((dataUrl)=>{
-  //       currentTarget.src = dataUrl
-  //     })
-  //   }
-  // })

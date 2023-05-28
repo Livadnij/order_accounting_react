@@ -73,6 +73,7 @@ export default function OrderMaterialAdditionalModal() {
             }}
           >
             <MenuItem value={1}>Свердлення</MenuItem>
+            <MenuItem value={10}>Виріз на Полотні</MenuItem>
             <MenuItem value={2}>Уф.Друк</MenuItem>
             <MenuItem value={3}>Фарбування</MenuItem>
             <MenuItem value={4}>Подвійне Фарбування</MenuItem>
@@ -91,11 +92,11 @@ export default function OrderMaterialAdditionalModal() {
             }}
           >
             <MenuItem value={1}>ø5</MenuItem>
-            <MenuItem value={2}>ø6</MenuItem>
-            <MenuItem value={3}>ø7</MenuItem>
-            <MenuItem value={4}>ø8</MenuItem>
-            <MenuItem value={5}>ø9</MenuItem>
-            <MenuItem value={6}>ø10</MenuItem>
+            <MenuItem value={6}>ø6</MenuItem>
+            <MenuItem value={7}>ø7</MenuItem>
+            <MenuItem value={8}>ø8</MenuItem>
+            <MenuItem value={9}>ø9</MenuItem>
+            <MenuItem value={10}>ø10</MenuItem>
           </Select>
           <Select
             sx={{ display: [work === 1 ? "" : "none"] }}

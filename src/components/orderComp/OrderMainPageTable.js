@@ -17,6 +17,7 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import { openModal, orderModalEdit, orderSaveTable } from '../toolkitSlice';
 import PrintIcon from '@mui/icons-material/Print';
 import { OrderPrintTableGen } from './OrderPrintTableGen';
+import { statusDecode } from '../WorkDecoding';
 
 function Row(props) {
   const dispatch = useDispatch();
@@ -30,8 +31,8 @@ function Row(props) {
   console.log(clientsList, foundClient)
   const deadline = new Date(row.dateFinish) - Date.now()
   const rowColor = () => {
-    if(deadline > 86400000 && row.status !== 8){ return ''} 
-    else if (row.status === 8){return 'LightGreen'} 
+    if(row.status === 8){ return 'LightGreen'} 
+    else if (deadline > 86400000 && row.status !== 8){return ''} 
     else if (deadline > 0 && row.status !== 8) {return 'LemonChiffon'} 
     else {return 'MistyRose'}}
     
@@ -39,7 +40,7 @@ function Row(props) {
 
   const dateConvert = (date) => {
     const dateSplit = date.split(".")
-    const correctDate = `${dateSplit[1]}.${dateSplit[0]}.${dateSplit[2]}`
+    const correctDate = `${dateSplit[1]}.0${dateSplit[0]}.${dateSplit[2]}`
     console.log(dateSplit, correctDate)
     return correctDate
   }
@@ -67,7 +68,7 @@ function Row(props) {
         <TableCell align="right">{foundClient?foundClient.Name:""} {foundClient?foundClient.phoneNum:""}</TableCell>
         <TableCell align="right">{dateConvert(row.dateStart)}</TableCell>
         <TableCell align="right">{dateConvert(row.dateFinish)}</TableCell>
-        <TableCell align="right">{row.status}</TableCell>
+        <TableCell align="right">{statusDecode[row.status-1].prop}</TableCell>
         <TableCell align="right">{row.fullPrice}</TableCell>
         <TableCell align="right">{row.paid}</TableCell>
         <TableCell align="right">{row.fullPrice - row.paid}</TableCell>
