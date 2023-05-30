@@ -91,7 +91,7 @@ export default function OrderMaterialAdditionalModal() {
               setValueOne(e.target.value);
             }}
           >
-            <MenuItem value={1}>ø5</MenuItem>
+            <MenuItem value={5}>ø5</MenuItem>
             <MenuItem value={6}>ø6</MenuItem>
             <MenuItem value={7}>ø7</MenuItem>
             <MenuItem value={8}>ø8</MenuItem>

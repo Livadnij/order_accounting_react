@@ -23,7 +23,6 @@ export default async function getClients(db) {
     const clientsCol = collection(db, 'clients');
     const clientsSnapshot = await getDocs(clientsCol);
     const clientsList = clientsSnapshot.docs.map(doc => doc.data());
-    console.log(clientsList)
     return clientsList
   };
 
@@ -31,6 +30,5 @@ export async function getOrders(db) {
     const ordersCol = collection(db, 'orders');
     const ordersSnapshot = await getDocs(ordersCol);
     const ordersList = ordersSnapshot.docs.map(doc => doc.data());
-    console.log(ordersList)
     return ordersList
   };

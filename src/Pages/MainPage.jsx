@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import NestedClientsListModal from "../components/clientList/ClientListModal";
-import { Box } from "@mui/material";
+import { Box, TextField } from "@mui/material";
 import BasicSpeedDial from "../components/SpeedDialCustom";
 import OrderCreateModal from "../components/orderComp/OrderCreateModal";
 import CollapsibleTable from "../components/orderComp/OrderMainPageTable";
@@ -10,32 +10,31 @@ import { ClientAddModal } from "../components/clientList/ClientAddModal";
 import { fetchOrders } from "../components/store/GloabalOrdersList";
 import { fetchClients } from "../components/toolkitSlice";
 import OrderPrintModal from "../components/orderComp/OrderPrintModal";
-
+import { useState } from "react";
+import { auth } from "../components/Firebase";
 
 //проверка на вход в систему
 const MainPage = () => {
+  const [searchValue, setSearchValue]= useState("")
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const loginedStatus = useSelector((state) => state.toolkit.logined.payload);
 
   const onLogin = async () => {
-    if (loginedStatus !== "signIn") {
-      navigate("/login");
-    }
-    {
-      console.log("bip");
-      dispatch(fetchClients());
-      dispatch(fetchOrders());
-      // let clientsData = await getClients(db);
-      // let ordersData = await getOrders(db);
-      //   dispatch(saveOrders(ordersData))
-      //   dispatch(getClientsData(clientsData));
-    }
+    const user = auth.onAuthStateChanged(function(user) {
+      console.log(user)
+      if (user) {
+        dispatch(fetchClients());
+        dispatch(fetchOrders());
+      } else {
+        navigate("/login");
+      }
+    });
   };
 
   useEffect(() => {
     onLogin();
-  }, [1]);
+  }, []);
 
   return (
     <div>
@@ -47,7 +46,17 @@ const MainPage = () => {
         <BasicSpeedDial />
       </Box>
       <Box sx={{ zIndex: 2 }}>
-        <CollapsibleTable />
+        <Box sx={{boxSizing: "border-box",p:1.25,backgroundColor:"white", width:"15%", mb:1.5, borderRadius:'4px'}}>
+        <TextField
+        value={searchValue}
+        fullWidth
+        variant="outlined"
+        size='small'
+        label="Пошук по номеру"
+        onChange={(e)=>{setSearchValue(e.target.value)}}
+        />
+        </Box>
+        <CollapsibleTable search={searchValue} />
       </Box>
     </div>
   );

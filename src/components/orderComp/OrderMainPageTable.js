@@ -1,60 +1,61 @@
-import * as React from 'react';
+import * as React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import Box from '@mui/material/Box';
-import Collapse from '@mui/material/Collapse';
-import IconButton from '@mui/material/IconButton';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import Typography from '@mui/material/Typography';
-import Paper from '@mui/material/Paper';
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
-import SettingsIcon from '@mui/icons-material/Settings';
-import { openModal, orderModalEdit, orderSaveTable } from '../toolkitSlice';
-import PrintIcon from '@mui/icons-material/Print';
-import { OrderPrintTableGen } from './OrderPrintTableGen';
-import { statusDecode } from '../WorkDecoding';
+import Box from "@mui/material/Box";
+import Collapse from "@mui/material/Collapse";
+import IconButton from "@mui/material/IconButton";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import Typography from "@mui/material/Typography";
+import Paper from "@mui/material/Paper";
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
+import SettingsIcon from "@mui/icons-material/Settings";
+import { openModal, orderModalEdit, orderSaveTable } from "../toolkitSlice";
+import PrintIcon from "@mui/icons-material/Print";
+import { OrderPrintTableGen } from "./OrderPrintTableGen";
+import { statusDecode } from "../WorkDecoding";
+import { useMemo } from "react";
 
 function Row(props) {
   const dispatch = useDispatch();
   const { row } = props;
-  console.log(row)
   const [open, setOpen] = React.useState(false);
-  const clientsList = useSelector(
-    (state) => state.toolkit.clientsAllList
-  );
-  const foundClient = clientsList.find(obj => obj.id === row.clID)
-  console.log(clientsList, foundClient)
-  const deadline = new Date(row.dateFinish) - Date.now()
+  const clientsList = useSelector((state) => state.toolkit.clientsAllList);
+  const foundClient = clientsList.find((obj) => obj.id === row.clID);
+  const deadline = new Date(row.dateFinish) - Date.now();
   const rowColor = () => {
-    if(row.status === 8){ return 'LightGreen'} 
-    else if (deadline > 86400000 && row.status !== 8){return ''} 
-    else if (deadline > 0 && row.status !== 8) {return 'LemonChiffon'} 
-    else {return 'MistyRose'}}
-    
-  console.log(deadline)
+    if (row.status === 8) {
+      return "LightGreen";
+    } else if (deadline > 86400000 && row.status !== 8) {
+      return "";
+    } else if (deadline > 0 && row.status !== 8) {
+      return "LemonChiffon";
+    } else {
+      return "MistyRose";
+    }
+  };
 
   const dateConvert = (date) => {
-    const dateSplit = date.split(".")
-    const correctDate = `${dateSplit[1]}.0${dateSplit[0]}.${dateSplit[2]}`
-    console.log(dateSplit, correctDate)
-    return correctDate
-  }
+    const dateSplit = date.split(".");
+    const correctDate = `${dateSplit[1]}.0${dateSplit[0]}.${dateSplit[2]}`;
+    return correctDate;
+  };
 
   const modalPrint = (row) => {
-    const table = OrderPrintTableGen(row, foundClient)
-    console.log(table)
+    const table = OrderPrintTableGen(row, foundClient);
     dispatch(orderSaveTable(table));
-    dispatch(openModal('orderPrintModalState'));
-  }
+    dispatch(openModal("orderPrintModalState"));
+  };
 
   return (
     <React.Fragment>
-      <TableRow sx={{ '& > *': { borderBottom: 'unset' }, backgroundColor: rowColor }}>
+      <TableRow
+        sx={{ "& > *": { borderBottom: "unset" }, backgroundColor: rowColor }}
+      >
         <TableCell>
           <IconButton
             aria-label="expand row"
@@ -64,40 +65,57 @@ function Row(props) {
             {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
           </IconButton>
         </TableCell>
-        <TableCell component="th" scope="row"> {row.ordID}</TableCell>
-        <TableCell align="right">{foundClient?foundClient.Name:""} {foundClient?foundClient.phoneNum:""}</TableCell>
+        <TableCell component="th" scope="row">
+          {" "}
+          {row.ordID}
+        </TableCell>
+        <TableCell align="right">
+          {foundClient ? foundClient.Name : ""}{" "}
+          {foundClient ? foundClient.phoneNum : ""}
+        </TableCell>
         <TableCell align="right">{dateConvert(row.dateStart)}</TableCell>
         <TableCell align="right">{dateConvert(row.dateFinish)}</TableCell>
-        <TableCell align="right">{statusDecode[row.status-1].prop}</TableCell>
+        <TableCell align="right">{statusDecode[row.status - 1].prop}</TableCell>
         <TableCell align="right">{row.fullPrice}</TableCell>
         <TableCell align="right">{row.paid}</TableCell>
         <TableCell align="right">{row.fullPrice - row.paid}</TableCell>
       </TableRow>
-      <TableRow >
+      <TableRow>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={12}>
           <Collapse in={open} timeout="auto" unmountOnExit>
-            <Box sx={{width:"100%", margin: 1, display: "flex", justifyContent: "space-between" }}>
+            <Box
+              sx={{
+                width: "100%",
+                margin: 1,
+                display: "flex",
+                justifyContent: "space-between",
+              }}
+            >
               <Box>
-              <Typography variant="h6" gutterBottom component="div">
-                Коментарі
-              </Typography>
-              {row.comments?row.comments:"Нема коментарів"}
+                <Typography variant="h6" gutterBottom component="div">
+                  Коментарі
+                </Typography>
+                {row.comments ? row.comments : "Нема коментарів"}
               </Box>
-              <Box sx={{display: "flex", alignItems: "flex-end"}}>
+              <Box sx={{ display: "flex", alignItems: "flex-end" }}>
                 <IconButton
-                 size="small"
-                 variant="contained"
-                 onClick={()=>{modalPrint(row)}}
-                 >
-                  <PrintIcon/>
+                  size="small"
+                  variant="contained"
+                  onClick={() => {
+                    modalPrint(row);
+                  }}
+                >
+                  <PrintIcon />
                 </IconButton>
-              <IconButton
-               size="small"
-               variant="contained"
-               onClick={()=>{dispatch(orderModalEdit(row))}}
-              >
-                <SettingsIcon/>
-              </IconButton>
+                <IconButton
+                  size="small"
+                  variant="contained"
+                  onClick={() => {
+                    dispatch(orderModalEdit(row));
+                  }}
+                >
+                  <SettingsIcon />
+                </IconButton>
               </Box>
             </Box>
           </Collapse>
@@ -107,15 +125,19 @@ function Row(props) {
   );
 }
 
-export default function CollapsibleTable() {
-  const ordersData = useSelector((state)=>state.globalOrders.orders)
-  const orders = ordersData? ordersData : []
-  console.log(orders)
+export default function CollapsibleTable({ search }) {
+  const ordersData = useSelector((state) => state.globalOrders.orders);
+  const orders = ordersData ? ordersData : [];
+  const totalOrders = useMemo(() => {
+    if (search) {
+      return orders.filter((obj) => obj.ordID.includes(search));
+    }
+    return orders;
+  }, [search]);
 
   return (
     <TableContainer component={Paper}>
-      <Table aria-label="collapsible table"
-      size="small">
+      <Table aria-label="collapsible table" size="small">
         <TableHead>
           <TableRow>
             <TableCell />
@@ -130,9 +152,7 @@ export default function CollapsibleTable() {
           </TableRow>
         </TableHead>
         <TableBody>
-          {orders.map((row, index) => (
-            <Row key={row.ordID} row={row} />
-          ))}
+          { totalOrders.map((row, index) => <Row key={row.ordID} row={row} />)}
         </TableBody>
       </Table>
     </TableContainer>

@@ -6,7 +6,6 @@ import { nanoid } from "nanoid";
 export const fetchClients = createAsyncThunk(
     'toolkit/fetchClients',
     async function () {
-        console.log('must work')
         const data = await getClients(db);
         return data
     },
@@ -48,14 +47,12 @@ const toolkitSlice = createSlice({
     },
     reducers : {
         getClientsData(initialState, data) {
-            console.log(data)
             initialState.clientsAllList = data
         },
         orderDeleteStatusUpdate(initialState){
             initialState.orderMaterialDelete = !initialState.orderMaterialDelete
         },
         orderDeleteMaterial (initialState, {payload:index}) {
-            console.log(index)
             initialState.tempMaterialInfo.splice(index, 1)
         },
         uploadNewClient(initialState, data){
@@ -93,8 +90,6 @@ const toolkitSlice = createSlice({
             initialState.orderModalState = !initialState.orderModalState
         },
         additionalWorkPush(initialState, {payload:data}) {
-            console.log(data)
-            console.log(initialState.tempMaterialInfo[initialState.orderMaterialAdditionalIndex].drilling)
             if(data.work === 1) {
                 initialState.tempMaterialInfo[initialState.orderMaterialAdditionalIndex].drilling.push(data)
             } else {
@@ -106,19 +101,15 @@ const toolkitSlice = createSlice({
         },
         openModal(initialState, {payload:propName}){
             if(typeof propName === 'object' && !Array.isArray(propName) && propName !== null && propName.name ==='orderMaterialAdditionalState'){
-            console.log (propName)
             initialState[propName.name] = !initialState[propName.name]
             initialState.orderMaterialAdditionalIndex = propName.index
             } else if(typeof propName === 'object' && !Array.isArray(propName) && propName !== null && propName.name ==='orderPrintModalState'){
-            console.log (propName)
             initialState[propName.name] = !initialState[propName.name]
             initialState.orderMaterialAdditionalIndex = propName.index
             } else if (typeof propName === 'object' && !Array.isArray(propName) && propName !== null) {
-                console.log (propName)
                 initialState[propName.name] = !initialState[propName.name]
                 initialState.orderPrint = propName.value
         } else {
-            console.log (propName)
             initialState[propName] = !initialState[propName] 
         }
         },
@@ -126,15 +117,12 @@ const toolkitSlice = createSlice({
             initialState.tempOrderInfo = data;
         },
         orderStateUpdate(initialState, {payload:data}) {
-            console.log(data)
             initialState.tempOrderInfo[data.propName] = data.value;
         },
         orderMaterialUpdate(initialState, {payload:data}) {
-            console.log(data)
             initialState.tempMaterialInfo[data.index][data.propName] = data.value;
         },
         orderMaterialAddNewObject(initialState) {
-            console.log('object added')
             const body = { num: initialState.tempMaterialInfo[initialState.tempMaterialInfo.length - 1] ? initialState.tempMaterialInfo[initialState.tempMaterialInfo.length - 1].num + 1 : 1, count: '', material: '', thickness: '', width: '', height: '', edge: '', drilling: [], painting: [] }
             initialState.tempMaterialInfo.push(body)
         },
@@ -142,8 +130,6 @@ const toolkitSlice = createSlice({
             const rowIndex= data.rowIndex
             const propName= data.propName
             const index = data.index
-            console.log(rowIndex, propName, index)
-            console.log(initialState.tempMaterialInfo[rowIndex][propName])
             initialState.tempMaterialInfo[rowIndex][propName].splice(index, 1)
         },
         orderModalHandleClose(initialState) {
@@ -151,7 +137,6 @@ const toolkitSlice = createSlice({
             initialState.tempMaterialInfo = [];            
         },
         orderModalEdit(initialState, {payload:order}){
-            console.log(order)
             initialState.tempOrderInfo = order
             initialState.tempMaterialInfo = order.material
             initialState.orderModalState = !initialState.orderModalState
@@ -199,7 +184,7 @@ const toolkitSlice = createSlice({
               },
               [fetchClients.rejected]: (initialState, action) => {
                 initialState.err = 'error';
-                console.log('holidays fetch error');
+                console.log('client fetch error');
               },
     }
 })
