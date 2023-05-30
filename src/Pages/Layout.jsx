@@ -3,7 +3,9 @@ import { NavLink, Outlet } from "react-router-dom";
 import styled from "styled-components";
 import illustration45 from "../components/img/illustration45.svg"
 import illustration59 from "../components/img/illustration59.svg"
-import { Box } from '@mui/material'
+import { Box, Button } from '@mui/material'
+import { signOut } from "firebase/auth";
+import { auth } from "../components/Firebase";
 
 const MainContainer = styled.div`
   background: #1E1E1E;
@@ -58,13 +60,16 @@ const Layout = () => {
       </main>
       <FooterContainer>
         <FooterColumn>
-          <NavLink style={{zIndex: 1, color:"white"}} to="/">MainPage</NavLink>
-          </FooterColumn>
-        <FooterColumn>
-          <NavLink style={{zIndex: 1, color:"white"}} to="/login">Log out</NavLink>
-          </FooterColumn>
-        <FooterColumn>
-          <NavLink style={{zIndex: 1, color:"white"}} to="/signup">SignUp</NavLink>
+          <Box
+          sx={{backgroundColor:"white",zIndex: 1, borderRadius:"4px"}}
+          >
+          <Button
+          size="small"
+          variant="outlined"
+          style={{zIndex: 1}}
+          onClick={()=>{signOut(auth)}}
+          >Вийти</Button>
+          </Box>
           </FooterColumn>
       </FooterContainer>
       </Box>
