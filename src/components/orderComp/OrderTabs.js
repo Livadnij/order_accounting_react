@@ -20,7 +20,7 @@ function TabPanel(props) {
     >
       {value === index && (
         <Box sx={{ padding: "5px 0 5px 0", maxWidth: "auto" }}>
-          <Typography>{children}</Typography>
+          <Typography component={'span'}>{children}</Typography>
         </Box>
       )}
     </div>
@@ -61,8 +61,8 @@ export default function OrderTabs() {
       >
         <Tab label="Замовлення" {...a11yProps(0)} />
         <Tab label="Матеріал" {...a11yProps(1)} />
-        <Tab label="Фурнітура" {...a11yProps(2)} />
-        <Tab sx={{bgcolor:"charcoal"}} label="Прорахунок" {...a11yProps(3)} />
+        <Tab disabled label="Фурнітура" />
+        <Tab disabled sx={{bgcolor:"charcoal"}} label="Прорахунок" />
       </Tabs>
       <TabPanel value={value} index={0}>
         <OrderInfoTab/>
@@ -71,7 +71,7 @@ export default function OrderTabs() {
         <OrderMaterialTab/>
       </TabPanel>
       <TabPanel value={value} index={2}>
-        Item Three
+        TO BE IMPLEMENTED
       </TabPanel>
       <TabPanel value={value} index={3}>
         TO BE IMPLEMENTED

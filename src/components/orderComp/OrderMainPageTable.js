@@ -127,13 +127,13 @@ function Row(props) {
 
 export default function CollapsibleTable({ search }) {
   const ordersData = useSelector((state) => state.globalOrders.orders);
-  const orders = ordersData ? ordersData : [];
+  // const orders = ordersData ? ordersData : [];
   const totalOrders = useMemo(() => {
     if (search) {
-      return orders.filter((obj) => obj.ordID.includes(search));
+      return ordersData.filter((obj) => obj.ordID.includes(search));
     }
-    return orders;
-  }, [search]);
+    return ordersData;
+  }, [search, ordersData]);
 
   return (
     <TableContainer component={Paper}>
@@ -152,7 +152,7 @@ export default function CollapsibleTable({ search }) {
           </TableRow>
         </TableHead>
         <TableBody>
-          { totalOrders.map((row, index) => <Row key={row.ordID} row={row} />)}
+          { totalOrders.length ? totalOrders.map((row, index) => <Row key={index} row={row} />) : null}
         </TableBody>
       </Table>
     </TableContainer>

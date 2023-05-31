@@ -28,11 +28,11 @@ export const OrderPrintTableGen = (row, foundClient) => {
                 } else if (painting.work === 4 ) {
                     additionalCell.push( {text:`${workDecode[painting.work-1].prop} ${painting.valueOne} ${painting.valueTwo}`, fontSize: 10})
                 } else if (painting.work === 5 ) {
-                    console.log([painting.work-1])
                     additionalCell.push({text:`${workDecode[painting.work-1].prop} ${sandblastingDecode[painting.valueOne-1].prop}`, fontSize: 10})
                 } else if (painting.work === 6) {
                 } else {
                     additionalCell.push({text:`${workDecode[painting.work-1].prop}`, fontSize: 10})}
+                    return (painting.work)
         })
             
             return (
@@ -41,7 +41,6 @@ export const OrderPrintTableGen = (row, foundClient) => {
       }
 
       const temperingSearch = (row) => {
-        console.log(row, '1')
         const tempering = row.painting.find(obj => obj.work ===  6)
         return(tempering?{text:"Так", fontSize: 10}:{text:"Ні", fontSize: 10})
       }

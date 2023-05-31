@@ -19,7 +19,6 @@ for(let i=0; i<=rows[rowIndex][propName].length-1; i++) {
         data.push([
             `ø ${rows[rowIndex][propName][i].valueOne}-${rows[rowIndex][propName][i].valueTwo} од.`
         ])} else if (rows[rowIndex][propName][i].work === 3 ) {
-            console.log(`${workDecode[rows[rowIndex][propName][i].work -1].prop}`)
             data.push([
                 `${workDecode[rows[rowIndex][propName][i].work -1].prop} ${rows[rowIndex][propName][i].valueOne}`
         ])} else if (rows[rowIndex][propName][i].work === 4 ) {
@@ -29,11 +28,9 @@ for(let i=0; i<=rows[rowIndex][propName].length-1; i++) {
             data.push([
                 `${workDecode[rows[rowIndex][propName][i].work -1].prop} ${sandblastingDecode[rows[rowIndex][propName][i].valueOne -1].prop}`
         ])} else {
-            console.log(`${workDecode[rows[rowIndex][propName][i].work -1].prop}`)
             data.push([
                 `${workDecode[rows[rowIndex][propName][i].work -1].prop}`
             ])}
-console.log(data) 
 }
 
   return (

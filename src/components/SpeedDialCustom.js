@@ -3,12 +3,11 @@ import Box from '@mui/material/Box';
 import SpeedDial from '@mui/material/SpeedDial';
 import SpeedDialIcon from '@mui/material/SpeedDialIcon';
 import SpeedDialAction from '@mui/material/SpeedDialAction';
-import PrintIcon from '@mui/icons-material/Print';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
-import { fetchClients, getClientsData, openModal } from './toolkitSlice';
+import { fetchClients, openModal } from './toolkitSlice';
 import { useDispatch } from 'react-redux';
 import LibraryAddIcon from '@mui/icons-material/LibraryAdd';
-import { fetchOrders, saveOrders } from './store/GloabalOrdersList';
+import { fetchOrders } from './store/GloabalOrdersList';
 import RefreshIcon from '@mui/icons-material/Refresh';
 
 
@@ -29,14 +28,14 @@ const updateDB = () => {
   dispatch(fetchClients());
   dispatch(fetchOrders());
 }
-const noneTest = () => {
-    console.log(`none`)
-}
+// const noneTest = () => {
+//     console.log(`none`)
+// }
 
 const actions = [
   { icon: <PersonAddIcon />, name: 'додати клієнта', onClick: openUserModal },
   { icon: <LibraryAddIcon />, name: 'додати замовлення', onClick: openOrderModal},
-  { icon: <PrintIcon />, name: 'Print', onClick: noneTest},
+  // { icon: <PrintIcon />, name: 'Print', onClick: noneTest},
   { icon: <RefreshIcon />, name: 'оновити базу', onClick: updateDB},
 ];
 

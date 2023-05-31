@@ -16,7 +16,6 @@ const toolkitSlice = createSlice({
     initialState: {
         err: "",
         isLoading: "",
-        logined: "",
         clientAddModalState: false,
         clientAddModalName: '',
         clientModalState: false,
