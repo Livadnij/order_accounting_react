@@ -18,11 +18,9 @@ const MainPage = () => {
   const [searchValue, setSearchValue]= useState("")
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const loginedStatus = useSelector((state) => state.toolkit.logined.payload);
 
   const onLogin = async () => {
     const user = auth.onAuthStateChanged(function(user) {
-      console.log(user)
       if (user) {
         dispatch(fetchClients());
         dispatch(fetchOrders());

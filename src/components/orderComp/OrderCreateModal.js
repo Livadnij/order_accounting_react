@@ -25,7 +25,6 @@ const style = {
 export default function OrderCreateModal() {
     const tempOrdSave = useSelector((state) => state.toolkit.tempOrderInfo);
     const editCheck = !tempOrdSave.ranID? 'none' : ''
-    console.log(editCheck)
     const dispatch = useDispatch();
     const handleClose = () => {
       dispatch(orderModalHandleClose())

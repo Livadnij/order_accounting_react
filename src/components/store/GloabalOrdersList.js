@@ -4,7 +4,6 @@ import { db, getOrders } from "../Firebase";
 export const fetchOrders = createAsyncThunk(
     'toolkit/fetchOrders',
     async function () {
-        console.log('must work')
         const data = await getOrders(db);
         return data
     },
@@ -19,7 +18,6 @@ const GlobalOrderList = createSlice({
     },
     reducers : {
         saveOrders(initialState, {payload:data}) {
-            console.log(data)
             initialState.orders = data
         },
     },
@@ -36,7 +34,7 @@ const GlobalOrderList = createSlice({
           [fetchOrders.rejected]: (initialState, action) => {
             initialState.status = 'error';
             initialState.err = 'error';
-            console.log('holidays fetch error');
+            console.log('order fetch error');
           },
     }
 })

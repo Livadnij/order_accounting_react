@@ -67,19 +67,18 @@ const NestedClientsListModal = (state) => {
             sx={{ overflowY: "scroll", overflowX: "hidden", maxHeight: "60vh" }}
           >
             {searchList &&
-              searchList.map((data) => (
-                <Box>
+              searchList.map((data, index) => (
+                <Box key={index}>
                   <Grid
                     container
                     sx={{
-                      display: "flex",
                       justifyContent: "space-between",
                       height: "30px",
                     }}
-                    key={data.id}
                   >
-                    <Grid xs={0.01}></Grid>
+                    <Grid xs={0.01} item={true}></Grid>
                     <Grid
+                    item={true}
                       xs={4}
                       sx={{
                         alignSelf: "center",
@@ -89,13 +88,13 @@ const NestedClientsListModal = (state) => {
                     >
                       {data.Name}
                     </Grid>
-                    <Grid xs={4} sx={{ alignSelf: "center" }}>
+                    <Grid item={true} xs={4} sx={{ alignSelf: "center" }}>
                       {data.phoneNum}
                     </Grid>
-                    <Grid xs={2} sx={{ textAlign: "right" }}>
+                    <Grid item={true} xs={2} sx={{ textAlign: "right" }}>
                       {data.discount.toString()}
                     </Grid>
-                    <Grid xs={0.01}></Grid>
+                    <Grid item={true} xs={0.01}></Grid>
                   </Grid>
                 </Box>
               ))}

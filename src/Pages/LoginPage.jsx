@@ -32,7 +32,6 @@ const LoginPage = () => {
   const dispatch = useDispatch();
   const notify = (e) => toast(e);
   const navigate = useNavigate();
-  const loginedStatus = useSelector((state) => state.toolkit.logined.payload);
   const rediredtToMainPage = async (data) => {
     if (data.operationType === "signIn") {
       await dispatch(userLogined(data.operationType));
@@ -42,14 +41,6 @@ const LoginPage = () => {
       return null;
     }
   };
-  const checkIfLogined = () => {
-    if (loginedStatus === "signIn") {
-      console.log(loginedStatus, "redirecting to a main page")
-      navigate("/");
-    };
-  };
-
-  useEffect(checkIfLogined);
 
   return (
     <div style={{display:"flex", justifyContent:"center",width: "100%"}}>

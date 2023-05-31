@@ -11,7 +11,6 @@ const OrderClientSelectorComp = () => {
   const clientsList = useSelector((state) => state.toolkit.clientsAllList);
   const clientsID = useSelector((state) => state.toolkit.tempOrderInfo.clID);
   const foundClient = clientsID ? clientsList.find(obj => obj.id === clientsID): {};
-  console.log(clientsList, clientsID, foundClient)
 
   const openUserModal = async () => {
     dispatch(fetchClients());
@@ -20,7 +19,6 @@ const OrderClientSelectorComp = () => {
 
 const updateStatus = (propName, value) => {
   if (propName === 'dateStart' || propName=== 'dateFinish') {
-    console.log(propName,value.toString())
     const data = { propName, value: value.toString() };
     dispatch(orderStateUpdate(data));
   } else {
@@ -30,7 +28,7 @@ const updateStatus = (propName, value) => {
 };
 
 
-const [value, setValue] = React.useState(null);
+// const [value, setValue] = React.useState(null);
 
   return (
     <Box
@@ -47,23 +45,20 @@ const [value, setValue] = React.useState(null);
       <Autocomplete
       value={foundClient.Name?foundClient.Name:""}
       onChange={(event, newValue) => {
-        console.log(newValue)
         if (newValue && newValue.id) {
-          console.log(newValue, '1', event)
           dispatch(orderStateUpdate({propName: "clID", value: newValue.id}))
         }
         if (newValue === null) {
           dispatch(orderStateUpdate({propName: "clID", value: ""}))
         }
         if (typeof newValue === 'string') {
-          setValue({
-            Name: newValue,
-          });
+          // setValue({
+          //   Name: newValue,
+          // });
         } else if (newValue && newValue.inputValue) {
-          // Create a new value from the user input
           dispatch(openModal({name: 'clientAddModalState', value: newValue.inputValue}))
         } else {
-          setValue(newValue);
+          // setValue(newValue);
         }
       }}
       // options - list of options, params - value from input field

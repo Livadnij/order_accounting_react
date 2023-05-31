@@ -20,7 +20,6 @@ const OrderInfoTab = () => {
 
   const updateStatus = (propName, value) => {
     if (propName === 'dateStart' || propName=== 'dateFinish') {
-      console.log(value)
       const date = `${value.$M + 1}.${value.$D}.${value.$y}`
       const data = { propName, value: date };
       dispatch(orderStateUpdate(data));
@@ -33,10 +32,6 @@ const OrderInfoTab = () => {
   const lastOrderNum = useSelector((state) => state.globalOrders.orders).reduce((prevObj, currObj) => {
     return prevObj.ordID > currObj.ordID ? prevObj : currObj;
   });
-
-  console.log(lastOrderNum)
-  
-  
 
   return (
     <div>
