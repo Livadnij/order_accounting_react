@@ -4,12 +4,15 @@ import SpeedDial from '@mui/material/SpeedDial';
 import SpeedDialIcon from '@mui/material/SpeedDialIcon';
 import SpeedDialAction from '@mui/material/SpeedDialAction';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
-import { fetchClients, openModal } from './toolkitSlice';
+import { fetchClients, handleExitClients, openModal } from './toolkitSlice';
 import { useDispatch } from 'react-redux';
 import LibraryAddIcon from '@mui/icons-material/LibraryAdd';
-import { fetchOrders } from './store/GloabalOrdersList';
+import { fetchOrders, handleExitOrders } from './store/GloabalOrdersList';
 import RefreshIcon from '@mui/icons-material/Refresh';
-
+import ExitToAppIcon from '@mui/icons-material/ExitToApp';
+import { signOut } from 'firebase/auth';
+import { auth } from './Firebase';
+import SearchIcon from '@mui/icons-material/Search';
 
 
 export default function BasicSpeedDial() {
@@ -25,18 +28,26 @@ const openOrderModal = async () => {
     dispatch(openModal('orderModalState'))
 }
 const updateDB = () => {
+  dispatch(handleExitOrders())
   dispatch(fetchClients());
   dispatch(fetchOrders());
 }
-// const noneTest = () => {
-//     console.log(`none`)
-// }
+const handleExit = () => {
+  signOut(auth); 
+  dispatch(handleExitClients()); 
+  dispatch(handleExitOrders())
+}
+
+const openSearch = () => {
+  dispatch(openModal('orderMainPageSearch'))
+}
 
 const actions = [
-  { icon: <PersonAddIcon />, name: 'додати клієнта', onClick: openUserModal },
-  { icon: <LibraryAddIcon />, name: 'додати замовлення', onClick: openOrderModal},
-  // { icon: <PrintIcon />, name: 'Print', onClick: noneTest},
-  { icon: <RefreshIcon />, name: 'оновити базу', onClick: updateDB},
+  { icon: <PersonAddIcon />, name: 'Список Клієнтів', onClick: openUserModal },
+  { icon: <LibraryAddIcon />, name: 'Додати замовлення', onClick: openOrderModal},
+  { icon: <RefreshIcon />, name: 'Оновити базу', onClick: updateDB},
+  { icon: <SearchIcon />, name: 'Пошук', onClick: openSearch},
+  { icon: <ExitToAppIcon />, name: 'Вийти', onClick: handleExit},
 ];
 
   return (

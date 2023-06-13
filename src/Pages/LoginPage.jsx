@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Button from "@mui/material/Button";
-import { useDispatch, useSelector } from "react-redux";
-import { auth, user } from "../components/Firebase";
+import { useDispatch } from "react-redux";
+import { auth } from "../components/Firebase";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { ToastContainer, toast } from "react-toastify";
 import { NavLink, useNavigate } from "react-router-dom";
@@ -91,9 +91,9 @@ const LoginPage = () => {
             notify(error.message);
           }
         }}
-      > Log in </Button>
-      <p style={{marginTop: "20px"}}>якщо в вас нема облікового запису :</p>
-      <NavLink to={"/signup"} style={{color: "blue", display: "block", alignContent:"end"}}> зареєструйтеся </NavLink>
+      > Увійти </Button>
+      <p style={{marginTop: "20px"}}>Якщо в вас нема облікового запису :</p>
+      <NavLink to={"/signup"} style={{color: "blue", display: "block", alignContent:"end"}}> Зареєструватия </NavLink>
       </div>
       </LoginBlock>
       <ToastContainer />
