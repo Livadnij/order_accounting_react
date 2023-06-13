@@ -19,6 +19,15 @@ import PrintIcon from "@mui/icons-material/Print";
 import { OrderPrintTableGen } from "./OrderPrintTableGen";
 import { statusDecode } from "../WorkDecoding";
 import { useMemo } from "react";
+import { useState } from "react";
+import pdfMake from "pdfmake/build/pdfmake";
+import moment from "moment";
+import dayjs from "dayjs";
+import "dayjs/locale/uk"
+import LocalShippingIcon from '@mui/icons-material/LocalShipping';
+import HardwareIcon from '@mui/icons-material/Hardware';
+import CloseIcon from '@mui/icons-material/Close';
+import { Tooltip } from "@mui/material";
 
 function Row(props) {
   const dispatch = useDispatch();
@@ -39,16 +48,42 @@ function Row(props) {
     }
   };
 
+  const deliveryIcon = () => {
+    if(row.delivery && row.installation){
+      return  <Box sx={{display: "flex", justifyContent: "end"}}><LocalShippingIcon/> <HardwareIcon/></Box>
+    } else if ( row.delivery ) {
+      return <LocalShippingIcon/>
+    } else if ( row.installation ) {
+      return <HardwareIcon/>
+    } else { 
+      return <CloseIcon/> 
+    }
+  }
+
   const dateConvert = (date) => {
-    const dateSplit = date.split(".");
-    const correctDate = `${dateSplit[1]}.0${dateSplit[0]}.${dateSplit[2]}`;
+    require('dayjs/locale/uk')
+    const dateNew = moment(Number(date))
+    // "DD.MM.YYYY"
+    const correctDate = dayjs(dateNew).locale('uk').format( "dd DD MMM YYYY");
     return correctDate;
   };
 
+  const isPaid = () => {
+    if(row.fullPrice&& row.paid&&row.fullPrice - row.paid === 0){
+      return "Сплачено"
+    } else if(row.fullPaid) {
+      return "Сплачено"
+    } else if (row.fullPrice&& row.paid) { return (row.fullPrice - row.paid)} else {return ""}
+  }
+
   const modalPrint = (row) => {
     const table = OrderPrintTableGen(row, foundClient);
-    dispatch(orderSaveTable(table));
-    dispatch(openModal("orderPrintModalState"));
+    pdfMake.createPdf(table).getDataUrl((data)=>{
+      if (data) {
+        dispatch(orderSaveTable(data));
+        dispatch(openModal("orderPrintModalState"));
+      }
+    })
   };
 
   return (
@@ -70,15 +105,18 @@ function Row(props) {
           {row.ordID}
         </TableCell>
         <TableCell align="right">
-          {foundClient ? foundClient.Name : ""}{" "}
-          {foundClient ? foundClient.phoneNum : ""}
+          {foundClient ? foundClient.Name : "Клієнта не знайдено."}
+        </TableCell>
+        <TableCell align="right">
+          {`+380 ${foundClient ? foundClient.phoneNum : ""}`}
         </TableCell>
         <TableCell align="right">{dateConvert(row.dateStart)}</TableCell>
         <TableCell align="right">{dateConvert(row.dateFinish)}</TableCell>
         <TableCell align="right">{statusDecode[row.status - 1].prop}</TableCell>
         <TableCell align="right">{row.fullPrice}</TableCell>
         <TableCell align="right">{row.paid}</TableCell>
-        <TableCell align="right">{row.fullPrice - row.paid}</TableCell>
+        <TableCell align="right">{isPaid()}</TableCell>
+        <TableCell align="right">{deliveryIcon()}</TableCell>
       </TableRow>
       <TableRow>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={12}>
@@ -95,10 +133,19 @@ function Row(props) {
                 <Typography variant="h6" gutterBottom component="div">
                   Коментарі
                 </Typography>
-                {row.comments ? row.comments : "Нема коментарів"}
+                {row.comments ? row.comments : "Немає коментарів"}
+              </Box>
+              <Box>
+              <Typography variant="h6" gutterBottom component="div">
+                  Доставка
+                </Typography>
+                {row.delivery ? row.adress : "Немає доставки"}
               </Box>
               <Box sx={{ display: "flex", alignItems: "flex-end" }}>
+              <Tooltip title={row.material.length? 'Друк' : 'Додайте Матеріал'}>
+                <span>
                 <IconButton
+                disabled = {row.material.length? false : true}
                   size="small"
                   variant="contained"
                   onClick={() => {
@@ -107,6 +154,9 @@ function Row(props) {
                 >
                   <PrintIcon />
                 </IconButton>
+                </span>
+                </Tooltip>
+                <Tooltip title="Редагувати">
                 <IconButton
                   size="small"
                   variant="contained"
@@ -116,6 +166,7 @@ function Row(props) {
                 >
                   <SettingsIcon />
                 </IconButton>
+                </Tooltip>
               </Box>
             </Box>
           </Collapse>
@@ -126,34 +177,49 @@ function Row(props) {
 }
 
 export default function CollapsibleTable({ search }) {
-  const ordersData = useSelector((state) => state.globalOrders.orders);
-  // const orders = ordersData ? ordersData : [];
+  const getOrdData = useSelector((state) => state.globalOrders.orders)
+  const [plugValue, setPlugValue]=useState('')
+
   const totalOrders = useMemo(() => {
+    const test = [...getOrdData]
+    const ordersData = test.sort((a,b) => (Number(a.ordID) > Number(b.ordID)) ? 1 : ((Number(b.ordID) > Number(a.ordID)) ? -1 : 0))
+    if(!getOrdData.length){setPlugValue('noOrders')} else if (ordersData&&!ordersData.filter((obj) => obj.ordID.includes(search)).length) {setPlugValue('notFound')}else{setPlugValue('')}
     if (search) {
       return ordersData.filter((obj) => obj.ordID.includes(search));
     }
-    return ordersData;
-  }, [search, ordersData]);
+    return ordersData
+  }, [search, getOrdData]);
+
+  const emplyPlug = () => {
+    if(plugValue === "notFound"){
+      return <caption> Не було знайдено підходящих замовлень. Спробуйте шукати за номером замовлення. </caption>
+    } else if (plugValue === "noOrders"){
+      return <caption> Додайте перше замовлення, щоб це повідомлення зникло. </caption>
+    }
+  }
 
   return (
-    <TableContainer component={Paper}>
-      <Table aria-label="collapsible table" size="small">
+    <TableContainer component={Paper} sx={{maxHeight: "85vh"}}>
+      <Table stickyHeader aria-label="collapsible table" size="small">
         <TableHead>
           <TableRow>
             <TableCell />
             <TableCell>№</TableCell>
-            <TableCell align="right">Ім'я та Номер Телефону Клієнта</TableCell>
+            <TableCell align="right">Ім'я Клієнта</TableCell>
+            <TableCell align="right">Номер Телефону</TableCell>
             <TableCell align="right">Дата Початку</TableCell>
             <TableCell align="right">Дата Завршення</TableCell>
             <TableCell align="right">Стан</TableCell>
-            <TableCell align="right">Варість</TableCell>
+            <TableCell align="right">Вар-ть</TableCell>
             <TableCell align="right">Передплата</TableCell>
             <TableCell align="right">Залишок</TableCell>
+            <TableCell align="right">Монтаж</TableCell>
           </TableRow>
         </TableHead>
-        <TableBody>
+        <TableBody >
           { totalOrders.length ? totalOrders.map((row, index) => <Row key={index} row={row} />) : null}
         </TableBody>
+        {emplyPlug()}
       </Table>
     </TableContainer>
   );

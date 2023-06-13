@@ -26,16 +26,7 @@ export default function OrderPrintModal() {
     dispatch(openModal("orderPrintModalState"));
   };
 
-const dd = useSelector((state) => state.toolkit.orderPrintTable)
-if(dd) {
-  dd.getDataUrl((data)=>{
-    if(data){
-      const currentElement = document.getElementById('testPdf')
-      if(currentElement) currentElement.src = data
-    }
-  })
-}
-
+const tableData = useSelector((state) => state.toolkit.orderPrintTable)
 
   return (
     <div>
@@ -47,7 +38,7 @@ if(dd) {
       >
         <Box sx={style}>
         <div style={{display: "flex", justifyContent: "center"}}>
-        <embed id='testPdf' style={{width: "100%", height: "85vh"}} type='application/pdf'/>
+        <embed id='orderPdf' style={{width: "100%", height: "85vh"}} type='application/pdf' src={tableData}/>
         </div>
         </Box>
       </Modal>

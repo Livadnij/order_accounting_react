@@ -2,6 +2,8 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { deleteDoc, doc, setDoc } from "firebase/firestore";
 import getClients, { db } from "./Firebase";
 import { nanoid } from "nanoid";
+import { toast } from "react-toastify";
+import { fetchOrders } from "./store/GloabalOrdersList";
 
 export const fetchClients = createAsyncThunk(
     'toolkit/fetchClients',
@@ -19,21 +21,29 @@ const toolkitSlice = createSlice({
         clientAddModalState: false,
         clientAddModalName: '',
         clientModalState: false,
+        orderDeleteModal: false,
+        clientEditIndex: "",
         orderModalState: false,
+        orderMainPageSearch: false,
+        clientsDeleteModal: false,
+        clientsCurrentDelete: "",
         orderPrintModalState: false,
         orderMaterialAdditionalState: false,
         orderMaterialAdditionalIndex: '',
+        orderSelectClient: false,
         orderPrintTable:"",
         clientsAllList: [],
+        makeThemRed: false,
         orderMaterialDelete: false,
         tempOrderInfo: {
             ranID:'',
             ordID:'',
             clID:'',
-            status:'',
+            status: 1,
             dateStart: '',
             dateFinish: '',
             fullPrice:'',
+            fullPaid:false,
             paid:'',
             installation:false,
             delivery:false,
@@ -67,7 +77,18 @@ const toolkitSlice = createSlice({
                 phoneNum: cPhoneNum
             });
         },
-        uploadNewOrder(initialState){
+        uploadEditClient(initialState, {payload:data}){
+            deleteDoc(doc(db, "clients", data.id));
+            setDoc(doc(db, "clients", data.id), {
+                Name: data.Name,
+                discount: data.discount,
+                id: data.id,
+                phoneNum: data.phoneNum
+            });
+        },
+        uploadNewOrder(initialState){ 
+            const notify = (e) => toast(e);
+            if(initialState.tempOrderInfo.ordID&&initialState.tempOrderInfo.dateStart&&initialState.tempOrderInfo.dateFinish&&initialState.tempOrderInfo.clID&&initialState.tempOrderInfo.status) {
             const ranID = nanoid()
             setDoc(doc(db, "orders", ranID), {
             ranID,
@@ -80,13 +101,26 @@ const toolkitSlice = createSlice({
             status:initialState.tempOrderInfo.status,
             installation:initialState.tempOrderInfo.installation,
             delivery:initialState.tempOrderInfo.delivery,
+            fullPaid:initialState.tempOrderInfo.fullPaid,
             adress:initialState.tempOrderInfo.adress,
             comments:initialState.tempOrderInfo.comments,
-            material: initialState.tempMaterialInfo
+            material: initialState.tempMaterialInfo.filter((element)=>{
+                if(element.width && element.height && element.count && element.material && element.thickness){return true}
+                return false
+            })
             });
             Object.keys(initialState.tempOrderInfo).forEach(k => initialState.tempOrderInfo[k] = '')
+            initialState.tempOrderInfo.delivery = false
+            initialState.tempOrderInfo.status = 1
+            initialState.tempOrderInfo.installation = false
+            initialState.tempOrderInfo.fullPaid = false
             initialState.tempMaterialInfo = [];      
             initialState.orderModalState = !initialState.orderModalState
+            initialState.makeThemRed = false
+        } else {
+            notify(`Поля мають бути заповнені`); 
+            initialState.makeThemRed = true
+        }
         },
         additionalWorkPush(initialState, {payload:data}) {
             if(data.work === 1) {
@@ -102,9 +136,19 @@ const toolkitSlice = createSlice({
             if(typeof propName === 'object' && !Array.isArray(propName) && propName !== null && propName.name ==='orderMaterialAdditionalState'){
             initialState[propName.name] = !initialState[propName.name]
             initialState.orderMaterialAdditionalIndex = propName.index
+            } else if(typeof propName === 'object' && !Array.isArray(propName) && propName !== null && propName.name ==='clientModalState'){
+            initialState[propName.name] = !initialState[propName.name]
+            initialState.orderSelectClient = propName.value
             } else if(typeof propName === 'object' && !Array.isArray(propName) && propName !== null && propName.name ==='orderPrintModalState'){
             initialState[propName.name] = !initialState[propName.name]
             initialState.orderMaterialAdditionalIndex = propName.index
+            } else if (typeof propName === 'object' && !Array.isArray(propName) && propName !== null && propName.name ==='clientAddModalState') {
+                initialState.clientEditIndex = propName.id
+                initialState.clientAddModalName = propName.value
+                initialState[propName.name] = !initialState[propName.name]
+            } else if (typeof propName === 'object' && !Array.isArray(propName) && propName !== null && propName.name ==='clientsDeleteModal') {
+                initialState[propName.name] = !initialState[propName.name]
+                initialState.clientsCurrentDelete = propName.value
             } else if (typeof propName === 'object' && !Array.isArray(propName) && propName !== null) {
                 initialState[propName.name] = !initialState[propName.name]
                 initialState.orderPrint = propName.value
@@ -133,6 +177,10 @@ const toolkitSlice = createSlice({
         },
         orderModalHandleClose(initialState) {
             Object.keys(initialState.tempOrderInfo).forEach(k => initialState.tempOrderInfo[k] = '')
+            initialState.tempOrderInfo.delivery = false
+            initialState.tempOrderInfo.status = 1
+            initialState.tempOrderInfo.installation = false
+            initialState.tempOrderInfo.fullPaid = false
             initialState.tempMaterialInfo = [];            
         },
         orderModalEdit(initialState, {payload:order}){
@@ -144,9 +192,16 @@ const toolkitSlice = createSlice({
             deleteDoc(doc(db, "orders", initialState.tempOrderInfo.ranID));
             Object.keys(initialState.tempOrderInfo).forEach(k => initialState.tempOrderInfo[k] = '');
             initialState.tempMaterialInfo = [];   
-            initialState.orderModalState = !initialState.orderModalState
+            initialState.orderModalState = !initialState.orderModalState;
+            initialState.tempOrderInfo.status = 1
+            initialState.tempOrderInfo.delivery = false
+            initialState.tempOrderInfo.installation = false
+            initialState.tempOrderInfo.fullPaid = false
+            fetchOrders()
         },
         orderUpdate(initialState){
+            const notify = (e) => toast(e);
+            if(initialState.tempOrderInfo.ordID&&initialState.tempOrderInfo.dateStart&&initialState.tempOrderInfo.dateFinish&&initialState.tempOrderInfo.clID&&initialState.tempOrderInfo.status) {
             deleteDoc(doc(db, "orders", initialState.tempOrderInfo.ranID));
             setDoc(doc(db, "orders", initialState.tempOrderInfo.ranID), {
                 ranID:initialState.tempOrderInfo.ranID,
@@ -157,19 +212,37 @@ const toolkitSlice = createSlice({
                 fullPrice:initialState.tempOrderInfo.fullPrice,
                 paid:initialState.tempOrderInfo.paid,
                 status:initialState.tempOrderInfo.status,
+                fullPaid:initialState.tempOrderInfo.fullPaid,
                 installation:initialState.tempOrderInfo.installation,
                 delivery:initialState.tempOrderInfo.delivery,
                 adress:initialState.tempOrderInfo.adress,
                 comments:initialState.tempOrderInfo.comments,
-                material: initialState.tempMaterialInfo
+                material: initialState.tempMaterialInfo.filter((element)=>{
+                    if(element.width && element.height && element.count && element.material && element.thickness){return true}
+                    return false
+                })
                 });
                 Object.keys(initialState.tempOrderInfo).forEach(k => initialState.tempOrderInfo[k] = '')
-                initialState.tempMaterialInfo = [];      
-                initialState.orderModalState = !initialState.orderModalState
+                initialState.tempOrderInfo.delivery = false
+            initialState.tempOrderInfo.installation = false
+            initialState.tempOrderInfo.fullPaid = false
+            initialState.tempOrderInfo.status = 1
+                initialState.tempMaterialInfo = []; 
+                initialState.makeThemRed = false     
+                initialState.orderModalState = !initialState.orderModalState} else {
+                    notify(`Поля мають бути заповнені`)
+                    initialState.makeThemRed = true
+                }
         },
         orderSaveTable(initialState, {payload:table}){
             initialState.orderPrintTable = table
         },
+        handleExitClients(initialState){
+            initialState.clientsAllList = ''
+        },
+        clientsDelete(initialState){
+            deleteDoc(doc(db, "clients", initialState.clientsCurrentDelete));
+        }
         },
         extraReducers: {
             [fetchClients.pending]: (initialState, action) => {
@@ -189,4 +262,4 @@ const toolkitSlice = createSlice({
 })
 
 export default toolkitSlice.reducer
-export const {orderDeleteMaterial, orderDeleteStatusUpdate, orderModalHandleClose, orderMaterialRemoveAddition, additionalWorkPush, openModal, orderMaterialAddNewObject, orderMaterialUpdate, orderStateUpdate, tempOrderSave, userLogined, uploadNewClient, getClientsData, uploadNewOrder, orderModalEdit, orderDelete, orderUpdate, orderSaveTable} = toolkitSlice.actions
+export const {orderDeleteMaterial, uploadEditClient, orderDeleteStatusUpdate, orderModalHandleClose, orderMaterialRemoveAddition, additionalWorkPush, openModal, orderMaterialAddNewObject, orderMaterialUpdate, orderStateUpdate, tempOrderSave, userLogined, uploadNewClient, getClientsData, uploadNewOrder, orderModalEdit, orderDelete, orderUpdate, orderSaveTable, handleExitClients,clientsDelete} = toolkitSlice.actions

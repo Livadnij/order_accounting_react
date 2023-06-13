@@ -1,13 +1,14 @@
-import React, { useMemo, useState } from "react";
+import React, {  useEffect, useState } from "react";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
 import Button from "@mui/material/Button";
 import { useDispatch, useSelector } from "react-redux";
-import { openModal } from "../toolkitSlice";
+import { fetchClients, openModal, uploadEditClient } from "../toolkitSlice";
 import { uploadNewClient } from "../toolkitSlice";
 import { nanoid } from "nanoid";
 import { TextField } from "@mui/material";
 import InputAdornment from "@mui/material/InputAdornment";
+import { ToastContainer, toast } from "react-toastify";
 
 const style = {
     position: "absolute",
@@ -25,25 +26,52 @@ const style = {
 
 
 export function ClientAddModal() {
+  const notify = (e) => toast(e);
+
+  const editClientId = useSelector((state) => state.toolkit.clientEditIndex)
+  const clientsList = useSelector((state) => state.toolkit.clientsAllList);
 
     const handleClose = () => {
-        dispatch(openModal("clientAddModalState"));
-
+        dispatch(openModal({name: 'clientAddModalState',id:"", value: ''}));
+        setclientsName('');setclientsNum('');setclientsDiscount('')
       };
 
     const setName = useSelector((state) => state.toolkit.clientAddModalName)
     const dispatch = useDispatch();
-    const [clientsName, setclientsName] = useState(setName?setName:'');
+    const [clientsName, setclientsName] = useState('');
     const [clientsNum, setclientsNum] = useState("");
-    const [clientsDiscount, setclientsDiscount] = useState("0");
+    const [clientsDiscount, setclientsDiscount] = useState();
 
-      const test = useMemo(() => {
+    useEffect(() => {
+      if(editClientId&&clientsList){
+        const foundClient = clientsList.find((obj) => obj.id === editClientId);
+        setclientsName(foundClient.Name)
+        setclientsNum(foundClient.phoneNum)
+        setclientsDiscount(foundClient.discount)
+      }
+    },[editClientId, clientsList])
+
+    const discountSet = (value) => {
+      if(value <= 100 && !isNaN(value)){
+        setclientsDiscount(value)
+      }
+      return
+    }
+
+    const phoneSet = (value) => {
+      if(value.length <= 10 && !isNaN(value)){
+        setclientsNum(value)
+      }
+      return
+    }
+
+      useEffect(() => {
         if(setName && !clientsName){
             setclientsName(setName)
             return setName
         } else {
             return clientsName
-        }},[setName])
+        }},[setName, clientsName])
 
     const groupClientInfo = async () => {
       const id = await nanoid();
@@ -53,20 +81,35 @@ export function ClientAddModal() {
         id: id,
         phoneNum: clientsNum,
       };
-      console.log(
-        newClient.id,
-        newClient.Name,
-        newClient.phoneNum,
-        newClient.discount
-      );
       if (clientsName && clientsNum && id) {
+        handleClose();
         dispatch(uploadNewClient(newClient));
         setclientsDiscount("");
         setclientsName("");
         setclientsNum("");
       } else {
-        alert(`input's can not be empty`);
+        notify(`Поля мають бути заповнені`);
       }
+      dispatch(fetchClients())
+    };
+
+    const groupEditInfo = async () => {
+      const newClient = {
+        Name: clientsName,
+        discount: clientsDiscount,
+        id: editClientId,
+        phoneNum: clientsNum,
+      };
+      if (clientsName && clientsNum) {
+        handleClose();
+        dispatch(uploadEditClient(newClient));
+        setclientsDiscount("");
+        setclientsName("");
+        setclientsNum("");
+      } else {
+        notify(`Поля мають бути заповнені`);
+      }
+      dispatch(fetchClients())
     };
   
     return (
@@ -77,7 +120,7 @@ export function ClientAddModal() {
               sx={{ my: 1, bgcolor: "white", borderRadius: 4 }}
               fullWidth
               variant="outlined"
-              value={test}
+              value={clientsName}
               label="Ім'я"
               type="string"
               onChange={(e) => setclientsName(e.target.value)}
@@ -94,29 +137,40 @@ export function ClientAddModal() {
                   <InputAdornment position="start">+ 38 </InputAdornment>
                 ),
               }}
-              onChange={(e) => isNaN(e.target.value)? '' :setclientsNum(e.target.value)}
+              onChange={(e) => phoneSet(e.target.value)}
             ></TextField>
             <TextField
-              sx={{ my: 1, bgcolor: "white", borderRadius: 4 }}
+              sx={{ my: 1, bgcolor: "white", borderRadius: 4, paddingBottom: "10px" }}
               fullWidth
               variant="outlined"
-              value={clientsDiscount ? clientsDiscount : ""}
+              value={clientsDiscount?clientsDiscount:""}
               label="Скидка"
               InputProps={{
                 endAdornment: (
                   <InputAdornment position="end"> % </InputAdornment>
                 )}}
-              onChange={(e) => isNaN(e.target.value)? '' :setclientsDiscount(e.target.value)}
+              onChange={(e) => discountSet(e.target.value)}
             ></TextField>
             <Button
+             sx={{display: !editClientId?"":"none"}}
               variant="contained"
               onClick={() => {
                 groupClientInfo();
-                handleClose();
               }}
             >
-              Add Client
+              Додати Клієнта
             </Button>
+            <Button
+            color="success"
+            sx={{display: editClientId?"":"none"}}
+              variant="contained"
+              onClick={() => {
+                groupEditInfo();
+              }}
+            >
+              Оновити Клієнта
+            </Button>
+            <ToastContainer/>
           </Box>
         </Modal>
       </React.Fragment>
