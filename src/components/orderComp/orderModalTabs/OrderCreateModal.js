@@ -2,7 +2,7 @@ import * as React from 'react';
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
 import { useDispatch, useSelector } from 'react-redux';
-import { openModal, orderModalHandleClose, orderUpdate, uploadNewOrder } from '../../toolkitSlice';
+import { openCloseModal, openModal, orderModalHandleClose, orderUpdate, uploadNewOrder } from '../../store/toolkitSlice';
 import OrderTabs from '../OrderTabs';
 import { Button } from '@mui/material';
 import { fetchOrders } from '../../store/GloabalOrdersList';
@@ -27,8 +27,54 @@ export default function OrderCreateModal() {
     const editCheck = !tempOrdSave.ranID? 'none' : ''
     const dispatch = useDispatch();
     const handleClose = () => {
-      dispatch(orderModalHandleClose())
-      dispatch(openModal('orderModalState'))};
+      dispatch(openCloseModal())
+    }
+
+      function ChildModal() {
+        const handleClose = () => {
+          dispatch(openCloseModal())
+        };
+      
+        const modalStyle = {
+        boxSizing: 'borderBox',
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        width: "auto",
+        height: 'auto',
+        bgcolor: 'background.paper',
+        borderRadius: "4px",
+        boxShadow: 24,
+        padding: 3,
+        };
+
+        return (
+          <React.Fragment>
+            <Modal
+              open={useSelector((state) => state.toolkit.orderCloseModal)}
+              onClose={handleClose}
+            >
+              <Box sx={modalStyle}>
+                <h2>Бажаєте припинити створення замовлення?</h2>
+                <Box sx={{display:'flex', justifyContent:'space-between', paddingTop: 2}}>
+                <Button
+            color="error"
+            size='small'
+            variant="contained"
+            onClick={() => {dispatch(orderModalHandleClose());  dispatch(openModal('orderModalState')); handleClose()}}
+            >Так</Button>
+            <Button
+            size='small'
+            variant="contained"
+            onClick={() => handleClose()}
+            >{`Ні`}</Button>
+              </Box>
+              </Box>
+            </Modal>
+          </React.Fragment>
+        );
+      }
 
   return (
     <div>
@@ -64,6 +110,7 @@ export default function OrderCreateModal() {
         Видалити
       </Button>
       </Box>
+      <ChildModal/>
         </Box>
       </Modal>
     </div>

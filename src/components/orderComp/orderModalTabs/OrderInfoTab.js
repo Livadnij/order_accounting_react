@@ -9,7 +9,7 @@ import {
 import { TextField } from "@mui/material";
 import { Box } from "@mui/material";
 import React from "react";
-import { orderStateUpdate } from "../../toolkitSlice";
+import { orderStateUpdate } from "../../store/toolkitSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers-pro";
 import { InfoBlock } from "../../StyledComponents";
@@ -104,9 +104,10 @@ const OrderInfoTab = () => {
                 <MenuItem value={3}>Обробка</MenuItem>
                 <MenuItem value={4}>Свердлення</MenuItem>
                 <MenuItem value={5}>Граф. роботи</MenuItem>
+                <MenuItem value={9}>Гартування</MenuItem>
                 <MenuItem value={6}>Готово</MenuItem>
                 <MenuItem value={7}>Монтаж</MenuItem>
-                <MenuItem value={8}>Виконано</MenuItem>
+                <MenuItem value={8}>Отриман</MenuItem>
               </Select>
             </FormControl>
           </InfoBlock>

@@ -1,9 +1,9 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { deleteDoc, doc, setDoc } from "firebase/firestore";
-import getClients, { db } from "./Firebase";
+import getClients, { db } from "../Firebase";
 import { nanoid } from "nanoid";
 import { toast } from "react-toastify";
-import { fetchOrders } from "./store/GloabalOrdersList";
+import { fetchOrders } from "./GloabalOrdersList";
 
 export const fetchClients = createAsyncThunk(
     'toolkit/fetchClients',
@@ -27,6 +27,7 @@ const toolkitSlice = createSlice({
         orderMainPageSearch: false,
         clientsDeleteModal: false,
         clientsCurrentDelete: "",
+        orderCloseModal:false,
         orderPrintModalState: false,
         orderMaterialAdditionalState: false,
         orderMaterialAdditionalIndex: '',
@@ -55,6 +56,9 @@ const toolkitSlice = createSlice({
         ]
     },
     reducers : {
+        openCloseModal(initialState){
+            initialState.orderCloseModal= !initialState.orderCloseModal
+        },
         getClientsData(initialState, data) {
             initialState.clientsAllList = data
         },
@@ -166,7 +170,7 @@ const toolkitSlice = createSlice({
             initialState.tempMaterialInfo[data.index][data.propName] = data.value;
         },
         orderMaterialAddNewObject(initialState) {
-            const body = { num: initialState.tempMaterialInfo[initialState.tempMaterialInfo.length - 1] ? initialState.tempMaterialInfo[initialState.tempMaterialInfo.length - 1].num + 1 : 1, count: '', material: '', thickness: '', width: '', height: '', edge: '', drilling: [], painting: [] }
+            const body = { num: initialState.tempMaterialInfo[initialState.tempMaterialInfo.length - 1] ? initialState.tempMaterialInfo[initialState.tempMaterialInfo.length - 1].num + 1 : 1, count: '', material: '', thickness: '', width: '', height: '', edge: 7, drilling: [], painting: [] }
             initialState.tempMaterialInfo.push(body)
         },
         orderMaterialRemoveAddition(initialState, {payload:data}) {
@@ -250,7 +254,24 @@ const toolkitSlice = createSlice({
                 initialState.isLoading = true;
               },
               [fetchClients.fulfilled]: (initialState, action) => {
-                initialState.clientsAllList = action.payload;
+                const clientsArr = [...action.payload]
+                const notNumber = clientsArr.filter((element)=>{
+                    if (isNaN(Number(element.id))) {
+                        return true
+                    }
+                    return false
+                })
+                let isNumber = clientsArr.filter((element)=>{
+                    if (!isNaN(Number(element.id))) {
+                        return true
+                    }
+                    return false
+                })
+                if(isNumber.length){
+                    isNumber = isNumber.sort((b,a) => (Number(a.id) > Number(b.id)) ? 1 : ((Number(b.id) > Number(a.id)) ? -1 : 0))
+                }
+                const finishedFilter = [...isNumber, ...notNumber]
+                initialState.clientsAllList = finishedFilter;
                 initialState.err = null;
                 initialState.isLoading = false;
               },
@@ -262,4 +283,4 @@ const toolkitSlice = createSlice({
 })
 
 export default toolkitSlice.reducer
-export const {orderDeleteMaterial, uploadEditClient, orderDeleteStatusUpdate, orderModalHandleClose, orderMaterialRemoveAddition, additionalWorkPush, openModal, orderMaterialAddNewObject, orderMaterialUpdate, orderStateUpdate, tempOrderSave, userLogined, uploadNewClient, getClientsData, uploadNewOrder, orderModalEdit, orderDelete, orderUpdate, orderSaveTable, handleExitClients,clientsDelete} = toolkitSlice.actions
+export const {orderDeleteMaterial, uploadEditClient, orderDeleteStatusUpdate, orderModalHandleClose, orderMaterialRemoveAddition, additionalWorkPush, openModal, orderMaterialAddNewObject, orderMaterialUpdate, orderStateUpdate, tempOrderSave, userLogined, uploadNewClient, getClientsData, uploadNewOrder, orderModalEdit, orderDelete, orderUpdate, orderSaveTable, handleExitClients,clientsDelete,openCloseModal} = toolkitSlice.actions

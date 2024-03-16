@@ -2,7 +2,7 @@ import React from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { Box, IconButton } from '@mui/material';
-import { orderMaterialRemoveAddition } from '../../toolkitSlice';
+import { orderMaterialRemoveAddition } from '../../store/toolkitSlice';
 import { sandblastingDecode, workDecode } from '../../WorkDecoding';
 
 const OrderAdditionalMapping = (props) => {

@@ -3,9 +3,8 @@ import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
 import Button from "@mui/material/Button";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchClients, openModal, uploadEditClient } from "../toolkitSlice";
-import { uploadNewClient } from "../toolkitSlice";
-import { nanoid } from "nanoid";
+import { fetchClients, openModal, uploadEditClient } from "../store/toolkitSlice";
+import { uploadNewClient } from "../store/toolkitSlice";
 import { TextField } from "@mui/material";
 import InputAdornment from "@mui/material/InputAdornment";
 import { ToastContainer, toast } from "react-toastify";
@@ -38,9 +37,9 @@ export function ClientAddModal() {
 
     const setName = useSelector((state) => state.toolkit.clientAddModalName)
     const dispatch = useDispatch();
-    const [clientsName, setclientsName] = useState('');
+    const [clientsName, setclientsName] = useState("");
     const [clientsNum, setclientsNum] = useState("");
-    const [clientsDiscount, setclientsDiscount] = useState();
+    const [clientsDiscount, setclientsDiscount] = useState("");
 
     useEffect(() => {
       if(editClientId&&clientsList){
@@ -68,13 +67,10 @@ export function ClientAddModal() {
       useEffect(() => {
         if(setName && !clientsName){
             setclientsName(setName)
-            return setName
-        } else {
-            return clientsName
         }},[setName, clientsName])
 
-    const groupClientInfo = async () => {
-      const id = await nanoid();
+    const groupClientInfo = () => {
+      const id = Date.now();
       const newClient = {
         Name: clientsName,
         discount: clientsDiscount,
@@ -144,7 +140,7 @@ export function ClientAddModal() {
               fullWidth
               variant="outlined"
               value={clientsDiscount?clientsDiscount:""}
-              label="Скидка"
+              label="Знижка"
               InputProps={{
                 endAdornment: (
                   <InputAdornment position="end"> % </InputAdornment>
