@@ -1,6 +1,6 @@
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux';
-import { openModal, orderDelete } from '../../toolkitSlice';
+import { openModal, orderDelete } from '../../store/toolkitSlice';
 import { Box, Button, Modal } from '@mui/material';
 import { fetchOrders } from '../../store/GloabalOrdersList';
 

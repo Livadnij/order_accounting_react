@@ -22,6 +22,9 @@ const GlobalOrderList = createSlice({
         },
         handleExitOrders(initialState){
           initialState.orders = ''
+        },
+        changeStatus(initialState, {payload:data}){
+          initialState.orders[data.index].status = data.value
         }
     },
     extraReducers : {
@@ -44,6 +47,7 @@ const GlobalOrderList = createSlice({
 
 export default GlobalOrderList.reducer
 export const {
+  changeStatus,
     saveOrders,
     handleExitOrders
 } = GlobalOrderList.actions

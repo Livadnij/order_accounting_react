@@ -2,7 +2,7 @@ import React from 'react'
 import { Box, Button, TextField} from "@mui/material";
 import { InfoBlock } from '../../StyledComponents';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchClients, openModal } from '../../toolkitSlice';
+import { fetchClients, openModal } from '../../store/toolkitSlice';
 
 
 const OrderClientSelectorComp = () => {
@@ -10,7 +10,8 @@ const OrderClientSelectorComp = () => {
   const lightUpErrors= useSelector((state) => state.toolkit.makeThemRed)
   const clientsList = useSelector((state) => state.toolkit.clientsAllList);
   const clientsID = useSelector((state) => state.toolkit.tempOrderInfo.clID);
-  const foundClient = clientsID ? clientsList.find(obj => obj.id === clientsID): {Name: "", discount: "", phoneNum: ""};
+  const searchClient = clientsList.find(obj => obj.id === clientsID)
+  const foundClient = searchClient ? searchClient : {Name: "", discount: "", phoneNum: ""};
 
   const openUserModal = async () => {
     dispatch(fetchClients());
@@ -39,7 +40,7 @@ const OrderClientSelectorComp = () => {
       />
     </InfoBlock>
     <InfoBlock>
-      <p>Скидка, %</p>
+      <p>Знижка, %</p>
       <TextField disabled
       error = {lightUpErrors}
         sx={{ width: "60%" }}

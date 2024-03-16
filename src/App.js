@@ -1,11 +1,9 @@
 import React from "react";
-import { RouterProvider, createBrowserRouter } from "react-router-dom";
+import { RouterProvider, createHashRouter } from "react-router-dom";
 import MainPage from "./Pages/MainPage";
-import LoginPage from "./Pages/LoginPage";
-import SignupPage from "./Pages/SignupPage";
 import Layout from "./Pages/Layout";
 
-const router = createBrowserRouter([
+const router = createHashRouter([
   {
     path: "/",
     element: <Layout />,
@@ -13,14 +11,6 @@ const router = createBrowserRouter([
       {
         element: <MainPage />,
         index: true,
-      },
-      {
-        path: "/login",
-        element: <LoginPage />,
-      },
-      {
-        path: "/signup",
-        element: <SignupPage />,
       },
     ],
   },

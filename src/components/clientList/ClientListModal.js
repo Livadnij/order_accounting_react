@@ -3,7 +3,7 @@ import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
 import Button from "@mui/material/Button";
 import { useDispatch, useSelector } from "react-redux";
-import { openModal, orderStateUpdate } from "../toolkitSlice";
+import { openModal, orderStateUpdate } from "../store/toolkitSlice";
 import { Checkbox, Divider, Grid, IconButton, TextField } from "@mui/material";
 import DeleteIcon from '@mui/icons-material/Delete';
 import ClientsDeleteModal from "./ClientsDeleteModal";
@@ -132,7 +132,7 @@ const NestedClientsListModal = (state) => {
           sx={{
             ...style,
             width: "800px",
-            maxHeight: "80vh",
+            maxHeight: "auto",
             paddingRight: "30px",
           }}
         >
@@ -183,7 +183,7 @@ const NestedClientsListModal = (state) => {
                         textAlign: "right",
                       }}
                     >
-                      Скидка
+                      Знижка
                     </Grid>
                     <Grid item={true} xs={0.4}></Grid>
                   </Grid>
@@ -233,6 +233,9 @@ const NestedClientsListModal = (state) => {
           Додати Клієнта
         </Button>
         <IconButton
+        sx={{
+          display: orderSelectClient ? "none" : ""
+        }}
           variant="contained"
           onClick={() => {
             setDeleteClients(!deleteClients)

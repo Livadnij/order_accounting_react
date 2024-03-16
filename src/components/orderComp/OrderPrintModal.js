@@ -2,7 +2,7 @@ import * as React from "react";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
 import { useDispatch, useSelector } from "react-redux";
-import { openModal } from "../toolkitSlice";
+import { openModal } from "../store/toolkitSlice";
 import pdfMake from "pdfmake/build/pdfmake";
 import pdfFont from "pdfmake/build/vfs_fonts"
 pdfMake.vfs = pdfFont.pdfMake.vfs

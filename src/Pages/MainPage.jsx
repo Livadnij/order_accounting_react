@@ -1,42 +1,39 @@
 import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 import NestedClientsListModal from "../components/clientList/ClientListModal";
 import { Box, TextField } from "@mui/material";
 import OrderCreateModal from "../components/orderComp/orderModalTabs/OrderCreateModal";
 import CollapsibleTable from "../components/orderComp/OrderMainPageTable";
 import { ClientAddModal } from "../components/clientList/ClientAddModal";
-import { fetchOrders } from "../components/store/GloabalOrdersList";
-import { fetchClients } from "../components/toolkitSlice";
 import OrderPrintModal from "../components/orderComp/OrderPrintModal";
 import { useState } from "react";
-import { auth } from "../components/Firebase";
 import OrderDeleteModal from "../components/orderComp/orderModalTabs/OrderDeleteModal";
 import Slide from '@mui/material/Slide';
 import ButtonGroupMainPage from "../components/ButtonGroupMainPage";
+// import { fetchClients } from "../components/store/toolkitSlice";
+// import { fetchOrders } from "../components/store/GloabalOrdersList";
+import HidenAdminSideBar from "../components/HidenAdminSideBar";
 
 
 //проверка на вход в систему
 const MainPage = () => {
   const checked = useSelector((state) => state.toolkit.orderMainPageSearch);
   const [searchValue, setSearchValue]= useState("")
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
+  const [sideBarStatus, setSideBarStatus] = useState(false)
 
   useEffect(()=>{
     setSearchValue("")
   }, [checked])
-  
-  useEffect(() => {
-    auth.onAuthStateChanged(function(user) {
-      if (user) {
-        dispatch(fetchClients());
-        dispatch(fetchOrders());
-      } else {
-        navigate("/login");
-      }
-    });
-  });
+
+
+  const sideBarStatusChanger = (message) => {
+    setSideBarStatus(message);
+  }
+
+  // useEffect(()=>{
+  //   dispatch(fetchClients());
+  //   dispatch(fetchOrders());
+  // })
 
   return (
     <div>
@@ -46,7 +43,7 @@ const MainPage = () => {
         <ClientAddModal />
         <OrderCreateModal />
         <OrderPrintModal />
-         <ButtonGroupMainPage/>
+         <ButtonGroupMainPage sideBarStatusChanger={sideBarStatusChanger}/>
       </Box>
       <Box sx={{ zIndex: 2}}>
         <Slide direction="down" in={checked} mountOnEnter unmountOnExit>
@@ -56,11 +53,13 @@ const MainPage = () => {
         fullWidth
         variant="outlined"
         size='small'
-        label="Пошук по номеру"
+        label="Пошук"
         onChange={(e)=>{setSearchValue(e.target.value)}}
         />
         </Box>
         </Slide>
+        <HidenAdminSideBar sideBarStatus={sideBarStatus} sideBarStatusChanger={sideBarStatusChanger}/>
+
         <CollapsibleTable search={searchValue} />
       </Box>
     </div>
