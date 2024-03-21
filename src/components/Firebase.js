@@ -39,9 +39,16 @@ export default async function getClients(db) {
   return clientsList;
 }
 
-export async function getOrders(db) {
-  const ordersCol = collection(db, "orders");
+export async function getOrders(db, dbName) {
+  const ordersCol = collection(db, dbName);
   const ordersSnapshot = await getDocs(ordersCol);
   const ordersList = ordersSnapshot.docs.map((doc) => doc.data());
   return ordersList;
+}
+
+export async function getCollNames(db) {
+  const namesCol = collection(db, "CollectionNames");
+  const namesSnapshot = await getDocs(namesCol);
+  const namesList = namesSnapshot.docs.map((doc) => doc.data());
+  return namesList;
 }

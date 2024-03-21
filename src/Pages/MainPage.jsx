@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import NestedClientsListModal from "../components/clientList/ClientListModal";
 import { Box, TextField } from "@mui/material";
 import OrderCreateModal from "../components/orderComp/orderModalTabs/OrderCreateModal";
@@ -10,13 +10,17 @@ import { useState } from "react";
 import OrderDeleteModal from "../components/orderComp/orderModalTabs/OrderDeleteModal";
 import Slide from '@mui/material/Slide';
 import ButtonGroupMainPage from "../components/ButtonGroupMainPage";
-// import { fetchClients } from "../components/store/toolkitSlice";
+import { fetchClients } from "../components/store/toolkitSlice";
+import { fetchCollNames } from "../components/store/GloabalOrdersList";
 // import { fetchOrders } from "../components/store/GloabalOrdersList";
-import HidenAdminSideBar from "../components/HidenAdminSideBar";
+import HiddenAdminSideBar from "../components/adminSidebar/HiddenAdminSideBar";
 
 
 //проверка на вход в систему
 const MainPage = () => {
+
+  const dispatch = useDispatch();
+
   const checked = useSelector((state) => state.toolkit.orderMainPageSearch);
   const [searchValue, setSearchValue]= useState("")
   const [sideBarStatus, setSideBarStatus] = useState(false)
@@ -30,10 +34,11 @@ const MainPage = () => {
     setSideBarStatus(message);
   }
 
-  // useEffect(()=>{
-  //   dispatch(fetchClients());
-  //   dispatch(fetchOrders());
-  // })
+  useEffect(()=>{
+    dispatch(fetchCollNames());
+    dispatch(fetchClients());
+    // dispatch(fetchOrders());
+  })
 
   return (
     <div>
@@ -58,7 +63,7 @@ const MainPage = () => {
         />
         </Box>
         </Slide>
-        <HidenAdminSideBar sideBarStatus={sideBarStatus} sideBarStatusChanger={sideBarStatusChanger}/>
+        <HiddenAdminSideBar sideBarStatus={sideBarStatus} sideBarStatusChanger={sideBarStatusChanger}/>
 
         <CollapsibleTable search={searchValue} />
       </Box>
