@@ -16,6 +16,7 @@ export const fetchClients = createAsyncThunk(
 const toolkitSlice = createSlice({
     name: "toolkit",
     initialState: {
+        currentCollName: {id: '0', name: "orders"}, 
         err: "",
         isLoading: "",
         clientAddModalState: false,
@@ -56,6 +57,10 @@ const toolkitSlice = createSlice({
         ]
     },
     reducers : {
+        changeCurrentCollInClients(initialState, {payload:data}) {
+            console.log(data)
+              initialState.currentCollName = data
+          },
         openCloseModal(initialState){
             initialState.orderCloseModal= !initialState.orderCloseModal
         },
@@ -94,7 +99,7 @@ const toolkitSlice = createSlice({
             const notify = (e) => toast(e);
             if(initialState.tempOrderInfo.ordID&&initialState.tempOrderInfo.dateStart&&initialState.tempOrderInfo.dateFinish&&initialState.tempOrderInfo.clID&&initialState.tempOrderInfo.status) {
             const ranID = nanoid()
-            setDoc(doc(db, "orders", ranID), {
+            setDoc(doc(db, initialState.currentCollName.name, ranID), {
             ranID,
             ordID:initialState.tempOrderInfo.ordID,
             dateStart:initialState.tempOrderInfo.dateStart,
@@ -193,7 +198,7 @@ const toolkitSlice = createSlice({
             initialState.orderModalState = !initialState.orderModalState
         },
         orderDelete(initialState){
-            deleteDoc(doc(db, "orders", initialState.tempOrderInfo.ranID));
+            deleteDoc(doc(db, initialState.currentCollName.name, initialState.tempOrderInfo.ranID));
             Object.keys(initialState.tempOrderInfo).forEach(k => initialState.tempOrderInfo[k] = '');
             initialState.tempMaterialInfo = [];   
             initialState.orderModalState = !initialState.orderModalState;
@@ -206,8 +211,8 @@ const toolkitSlice = createSlice({
         orderUpdate(initialState){
             const notify = (e) => toast(e);
             if(initialState.tempOrderInfo.ordID&&initialState.tempOrderInfo.dateStart&&initialState.tempOrderInfo.dateFinish&&initialState.tempOrderInfo.clID&&initialState.tempOrderInfo.status) {
-            deleteDoc(doc(db, "orders", initialState.tempOrderInfo.ranID));
-            setDoc(doc(db, "orders", initialState.tempOrderInfo.ranID), {
+            deleteDoc(doc(db, initialState.currentCollName.name, initialState.tempOrderInfo.ranID));
+            setDoc(doc(db, initialState.currentCollName.name, initialState.tempOrderInfo.ranID), {
                 ranID:initialState.tempOrderInfo.ranID,
                 ordID:initialState.tempOrderInfo.ordID,
                 dateStart:initialState.tempOrderInfo.dateStart,
@@ -283,4 +288,26 @@ const toolkitSlice = createSlice({
 })
 
 export default toolkitSlice.reducer
-export const {orderDeleteMaterial, uploadEditClient, orderDeleteStatusUpdate, orderModalHandleClose, orderMaterialRemoveAddition, additionalWorkPush, openModal, orderMaterialAddNewObject, orderMaterialUpdate, orderStateUpdate, tempOrderSave, userLogined, uploadNewClient, getClientsData, uploadNewOrder, orderModalEdit, orderDelete, orderUpdate, orderSaveTable, handleExitClients,clientsDelete,openCloseModal} = toolkitSlice.actions
+export const {changeCurrentCollInClients, 
+    orderDeleteMaterial, 
+    uploadEditClient, 
+    orderDeleteStatusUpdate, 
+    orderModalHandleClose, 
+    orderMaterialRemoveAddition, 
+    additionalWorkPush, 
+    openModal, 
+    orderMaterialAddNewObject, 
+    orderMaterialUpdate, 
+    orderStateUpdate, 
+    tempOrderSave, 
+    userLogined, 
+    uploadNewClient, 
+    getClientsData, 
+    uploadNewOrder, 
+    orderModalEdit, 
+    orderDelete, 
+    orderUpdate, 
+    orderSaveTable, 
+    handleExitClients,
+    clientsDelete,
+    openCloseModal} = toolkitSlice.actions
