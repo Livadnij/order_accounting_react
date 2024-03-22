@@ -16,7 +16,7 @@ export const fetchClients = createAsyncThunk(
 const toolkitSlice = createSlice({
     name: "toolkit",
     initialState: {
-        currentCollName: {id: '0', name: "orders"}, 
+        currentCollName: {id: '1', name: "newOrders"}, 
         err: "",
         isLoading: "",
         clientAddModalState: false,
@@ -165,8 +165,10 @@ const toolkitSlice = createSlice({
             initialState[propName] = !initialState[propName] 
         }
         },
-        tempOrderSave(initialState, data) {
-            initialState.tempOrderInfo = data;
+        tempOrderSave(initialState, {payload:order}) {
+            console.log(order)
+            initialState.tempOrderInfo = order
+            initialState.tempMaterialInfo = order.material
         },
         orderStateUpdate(initialState, {payload:data}) {
             initialState.tempOrderInfo[data.propName] = data.value;
@@ -237,8 +239,9 @@ const toolkitSlice = createSlice({
             initialState.tempOrderInfo.fullPaid = false
             initialState.tempOrderInfo.status = 1
                 initialState.tempMaterialInfo = []; 
-                initialState.makeThemRed = false     
-                initialState.orderModalState = !initialState.orderModalState} else {
+                initialState.makeThemRed = false 
+                if(initialState.orderModalState){   
+                initialState.orderModalState = !initialState.orderModalState}}  else {
                     notify(`Поля мають бути заповнені`)
                     initialState.makeThemRed = true
                 }
