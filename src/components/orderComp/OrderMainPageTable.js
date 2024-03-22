@@ -14,7 +14,7 @@ import Paper from "@mui/material/Paper";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import SettingsIcon from "@mui/icons-material/Settings";
-import { openModal, orderModalEdit, orderSaveTable } from "../store/toolkitSlice";
+import { openModal, orderModalEdit, orderSaveTable, orderStateUpdate, orderUpdate, tempOrderSave } from "../store/toolkitSlice";
 import PrintIcon from "@mui/icons-material/Print";
 import { OrderPrintTableGen } from "./OrderPrintTableGen";
 import { useMemo } from "react";
@@ -23,10 +23,11 @@ import pdfMake from "pdfmake/build/pdfmake";
 import moment from "moment";
 import dayjs from "dayjs";
 import "dayjs/locale/uk"
-import { Tooltip } from "@mui/material";
+import { Switch, Tooltip } from "@mui/material";
 import MainTableStatus from "./MainTableStatus";
 import SortIcon from '@mui/icons-material/Sort';
 import MainPageTableSorting from "./MainPageTableSorting";
+import { fetchOrders } from "../store/GloabalOrdersList";
 
 const style = {
   borderRight: 0.1,
@@ -78,6 +79,15 @@ function Row(props) {
     })
   };
 
+  const updateStatus = (propName, value) => {
+    console.log( propName, value )
+    dispatch(tempOrderSave(row))
+    const data = { propName, value };
+    dispatch(orderStateUpdate(data));
+    dispatch(orderUpdate());
+    dispatch(fetchOrders())
+  };
+
   return (
     <React.Fragment>
       <TableRow sx={{ "& > *": { borderBottom: "unset" }, backgroundColor: rowColor }}>
@@ -114,6 +124,21 @@ function Row(props) {
                 justifyContent: "space-between",
               }}
             >
+              <Box
+              sx={{display: "flex",
+            alignItems: "center"
+            }}
+              >
+              <Typography variant="h6" gutterBottom component="div">
+                  Сплачено
+                </Typography>
+                <Switch
+                checked={row.fullPaid}
+                onChange={() =>
+                  updateStatus("fullPaid", !row.fullPaid)
+                }
+              />
+              </Box>
               <Box>
               <Typography variant="h6" gutterBottom component="div">
                   Доставка

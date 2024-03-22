@@ -21,7 +21,7 @@ export const fetchCollNames = createAsyncThunk(
 const GlobalOrderList = createSlice({
     name: "globalOrders",
     initialState: {
-    currentCollName: {id: '0', name: "orders"},
+    currentCollName: {id: '1', name: "newOrders"},
     err: "",
     isLoading: "",
     orders: [],
