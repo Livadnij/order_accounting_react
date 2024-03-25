@@ -1,4 +1,8 @@
 const MainPageTableSorting = (searchInput, orders, clients) => {
+
+
+
+
     let orderSearchByName = []
     let orderSearchByNumber = []
     if(!orders.length){
@@ -11,6 +15,7 @@ const MainPageTableSorting = (searchInput, orders, clients) => {
         const numberSearch = clients.filter((obj) => obj.phoneNum.includes(searchInput));
         console.log(orderSearch, nameSearch, numberSearch)
         const fullSearch = orders.filter((obj) => obj.ordID.includes(searchInput));
+        console.log(fullSearch)
       return fullSearch
     } else if (orders&&!orders.filter((obj) => obj.ordID.includes(searchInput)).length) {
         return('notFound')

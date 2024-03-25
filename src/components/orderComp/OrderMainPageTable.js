@@ -107,7 +107,18 @@ function Row(props) {
         <TableCell sx={style} align="left">{dateConvert(row.dateFinish)}</TableCell>
         <TableCell sx={style} align="left"><MainTableStatus infoRow={row}/></TableCell>
         <TableCell sx={style} align="left">{row.fullPrice}</TableCell>
-        <TableCell sx={style} align="left">{row.paid}</TableCell>
+        <TableCell sx={style} align="center">
+          <Box
+          sx={{fontSize:14}}
+          >
+          {row.paid}
+          </Box>
+          <Box
+          sx={{fontSize:14}}
+          >
+          {row.paidOnCard?"На картку":""}
+          </Box>
+          </TableCell>
         <TableCell sx={style} align="left">{isPaid()}</TableCell>
         <TableCell align="left"
         sx={{...style, maxWidth: '350px'}}

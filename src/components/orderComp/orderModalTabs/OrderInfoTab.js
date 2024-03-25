@@ -1,4 +1,5 @@
 import {
+  Checkbox,
   Divider,
   FormControl,
   InputLabel,
@@ -202,13 +203,28 @@ const OrderInfoTab = () => {
             />
           </InfoBlock>
           <InfoBlock>
+            <Box
+            sx={{display:"flex", alignItems:"center"}}
+            >
           <p>Повна оплата</p>
-              <Switch
+              <Checkbox 
                 checked={tempOrdSave.fullPaid}
                 onChange={() =>
                   updateStatus("fullPaid", !tempOrdSave.fullPaid)
                 }
               />
+              </Box>
+              <Box
+              sx={{display:"flex", alignItems:"center"}}
+              >
+              <p>Оплата на картку</p>
+              <Checkbox 
+                checked={tempOrdSave.paidOnCard?tempOrdSave.paidOnCard:false}
+                onChange={() =>
+                  updateStatus("paidOnCard", !tempOrdSave.paidOnCard)
+                }
+              />
+              </Box>
           </InfoBlock>
         </Box>
         <Divider sx={{ width: "100%" }} />
