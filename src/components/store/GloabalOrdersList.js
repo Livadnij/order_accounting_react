@@ -29,7 +29,6 @@ const GlobalOrderList = createSlice({
     },
     reducers : {
         changeCurrentCollInOrders(initialState, {payload:data}) {
-          console.log(data)
             initialState.currentCollName = data
         },
         saveOrders(initialState, {payload:data}) {

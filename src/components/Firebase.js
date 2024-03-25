@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { getFirestore, collection, getDocs } from "firebase/firestore";
+import { getFirestore, collection, getDocs, query, where } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 
 
@@ -51,4 +51,13 @@ export async function getCollNames(db) {
   const namesSnapshot = await getDocs(namesCol);
   const namesList = namesSnapshot.docs.map((doc) => doc.data());
   return namesList;
+}
+
+export async function queryData(db, search, key, currentCol) {
+  const q = query(collection(db, currentCol), where(key, "==", search));
+  const querySnapshot  = await getDocs(q);
+  querySnapshot.forEach((doc) => {
+    // doc.data() is never undefined for query doc snapshots
+    console.log(doc.id, " => ", doc.data());
+  });
 }

@@ -47,6 +47,7 @@ const toolkitSlice = createSlice({
             fullPrice:'',
             fullPaid:false,
             paid:'',
+            paidOnCard: false,
             installation:false,
             delivery:false,
             adress:'',
@@ -58,7 +59,6 @@ const toolkitSlice = createSlice({
     },
     reducers : {
         changeCurrentCollInClients(initialState, {payload:data}) {
-            console.log(data)
               initialState.currentCollName = data
           },
         openCloseModal(initialState){
@@ -97,7 +97,7 @@ const toolkitSlice = createSlice({
         },
         uploadNewOrder(initialState){ 
             const notify = (e) => toast(e);
-            if(initialState.tempOrderInfo.ordID&&initialState.tempOrderInfo.dateStart&&initialState.tempOrderInfo.dateFinish&&initialState.tempOrderInfo.clID&&initialState.tempOrderInfo.status) {
+            if(initialState.tempOrderInfo.ordID&&initialState.tempOrderInfo.dateStart&&initialState.tempOrderInfo&&initialState.tempOrderInfo.dateFinish&&initialState.tempOrderInfo.clID&&initialState.tempOrderInfo.status) {
             const ranID = nanoid()
             setDoc(doc(db, initialState.currentCollName.name, ranID), {
             ranID,
@@ -111,6 +111,7 @@ const toolkitSlice = createSlice({
             installation:initialState.tempOrderInfo.installation,
             delivery:initialState.tempOrderInfo.delivery,
             fullPaid:initialState.tempOrderInfo.fullPaid,
+            paidOnCard:initialState.tempOrderInfo.paidOnCard,
             adress:initialState.tempOrderInfo.adress,
             comments:initialState.tempOrderInfo.comments,
             material: initialState.tempMaterialInfo.filter((element)=>{
@@ -224,6 +225,7 @@ const toolkitSlice = createSlice({
                 paid:initialState.tempOrderInfo.paid,
                 status:initialState.tempOrderInfo.status,
                 fullPaid:initialState.tempOrderInfo.fullPaid,
+                paidOnCard:initialState.tempOrderInfo.paidOnCard,
                 installation:initialState.tempOrderInfo.installation,
                 delivery:initialState.tempOrderInfo.delivery,
                 adress:initialState.tempOrderInfo.adress,
@@ -240,7 +242,7 @@ const toolkitSlice = createSlice({
             initialState.tempOrderInfo.status = 1
                 initialState.tempMaterialInfo = []; 
                 initialState.makeThemRed = false 
-                if(initialState.orderModalState){   
+                if(initialState.orderModalState){
                 initialState.orderModalState = !initialState.orderModalState}}  else {
                     notify(`Поля мають бути заповнені`)
                     initialState.makeThemRed = true
