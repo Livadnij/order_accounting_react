@@ -191,21 +191,27 @@ function Row(props) {
   );
 }
 
-export default function CollapsibleTable({ search }) {
+export default function CollapsibleTable() {
   const getClientsData = useSelector((state) => state.toolkit.clientsAllList);
   const getOrdData = useSelector((state) => state.globalOrders.orders)
   const [plugValue, setPlugValue]=useState('')
   const [sortBy, setSortBy]=useState(true)
+
+  const search = useSelector((state) => state.globalOrders.MainPageSearch)
 
   const sortIconStyle = {
     transform: sortBy?'':'scaleY(-1)',
 }
 
   const totalOrders = useMemo(() => {
-    const sortedOrders= MainPageTableSorting(search, getOrdData, getClientsData)
-    const arrayForSort = [...sortedOrders]
+    const sortedOrders = MainPageTableSorting(search, getOrdData, getClientsData)
+    const arrayForSort = sortedOrders.length?[...sortedOrders]: "notFound"
+
+    console.log(sortedOrders)
+
     if (typeof sortedOrders === 'string') {setPlugValue(sortedOrders); return []} else if (getOrdData.length) {
       const ordersData = sortBy ? arrayForSort.sort((b,a) => (Number(a.ordID) > Number(b.ordID)) ? 1 : ((Number(b.ordID) > Number(a.ordID)) ? -1 : 0)) : arrayForSort.sort((a,b) => (Number(a.ordID) > Number(b.ordID)) ? 1 : ((Number(b.ordID) > Number(a.ordID)) ? -1 : 0))
+      console.log(ordersData)
       return ordersData
     }
     return []

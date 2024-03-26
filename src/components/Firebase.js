@@ -54,7 +54,7 @@ export async function getCollNames(db) {
 }
 
 export async function queryData(db, search, key, currentCol) {
-  const q = query(collection(db, currentCol), where(key, "==", search));
+  const q = query(collection(db, currentCol), where(key, "in", search));
   const querySnapshot  = await getDocs(q);
   querySnapshot.forEach((doc) => {
     // doc.data() is never undefined for query doc snapshots

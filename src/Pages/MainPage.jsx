@@ -11,7 +11,7 @@ import OrderDeleteModal from "../components/orderComp/orderModalTabs/OrderDelete
 import Slide from '@mui/material/Slide';
 import ButtonGroupMainPage from "../components/ButtonGroupMainPage";
 import { fetchClients } from "../components/store/toolkitSlice";
-import { fetchCollNames } from "../components/store/GloabalOrdersList";
+import { fetchCollNames, setMainPageSearch } from "../components/store/GloabalOrdersList";
 // import { fetchOrders } from "../components/store/GloabalOrdersList";
 import HiddenAdminSideBar from "../components/adminSidebar/HiddenAdminSideBar";
 import SearchIcon from '@mui/icons-material/Search';
@@ -24,11 +24,10 @@ const MainPage = () => {
 
   const checked = useSelector((state) => state.toolkit.orderMainPageSearch);
   const [tempSearchValue, setTempSearchValue] = useState("")
-  const [searchValue, setSearchValue]= useState("")
   const [sideBarStatus, setSideBarStatus] = useState(false)
 
   useEffect(()=>{
-    setSearchValue("")
+    dispatch(setMainPageSearch(''))
   }, [checked])
 
 
@@ -56,26 +55,26 @@ const MainPage = () => {
         <Slide direction="down" in={checked} mountOnEnter unmountOnExit>
         <Box sx={{display:"flex",alignItems:"center",position: "absolute" ,boxSizing: "border-box",p:1.25, paddingTop: '20px',backgroundColor:"white", width:"30%", mb:1.5, borderRadius:'0 0 4px 4px', left:"35%", top: "0px"}}>
         <TextField
-        value={searchValue}
+        value={tempSearchValue}
         fullWidth
         variant="outlined"
         size='small'
         label="Пошук"
-        onChange={(e)=>{setSearchValue(e.target.value)}}
+        onChange={(e)=>{setTempSearchValue(e.target.value)}}
         />
-        {/* <Button
+        <Button
         sx={{marginLeft:2}}
         variant="contained"
         color="success"
-        onClick={setSearchValue = tempSearchValue}
+        onClick={()=>{dispatch(setMainPageSearch(tempSearchValue))}}
         >
           <SearchIcon/>
-        </Button> */}
+        </Button>
         </Box>
         </Slide>
         <HiddenAdminSideBar sideBarStatus={sideBarStatus} sideBarStatusChanger={sideBarStatusChanger}/>
 
-        <CollapsibleTable search={searchValue} />
+        <CollapsibleTable/>
       </Box>
     </div>
   );

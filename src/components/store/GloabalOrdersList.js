@@ -21,6 +21,7 @@ export const fetchCollNames = createAsyncThunk(
 const GlobalOrderList = createSlice({
     name: "globalOrders",
     initialState: {
+    MainPageSearch:'',
     currentCollName: {id: '1', name: "newOrders"},
     err: "",
     isLoading: "",
@@ -28,6 +29,9 @@ const GlobalOrderList = createSlice({
     collNames: []
     },
     reducers : {
+        setMainPageSearch(initialState, {payload:data}) {
+          initialState.MainPageSearch = data
+        },
         changeCurrentCollInOrders(initialState, {payload:data}) {
             initialState.currentCollName = data
         },
@@ -75,6 +79,7 @@ const GlobalOrderList = createSlice({
 
 export default GlobalOrderList.reducer
 export const {
+  setMainPageSearch,
   changeCurrentCollInOrders,
   changeStatus,
     saveOrders,
