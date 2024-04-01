@@ -12,7 +12,6 @@ import Slide from '@mui/material/Slide';
 import ButtonGroupMainPage from "../components/ButtonGroupMainPage";
 import { fetchClients } from "../components/store/toolkitSlice";
 import { fetchCollNames, setMainPageSearch } from "../components/store/GloabalOrdersList";
-// import { fetchOrders } from "../components/store/GloabalOrdersList";
 import HiddenAdminSideBar from "../components/adminSidebar/HiddenAdminSideBar";
 import SearchIcon from '@mui/icons-material/Search';
 
@@ -25,6 +24,7 @@ const MainPage = () => {
   const checked = useSelector((state) => state.toolkit.orderMainPageSearch);
   const [tempSearchValue, setTempSearchValue] = useState("")
   const [sideBarStatus, setSideBarStatus] = useState(false)
+  const [search, setSearch] = useState("")
 
   useEffect(()=>{
     dispatch(setMainPageSearch(''))
@@ -66,7 +66,10 @@ const MainPage = () => {
         sx={{marginLeft:2}}
         variant="contained"
         color="success"
-        onClick={()=>{dispatch(setMainPageSearch(tempSearchValue))}}
+        onClick={()=>{
+          // dispatch(setMainPageSearch(tempSearchValue))
+          setSearch(tempSearchValue)
+        }}
         >
           <SearchIcon/>
         </Button>
@@ -74,7 +77,7 @@ const MainPage = () => {
         </Slide>
         <HiddenAdminSideBar sideBarStatus={sideBarStatus} sideBarStatusChanger={sideBarStatusChanger}/>
 
-        <CollapsibleTable/>
+        <CollapsibleTable search={search}/>
       </Box>
     </div>
   );

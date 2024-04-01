@@ -191,13 +191,13 @@ function Row(props) {
   );
 }
 
-export default function CollapsibleTable() {
+export default function CollapsibleTable({search}) {
   const getClientsData = useSelector((state) => state.toolkit.clientsAllList);
   const getOrdData = useSelector((state) => state.globalOrders.orders)
   const [plugValue, setPlugValue]=useState('')
   const [sortBy, setSortBy]=useState(true)
 
-  const search = useSelector((state) => state.globalOrders.MainPageSearch)
+  // const search = useSelector((state) => state.globalOrders.MainPageSearch)
 
   const sortIconStyle = {
     transform: sortBy?'':'scaleY(-1)',
