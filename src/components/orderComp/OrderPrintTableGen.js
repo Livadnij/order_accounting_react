@@ -6,6 +6,8 @@ import dayjs from "dayjs";
 pdfMake.vfs = pdfFont.pdfMake.vfs
 
 export const OrderPrintTableGen = (row, foundClient) => {
+    console.log(row)
+    const materialSorted = [...row.material].sort((a,b) => (Number(a.material) > Number(b.material)) ? 1 : ((Number(b.material) > Number(a.material)) ? -1 : 0))
     const dateConvert = (date) => {
         require('dayjs/locale/uk')
         const dateNew = moment(Number(date))
@@ -55,7 +57,7 @@ export const OrderPrintTableGen = (row, foundClient) => {
                         ['','','',{text:'діам.'},{text:'кіль.'},'',''],
     ]
       
-      row.material.map((row) => (
+    materialSorted.map((row) => (
         table.push(
             [
                 {text: `${materialDecode[row.material-1].prop} "${row.thickness}" (${row.height}*${row.width})`},{text:`${row.count}`},{text:`${edgeDecode[row.edge-1].prop}`},drillingMap(row, 'holeDiam'),drillingMap(row, ''),temperingSearch(row),additionalMap(row)
@@ -68,7 +70,7 @@ export const OrderPrintTableGen = (row, foundClient) => {
     function tableHeader () {
         const header = 
       [
-          [{text: `№: ${row.ordID}`, bold: true},{text: `${row.delivery?"Доставка:":""} ${row.installation?row.adress:""}`}],
+          [{text: `№: ${row.ordID}`, bold: true},{text: `${row.delivery?"Доставка:":""} ${row.delivery?row.adress:""}`}],
           [{text: `Замовник: ${foundClient.Name}`},{text: `${row.installation?"Монтаж":""}`}],
           [{text: `Від: ${dateConvert(row.dateStart)}`},{text: `Дата Відгрузки: ${dateConvert(row.dateFinish)}`, bold: true}],
       ]
@@ -103,21 +105,21 @@ export const OrderPrintTableGen = (row, foundClient) => {
                     body :  tableBody()
                 }
             }])
-            if(row.installation || row.delivery ){
-                        order.push([{text:'\n'},{text:'\n'},{text:'\n'},{
-                            table: {
-                                widths: [250, 250],
-                                body :  tableHeader(),
-                                    },
-                                    layout: 'noBorders'
-                                },
-                        {
-                            table: {
-                                widths: [180, 40, 150, 40, 40, 40, 180],
-                                body :  tableBody()
-                            }
-                        }])
-                    };
+            // if(row.installation || row.delivery ){
+            //             order.push([{text:'\n'},{text:'\n'},{text:'\n'},{
+            //                 table: {
+            //                     widths: [250, 250],
+            //                     body :  tableHeader(),
+            //                         },
+            //                         layout: 'noBorders'
+            //                     },
+            //             {
+            //                 table: {
+            //                     widths: [180, 40, 150, 40, 40, 40, 180],
+            //                     body :  tableBody()
+            //                 }
+            //             }])
+            //         };
         
 
 //additional orders for different jobs. TBI

@@ -17,7 +17,7 @@ import { OrderUnfinishedTableGen } from "./orderComp/OrderUnfnishedTableGen";
 
 const ButtonGroupMainPage = (status) => {
   const dispatch = useDispatch();
-  const clientsList = useSelector((state) => state.toolkit.clientsAllList);
+  const clientsList = useSelector((state) => state.globalOrders.clientsAllList);
   const getOrdData = useSelector((state) => state.globalOrders.orders);
 
   const orderOrders = [...getOrdData];
@@ -46,6 +46,7 @@ const ButtonGroupMainPage = (status) => {
 
   const openSearch = () => {
     dispatch(openModal("orderMainPageSearch"));
+    status.searchClose()
   };
 
   const unfinishedPrint = () => {

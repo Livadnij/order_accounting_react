@@ -14,7 +14,6 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
 import {
   openModal,
@@ -26,19 +25,12 @@ import {
 import OrderMaterialAdditionalModal from "./OrderMaterialAdditionalModal";
 import OrderAdditionalMapping from "./OrderAdditionalMapping";
 import DeleteIcon from '@mui/icons-material/Delete';
-
-const MaterialBlock = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: left;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  box-sizing: border-box;
-`;
+import { edgeDecode, materialDecode } from "../../WorkDecoding";
 
 const OrderMaterialTab = () => {
   const deleteElement = useSelector((state)=>state.toolkit.orderMaterialDelete)? '': 'none';
   const rows = useSelector((state) => state.toolkit.tempMaterialInfo);
+  const rowsSorted = [...rows].sort((a,b) => (Number(a.material) > Number(b.material)) ? 1 : ((Number(b.material) > Number(a.material)) ? -1 : 0))
   const dispatch = useDispatch();
 
   const materialChange = (index, propName, value) => {
@@ -51,22 +43,23 @@ const OrderMaterialTab = () => {
     }
   };
 
-  const dispDrill = rows.filter((row) => row.drilling.length).length
+  const dispDrill = rowsSorted.filter((row) => row.drilling.length).length
     ? ""
     : "none";
-  const dispPaint = rows.filter((row) => row.painting.length).length
+  const dispPaint = rowsSorted.filter((row) => row.painting.length).length
     ? ""
     : "none";
 
   return (
     <div>
-      <Box sx={{ display: "flex" }}>
-        {/* блок материала */}
-        <MaterialBlock>
-          <Box>
+      <Box sx={{
+          width: "100%",
+          height: "auto",
+          display: "flex",
+          flexWrap: "wrap",
+        }}>
             <TableContainer component={Paper}>
               <Table
-                sx={{ minWidth: "auto" }}
                 size="small"
                 aria-label="simple table"
               >
@@ -90,7 +83,7 @@ const OrderMaterialTab = () => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {rows.map((row, index) => (
+                  {rowsSorted.map((row, index) => (
                     <TableRow
                       key={index}
                       sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
@@ -113,12 +106,7 @@ const OrderMaterialTab = () => {
                             materialChange(index, "material", e.target.value);
                           }}
                         >
-                          <MenuItem value={1}>Б\Ц</MenuItem>
-                          <MenuItem value={2}>Діамант</MenuItem>
-                          <MenuItem value={3}>Дзеркало</MenuItem>
-                          <MenuItem value={4}>Бронза</MenuItem>
-                          <MenuItem value={5}>Графіт</MenuItem>
-                          <MenuItem value={6}>Триплекс</MenuItem>
+                          {materialDecode.map((item,index)=><MenuItem key={index} value={item.value}>{item.prop}</MenuItem>)}
                         </Select>
                       </TableCell>
                       <TableCell align="center">
@@ -165,13 +153,7 @@ const OrderMaterialTab = () => {
                             materialChange(index, "edge", e.target.value);
                           }}
                         >
-                          <MenuItem value={1}>Шліфовка</MenuItem>
-                          <MenuItem value={2}>Поліровка</MenuItem>
-                          <MenuItem value={3}>Збиття фаски</MenuItem>
-                          <MenuItem value={4}>Фацет</MenuItem>
-                          {/* <MenuItem value={5}>Фацет 15</MenuItem> */}
-                          <MenuItem value={6}>Глубока фаска</MenuItem>
-                          <MenuItem value={7}>Без обробки</MenuItem>
+                          {edgeDecode.map((item)=><MenuItem value={item.value}>{item.prop}</MenuItem>)}
                         </Select>
                       </TableCell>
                       <TableCell sx={{ display: dispDrill }}>
@@ -241,8 +223,6 @@ const OrderMaterialTab = () => {
               Видалити елемент
             </Button>
             </Box>
-          </Box>
-        </MaterialBlock>
       </Box>
       <OrderMaterialAdditionalModal />
     </div>

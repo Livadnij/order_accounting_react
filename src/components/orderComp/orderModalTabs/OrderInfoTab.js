@@ -18,6 +18,7 @@ import OrderClientSelectorComp from "./OrderClientSelectorComp";
 import { ToastContainer } from "react-toastify";
 import moment from "moment";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
+import { statusDecode } from "../../WorkDecoding";
 
 moment.updateLocale("uk", {
   week: {
@@ -99,16 +100,7 @@ const OrderInfoTab = () => {
                 value={tempOrdSave.status}
                 onChange={(e) => updateStatus("status", e.target.value)}
               >
-                {/* change MenuItems fro hardcode to .map() */}
-                <MenuItem value={1}>Офіс</MenuItem>
-                <MenuItem value={2}>Порізка</MenuItem>
-                <MenuItem value={3}>Обробка</MenuItem>
-                <MenuItem value={4}>Свердлення</MenuItem>
-                <MenuItem value={5}>Граф. роботи</MenuItem>
-                <MenuItem value={9}>Гартування</MenuItem>
-                <MenuItem value={6}>Готово</MenuItem>
-                <MenuItem value={7}>Монтаж</MenuItem>
-                <MenuItem value={8}>Отриман</MenuItem>
+                {statusDecode.map((item, index)=><MenuItem key={index} value={item.value}>{item.prop}</MenuItem>)}
               </Select>
             </FormControl>
           </InfoBlock>

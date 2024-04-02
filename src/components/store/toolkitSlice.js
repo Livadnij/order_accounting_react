@@ -213,7 +213,7 @@ const toolkitSlice = createSlice({
                 paid:initialState.tempOrderInfo.paid,
                 status:initialState.tempOrderInfo.status,
                 fullPaid:initialState.tempOrderInfo.fullPaid,
-                paidOnCard:initialState.tempOrderInfo.paidOnCard,
+                paidOnCard:initialState.tempOrderInfo.paidOnCard?initialState.tempOrderInfo.paidOnCard:false,
                 installation:initialState.tempOrderInfo.installation,
                 delivery:initialState.tempOrderInfo.delivery,
                 adress:initialState.tempOrderInfo.adress,

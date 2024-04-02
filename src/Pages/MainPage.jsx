@@ -34,6 +34,11 @@ const MainPage = () => {
     setSideBarStatus(message);
   }
 
+  const searchClose = () => {
+    setTempSearchValue("")
+    setSearch("")
+  }
+
   useEffect(()=>{
     dispatch(fetchCollNames());
     // dispatch(fetchClients());
@@ -48,7 +53,7 @@ const MainPage = () => {
         <ClientAddModal />
         <OrderCreateModal />
         <OrderPrintModal />
-         <ButtonGroupMainPage sideBarStatusChanger={sideBarStatusChanger}/>
+         <ButtonGroupMainPage sideBarStatusChanger={sideBarStatusChanger} searchClose={searchClose}/>
       </Box>
       <Box sx={{ zIndex: 2}}>
         <Slide direction="down" in={checked} mountOnEnter unmountOnExit>
