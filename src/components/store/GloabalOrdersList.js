@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { db, getOrders, getCollNames } from "../Firebase";
+import getClients, { db, getOrders, getCollNames } from "../Firebase";
 
 export const fetchOrders = createAsyncThunk(
     'toolkit/fetchOrders',
@@ -18,6 +18,14 @@ export const fetchCollNames = createAsyncThunk(
     },
   );
 
+  export const fetchClients = createAsyncThunk(
+    'toolkit/fetchClients',
+    async function () {
+        const data = await getClients(db);
+        return data
+    },
+  );
+
 const GlobalOrderList = createSlice({
     name: "globalOrders",
     initialState: {
@@ -26,6 +34,7 @@ const GlobalOrderList = createSlice({
     err: "",
     isLoading: "",
     orders: [],
+    clientsAllList: [],
     collNames: []
     },
     reducers : {
@@ -54,6 +63,7 @@ const GlobalOrderList = createSlice({
             initialState.orders = action.payload;
             initialState.err = null;
             initialState.isLoading = false;
+            console.log('order fetch done');
           },
           [fetchOrders.rejected]: (initialState, action) => {
             initialState.status = 'error';
@@ -73,6 +83,37 @@ const GlobalOrderList = createSlice({
             initialState.status = 'error';
             initialState.err = 'error';
             console.log('Coll names fetch error');
+          },
+          [fetchClients.pending]: (initialState, action) => {
+            initialState.err = null;
+            initialState.isLoading = true;
+          },
+          [fetchClients.fulfilled]: (initialState, action) => {
+            const clientsArr = [...action.payload]
+            const notNumber = clientsArr.filter((element)=>{
+                if (isNaN(Number(element.id))) {
+                    return true
+                }
+                return false
+            })
+            let isNumber = clientsArr.filter((element)=>{
+                if (!isNaN(Number(element.id))) {
+                    return true
+                }
+                return false
+            })
+            if(isNumber.length){
+                isNumber = isNumber.sort((b,a) => (Number(a.id) > Number(b.id)) ? 1 : ((Number(b.id) > Number(a.id)) ? -1 : 0))
+            }
+            console.log('client fetch done')
+            const finishedFilter = [...isNumber, ...notNumber]
+            initialState.clientsAllList = finishedFilter;
+            initialState.err = null;
+            initialState.isLoading = false;
+          },
+          [fetchClients.rejected]: (initialState, action) => {
+            initialState.err = 'error';
+            console.log('client fetch error');
           },
     }
 })

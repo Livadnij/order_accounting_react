@@ -3,11 +3,12 @@ import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
 import Button from "@mui/material/Button";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchClients, openModal, uploadEditClient } from "../store/toolkitSlice";
+import { openModal, uploadEditClient } from "../store/toolkitSlice";
 import { uploadNewClient } from "../store/toolkitSlice";
 import { TextField } from "@mui/material";
 import InputAdornment from "@mui/material/InputAdornment";
 import { ToastContainer, toast } from "react-toastify";
+import { fetchClients } from "../store/GloabalOrdersList";
 
 const style = {
     position: "absolute",

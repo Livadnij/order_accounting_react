@@ -1,6 +1,6 @@
 import { Accordion, AccordionDetails, AccordionSummary, Box, Button, FormControl, Icon, InputLabel, MenuItem, Select, Typography } from '@mui/material';
 import React, { useState } from 'react'
-import { changeCurrentCollInOrders, fetchCollNames, fetchOrders } from "../store/GloabalOrdersList";
+import { changeCurrentCollInOrders, fetchClients, fetchCollNames, fetchOrders } from "../store/GloabalOrdersList";
 import CollectionsBookmarkIcon from '@mui/icons-material/CollectionsBookmark';
 import { useDispatch, useSelector } from 'react-redux';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
@@ -40,6 +40,7 @@ export const CollectionAccordion = () => {
       dispatch(changeCurrentCollInOrders(collectionList[value]))
       dispatch(changeCurrentCollInClients(collectionList[value]))
       dispatch(fetchOrders());
+      dispatch(fetchClients())
       };
 
   return (

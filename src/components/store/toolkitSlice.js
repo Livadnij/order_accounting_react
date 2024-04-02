@@ -1,17 +1,9 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 import { deleteDoc, doc, setDoc } from "firebase/firestore";
-import getClients, { db } from "../Firebase";
+import { db } from "../Firebase";
 import { nanoid } from "nanoid";
 import { toast } from "react-toastify";
 import { fetchOrders } from "./GloabalOrdersList";
-
-export const fetchClients = createAsyncThunk(
-    'toolkit/fetchClients',
-    async function () {
-        const data = await getClients(db);
-        return data
-    },
-  );
 
 const toolkitSlice = createSlice({
     name: "toolkit",
@@ -34,7 +26,6 @@ const toolkitSlice = createSlice({
         orderMaterialAdditionalIndex: '',
         orderSelectClient: false,
         orderPrintTable:"",
-        clientsAllList: [],
         makeThemRed: false,
         orderMaterialDelete: false,
         tempOrderInfo: {
@@ -63,9 +54,6 @@ const toolkitSlice = createSlice({
           },
         openCloseModal(initialState){
             initialState.orderCloseModal= !initialState.orderCloseModal
-        },
-        getClientsData(initialState, data) {
-            initialState.clientsAllList = data
         },
         orderDeleteStatusUpdate(initialState){
             initialState.orderMaterialDelete = !initialState.orderMaterialDelete
@@ -225,7 +213,7 @@ const toolkitSlice = createSlice({
                 paid:initialState.tempOrderInfo.paid,
                 status:initialState.tempOrderInfo.status,
                 fullPaid:initialState.tempOrderInfo.fullPaid,
-                paidOnCard:initialState.tempOrderInfo.paidOnCard,
+                paidOnCard:initialState.tempOrderInfo.paidOnCard?initialState.tempOrderInfo.paidOnCard:false,
                 installation:initialState.tempOrderInfo.installation,
                 delivery:initialState.tempOrderInfo.delivery,
                 adress:initialState.tempOrderInfo.adress,
@@ -251,45 +239,10 @@ const toolkitSlice = createSlice({
         orderSaveTable(initialState, {payload:table}){
             initialState.orderPrintTable = table
         },
-        handleExitClients(initialState){
-            initialState.clientsAllList = ''
-        },
         clientsDelete(initialState){
             deleteDoc(doc(db, "clients", initialState.clientsCurrentDelete));
         }
         },
-        extraReducers: {
-            [fetchClients.pending]: (initialState, action) => {
-                initialState.err = null;
-                initialState.isLoading = true;
-              },
-              [fetchClients.fulfilled]: (initialState, action) => {
-                const clientsArr = [...action.payload]
-                const notNumber = clientsArr.filter((element)=>{
-                    if (isNaN(Number(element.id))) {
-                        return true
-                    }
-                    return false
-                })
-                let isNumber = clientsArr.filter((element)=>{
-                    if (!isNaN(Number(element.id))) {
-                        return true
-                    }
-                    return false
-                })
-                if(isNumber.length){
-                    isNumber = isNumber.sort((b,a) => (Number(a.id) > Number(b.id)) ? 1 : ((Number(b.id) > Number(a.id)) ? -1 : 0))
-                }
-                const finishedFilter = [...isNumber, ...notNumber]
-                initialState.clientsAllList = finishedFilter;
-                initialState.err = null;
-                initialState.isLoading = false;
-              },
-              [fetchClients.rejected]: (initialState, action) => {
-                initialState.err = 'error';
-                console.log('client fetch error');
-              },
-    }
 })
 
 export default toolkitSlice.reducer
@@ -307,12 +260,10 @@ export const {changeCurrentCollInClients,
     tempOrderSave, 
     userLogined, 
     uploadNewClient, 
-    getClientsData, 
     uploadNewOrder, 
     orderModalEdit, 
     orderDelete, 
     orderUpdate, 
     orderSaveTable, 
-    handleExitClients,
     clientsDelete,
     openCloseModal} = toolkitSlice.actions

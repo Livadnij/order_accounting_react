@@ -7,7 +7,7 @@ pdfMake.vfs = pdfFont.pdfMake.vfs
 export const OrderUnfinishedTableGen = (valueClients, valueOrders) => {
     const clientsList = valueClients;
     const getOrdData = valueOrders;
-
+    
     const dateConvert = (date) => {
         require('dayjs/locale/uk')
         const dateNew = moment(Number(date))

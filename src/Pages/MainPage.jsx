@@ -10,9 +10,7 @@ import { useState } from "react";
 import OrderDeleteModal from "../components/orderComp/orderModalTabs/OrderDeleteModal";
 import Slide from '@mui/material/Slide';
 import ButtonGroupMainPage from "../components/ButtonGroupMainPage";
-import { fetchClients } from "../components/store/toolkitSlice";
 import { fetchCollNames, setMainPageSearch } from "../components/store/GloabalOrdersList";
-// import { fetchOrders } from "../components/store/GloabalOrdersList";
 import HiddenAdminSideBar from "../components/adminSidebar/HiddenAdminSideBar";
 import SearchIcon from '@mui/icons-material/Search';
 
@@ -23,8 +21,9 @@ const MainPage = () => {
   const dispatch = useDispatch();
 
   const checked = useSelector((state) => state.toolkit.orderMainPageSearch);
-  const [tempSearchValue, setTempSearchValue] = useState("")
   const [sideBarStatus, setSideBarStatus] = useState(false)
+  const [tempSearchValue, setTempSearchValue] = useState("")
+  const [search, setSearch] = useState("")
 
   useEffect(()=>{
     dispatch(setMainPageSearch(''))
@@ -35,9 +34,14 @@ const MainPage = () => {
     setSideBarStatus(message);
   }
 
+  const searchClose = () => {
+    setTempSearchValue("")
+    setSearch("")
+  }
+
   useEffect(()=>{
     dispatch(fetchCollNames());
-    dispatch(fetchClients());
+    // dispatch(fetchClients());
     // dispatch(fetchOrders());
   })
 
@@ -49,7 +53,7 @@ const MainPage = () => {
         <ClientAddModal />
         <OrderCreateModal />
         <OrderPrintModal />
-         <ButtonGroupMainPage sideBarStatusChanger={sideBarStatusChanger}/>
+         <ButtonGroupMainPage sideBarStatusChanger={sideBarStatusChanger} searchClose={searchClose}/>
       </Box>
       <Box sx={{ zIndex: 2}}>
         <Slide direction="down" in={checked} mountOnEnter unmountOnExit>
@@ -66,7 +70,9 @@ const MainPage = () => {
         sx={{marginLeft:2}}
         variant="contained"
         color="success"
-        onClick={()=>{dispatch(setMainPageSearch(tempSearchValue))}}
+        onClick={()=>{
+          setSearch(tempSearchValue)
+        }}
         >
           <SearchIcon/>
         </Button>
@@ -74,7 +80,7 @@ const MainPage = () => {
         </Slide>
         <HiddenAdminSideBar sideBarStatus={sideBarStatus} sideBarStatusChanger={sideBarStatusChanger}/>
 
-        <CollapsibleTable/>
+        <CollapsibleTable search={search}/>
       </Box>
     </div>
   );

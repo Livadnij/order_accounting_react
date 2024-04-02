@@ -35,7 +35,7 @@ const NestedClientsListModal = (state) => {
   const [searchInput, setSearchInput] = useState('');
   const dispatch = useDispatch();
   const clientsList = useSelector(
-    (state) => state.toolkit.clientsAllList
+    (state) => state.globalOrders.clientsAllList
   );
   const searchTest = useMemo(() => {
     const nameSearch = clientsList.filter((obj) => obj.Name.includes(searchInput));

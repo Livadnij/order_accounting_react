@@ -4,16 +4,18 @@ import { useDispatch, useSelector } from 'react-redux'
 import { changeStatus } from '../store/GloabalOrdersList'
 import { deleteDoc, doc, setDoc } from 'firebase/firestore'
 import { db } from '../Firebase'
+import { statusDecode } from '../WorkDecoding'
 
 const MainTableStatus = ({infoRow}) => {
     const dispatch = useDispatch();
     const getOrdData = useSelector((state) => state.globalOrders.orders)
+    const currentCollName = useSelector((state) => state.globalOrders.currentCollName)
     const indexOfOrder = getOrdData.findIndex(obj => obj.ranID === infoRow.ranID)
     const onChange = (value) => {
         if(getOrdData.length && indexOfOrder !== -1){
         dispatch(changeStatus({index: indexOfOrder, value: value }))
-        deleteDoc(doc(db, "orders", infoRow.ranID));
-        setDoc(doc(db, "orders", infoRow.ranID), {
+        deleteDoc(doc(db, currentCollName.name, infoRow.ranID));
+        setDoc(doc(db, currentCollName.name, infoRow.ranID), {
             ranID:infoRow.ranID,
             ordID:infoRow.ordID,
             dateStart:infoRow.dateStart,
@@ -39,16 +41,7 @@ const MainTableStatus = ({infoRow}) => {
                 value={infoRow.status}
                 onChange={(e) => onChange(e.target.value)}
               >
-                <MenuItem value={1}>Офіс</MenuItem>
-                <MenuItem value={2}>Порізка</MenuItem>
-                <MenuItem value={3}>Обробка</MenuItem>
-                <MenuItem value={4}>Свердлення</MenuItem>
-                <MenuItem value={5}>Граф. роботи</MenuItem>
-                <MenuItem value={10}>Фарбування</MenuItem>
-                <MenuItem value={9}>Гартування</MenuItem>
-                <MenuItem value={6}>Готово</MenuItem>
-                <MenuItem value={7}>Монтаж</MenuItem>
-                <MenuItem value={8}>Отриман</MenuItem>
+                {statusDecode.map((item,index)=><MenuItem key={index} value={item.value}>{item.prop}</MenuItem>)} 
               </Select>
           </FormControl>
   )

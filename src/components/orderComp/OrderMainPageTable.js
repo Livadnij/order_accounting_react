@@ -23,11 +23,13 @@ import pdfMake from "pdfmake/build/pdfmake";
 import moment from "moment";
 import dayjs from "dayjs";
 import "dayjs/locale/uk"
-import { Switch, Tooltip } from "@mui/material";
+import { FormControl, MenuItem, Select, Switch, TextField, Tooltip } from "@mui/material";
 import MainTableStatus from "./MainTableStatus";
-import SortIcon from '@mui/icons-material/Sort';
 import MainPageTableSorting from "./MainPageTableSorting";
 import { fetchOrders } from "../store/GloabalOrdersList";
+import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
+import HandymanIcon from '@mui/icons-material/Handyman';
+import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 
 const style = {
   borderRight: 0.1,
@@ -39,7 +41,7 @@ function Row(props) {
   const dispatch = useDispatch();
   const { row } = props;
   const [open, setOpen] = React.useState(false);
-  const clientsList = useSelector((state) => state.toolkit.clientsAllList);
+  const clientsList = useSelector((state) => state.globalOrders.clientsAllList);
   const foundClient = clientsList.find((obj) => obj.id === row.clID);
   const deadline = new Date(row.dateFinish) - Date.now();
   const rowColor = () => {
@@ -121,8 +123,22 @@ function Row(props) {
           </TableCell>
         <TableCell sx={style} align="left">{isPaid()}</TableCell>
         <TableCell align="left"
-        sx={{...style, maxWidth: '350px'}}
-        >{row.comments ? row.comments : ""}</TableCell>
+        sx={{...style, maxWidth: '350px'}}>
+          <FormControl>
+        <TextField
+          fullWidth
+          InputProps={{
+            disableUnderline: true,
+          }}
+          multiline
+          sx={{ width: "100%" }}
+          size="small"
+          variant="standard"
+        value={row.comments ? row.comments : ""}
+        >
+        </TextField>
+        </FormControl>
+        </TableCell>
       </TableRow>
       <TableRow>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={12}>
@@ -191,53 +207,69 @@ function Row(props) {
   );
 }
 
-export default function CollapsibleTable() {
-  const getClientsData = useSelector((state) => state.toolkit.clientsAllList);
+export default function CollapsibleTable({search}) {
+  const getClientsData = useSelector((state) => state.globalOrders.clientsAllList);
   const getOrdData = useSelector((state) => state.globalOrders.orders)
   const [plugValue, setPlugValue]=useState('')
-  const [sortBy, setSortBy]=useState(true)
-
-  const search = useSelector((state) => state.globalOrders.MainPageSearch)
-
-  const sortIconStyle = {
-    transform: sortBy?'':'scaleY(-1)',
-}
+  const [sortBy, setSortBy]=useState(1)
 
   const totalOrders = useMemo(() => {
     const sortedOrders = MainPageTableSorting(search, getOrdData, getClientsData)
-    const arrayForSort = sortedOrders.length?[...sortedOrders]: "notFound"
+    const arrayForSort = sortedOrders === 'notFound' || sortedOrders === 'noOrders'? "notFound" : [...sortedOrders]
 
-    console.log(sortedOrders)
-
-    if (typeof sortedOrders === 'string') {setPlugValue(sortedOrders); return []} else if (getOrdData.length) {
-      const ordersData = sortBy ? arrayForSort.sort((b,a) => (Number(a.ordID) > Number(b.ordID)) ? 1 : ((Number(b.ordID) > Number(a.ordID)) ? -1 : 0)) : arrayForSort.sort((a,b) => (Number(a.ordID) > Number(b.ordID)) ? 1 : ((Number(b.ordID) > Number(a.ordID)) ? -1 : 0))
-      console.log(ordersData)
+    if (sortedOrders === 'notFound' || sortedOrders === 'noOrders') {setPlugValue(sortedOrders); return []
+    } else if (getOrdData.length && sortBy === 1) {
+      setPlugValue("")
+      const ordersData = arrayForSort.sort(
+        (b,a) => (Number(a.mater) > Number(b.ordID)) ? 1 : ((Number(b.ordID) > Number(a.ordID)) ? -1 : 0)
+        )
       return ordersData
+    } else if (getOrdData.length && sortBy === 2) {
+      const ordersData = arrayForSort.sort(
+        (a,b) => (Number(a.ordID) > Number(b.ordID)) ? 1 : ((Number(b.ordID) > Number(a.ordID)
+        ) ? -1 : 0))
+        return ordersData
+    } else if (getOrdData.length && sortBy === 3) {
+      let ordersData = []
+      ordersData = ordersData.concat(arrayForSort.filter((item)=> item.status !== 8))
+      ordersData = ordersData.sort(
+        (b,a) => (Number(a.ordID) > Number(b.ordID)) ? 1 : ((Number(b.ordID) > Number(a.ordID)
+        ) ? -1 : 0))
+        return ordersData
     }
     return []
-  }, [search, getOrdData, sortBy, getClientsData]);
+  }, [search, getClientsData, getOrdData, sortBy]);
 
   const emplyPlug = () => {
     if(plugValue === "notFound"){
       return <caption> Не було знайдено підходящих замовлень. </caption>
     } else if (plugValue === "noOrders"){
       return <caption> Оновіть список замовлень або додайте перше замовлення, щоб це повідомлення зникло. </caption>
-    }
+    } else {return ""}
   }
+
+  const selectItems = [
+    {value: 1, prop: <ArrowUpwardIcon/>},
+    {value: 2, prop: <ArrowDownwardIcon/>},
+    {value: 3, prop: <HandymanIcon/>},
+]
 
   return (
     <TableContainer component={Paper} sx={{maxHeight: "85vh"}}>
       <Table stickyHeader aria-label="collapsible table" size="small">
         <TableHead>
           <TableRow>
-            <TableCell>
-              <IconButton
-              onClick={() => setSortBy(!sortBy)}
+            <TableCell sx={style} align="center">
+              <Select
+              variant="standard"
+              sx={{border:"none"}}
+              inputProps={{ IconComponent: () => null,  sx: { padding: '0 !important' } }}
+              size="small"
+              value={sortBy}
+              onChange={(e)=>setSortBy(e.target.value)}
               >
-                <SortIcon
-                sx={sortIconStyle}
-                />
-              </IconButton>
+                 {selectItems.map((item,index)=><MenuItem key={index} value={item.value}>{item.prop}</MenuItem>)}
+              </Select>
             </TableCell>
             <TableCell sx={style} align="center" >№</TableCell>
             <TableCell sx={style} align="left">Ім'я Клієнта</TableCell>

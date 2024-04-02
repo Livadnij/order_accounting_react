@@ -2,13 +2,14 @@ import React from 'react'
 import { Box, Button, TextField} from "@mui/material";
 import { InfoBlock } from '../../StyledComponents';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchClients, openModal } from '../../store/toolkitSlice';
+import { openModal } from '../../store/toolkitSlice';
+import { fetchClients } from '../../store/GloabalOrdersList';
 
 
 const OrderClientSelectorComp = () => {
   const dispatch = useDispatch();
   const lightUpErrors= useSelector((state) => state.toolkit.makeThemRed)
-  const clientsList = useSelector((state) => state.toolkit.clientsAllList);
+  const clientsList = useSelector((state) => state.globalOrders.clientsAllList);
   const clientsID = useSelector((state) => state.toolkit.tempOrderInfo.clID);
   const searchClient = clientsList.find(obj => obj.id === clientsID)
   const foundClient = searchClient ? searchClient : {Name: "", discount: "", phoneNum: ""};

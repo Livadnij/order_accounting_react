@@ -2,7 +2,8 @@ import React from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 
 import { Box, Button, Modal } from '@mui/material';
-import { clientsDelete, fetchClients, openModal } from '../store/toolkitSlice';
+import { clientsDelete, openModal } from '../store/toolkitSlice';
+import { fetchClients } from '../store/GloabalOrdersList';
 
 const style = {
     boxSizing: 'borderBox',
