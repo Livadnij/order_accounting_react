@@ -1,13 +1,12 @@
 import React from "react";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import {
-  fetchClients,
   openModal,
   orderSaveTable,
 } from "./store/toolkitSlice";
 import { useDispatch, useSelector } from "react-redux";
 import LibraryAddIcon from "@mui/icons-material/LibraryAdd";
-import { fetchOrders, handleExitOrders } from "./store/GloabalOrdersList";
+import { fetchClients, fetchOrders, handleExitOrders } from "./store/GloabalOrdersList";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import pdfMake from "pdfmake/build/pdfmake";
 import SearchIcon from "@mui/icons-material/Search";

@@ -39,7 +39,7 @@ function Row(props) {
   const dispatch = useDispatch();
   const { row } = props;
   const [open, setOpen] = React.useState(false);
-  const clientsList = useSelector((state) => state.toolkit.clientsAllList);
+  const clientsList = useSelector((state) => state.globalOrders.clientsAllList);
   const foundClient = clientsList.find((obj) => obj.id === row.clID);
   const deadline = new Date(row.dateFinish) - Date.now();
   const rowColor = () => {
@@ -192,12 +192,10 @@ function Row(props) {
 }
 
 export default function CollapsibleTable({search}) {
-  const getClientsData = useSelector((state) => state.toolkit.clientsAllList);
+  const getClientsData = useSelector((state) => state.globalOrders.clientsAllList);
   const getOrdData = useSelector((state) => state.globalOrders.orders)
   const [plugValue, setPlugValue]=useState('')
   const [sortBy, setSortBy]=useState(true)
-
-  // const search = useSelector((state) => state.globalOrders.MainPageSearch)
 
   const sortIconStyle = {
     transform: sortBy?'':'scaleY(-1)',
@@ -205,24 +203,23 @@ export default function CollapsibleTable({search}) {
 
   const totalOrders = useMemo(() => {
     const sortedOrders = MainPageTableSorting(search, getOrdData, getClientsData)
-    const arrayForSort = sortedOrders.length?[...sortedOrders]: "notFound"
+    const arrayForSort = sortedOrders === 'notFound' || sortedOrders === 'noOrders'? "notFound" : [...sortedOrders]
 
-    console.log(sortedOrders)
-
-    if (typeof sortedOrders === 'string') {setPlugValue(sortedOrders); return []} else if (getOrdData.length) {
+    if (sortedOrders === 'notFound' || sortedOrders === 'noOrders') {setPlugValue(sortedOrders); return []
+    } else if (getOrdData.length) {
+      setPlugValue("")
       const ordersData = sortBy ? arrayForSort.sort((b,a) => (Number(a.ordID) > Number(b.ordID)) ? 1 : ((Number(b.ordID) > Number(a.ordID)) ? -1 : 0)) : arrayForSort.sort((a,b) => (Number(a.ordID) > Number(b.ordID)) ? 1 : ((Number(b.ordID) > Number(a.ordID)) ? -1 : 0))
-      console.log(ordersData)
       return ordersData
     }
     return []
-  }, [search, getOrdData, sortBy, getClientsData]);
+  }, [search, getClientsData, getOrdData, sortBy]);
 
   const emplyPlug = () => {
     if(plugValue === "notFound"){
       return <caption> Не було знайдено підходящих замовлень. </caption>
     } else if (plugValue === "noOrders"){
       return <caption> Оновіть список замовлень або додайте перше замовлення, щоб це повідомлення зникло. </caption>
-    }
+    } else {return ""}
   }
 
   return (

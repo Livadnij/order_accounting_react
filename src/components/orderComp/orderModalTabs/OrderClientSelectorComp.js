@@ -2,7 +2,8 @@ import React from 'react'
 import { Box, Button, TextField} from "@mui/material";
 import { InfoBlock } from '../../StyledComponents';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchClients, openModal } from '../../store/toolkitSlice';
+import { openModal } from '../../store/toolkitSlice';
+import { fetchClients } from '../../store/GloabalOrdersList';
 
 
 const OrderClientSelectorComp = () => {

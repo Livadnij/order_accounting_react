@@ -10,7 +10,6 @@ import { useState } from "react";
 import OrderDeleteModal from "../components/orderComp/orderModalTabs/OrderDeleteModal";
 import Slide from '@mui/material/Slide';
 import ButtonGroupMainPage from "../components/ButtonGroupMainPage";
-import { fetchClients } from "../components/store/toolkitSlice";
 import { fetchCollNames, setMainPageSearch } from "../components/store/GloabalOrdersList";
 import HiddenAdminSideBar from "../components/adminSidebar/HiddenAdminSideBar";
 import SearchIcon from '@mui/icons-material/Search';
@@ -22,8 +21,8 @@ const MainPage = () => {
   const dispatch = useDispatch();
 
   const checked = useSelector((state) => state.toolkit.orderMainPageSearch);
-  const [tempSearchValue, setTempSearchValue] = useState("")
   const [sideBarStatus, setSideBarStatus] = useState(false)
+  const [tempSearchValue, setTempSearchValue] = useState("")
   const [search, setSearch] = useState("")
 
   useEffect(()=>{
@@ -37,7 +36,7 @@ const MainPage = () => {
 
   useEffect(()=>{
     dispatch(fetchCollNames());
-    dispatch(fetchClients());
+    // dispatch(fetchClients());
     // dispatch(fetchOrders());
   })
 
@@ -67,7 +66,6 @@ const MainPage = () => {
         variant="contained"
         color="success"
         onClick={()=>{
-          // dispatch(setMainPageSearch(tempSearchValue))
           setSearch(tempSearchValue)
         }}
         >
