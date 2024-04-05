@@ -4,7 +4,7 @@ import moment from "moment";
 import dayjs from "dayjs";
 pdfMake.vfs = pdfFont.pdfMake.vfs
 
-export const OrderUnfinishedTableGen = (valueClients, valueOrders) => {
+export const OrderFinishedTableGen = (valueClients, valueOrders) => {
     const clientsList = valueClients;
     const getOrdData = valueOrders;
     
@@ -54,10 +54,12 @@ export const OrderUnfinishedTableGen = (valueClients, valueOrders) => {
         {text:'Доставка\nМонтаж',style: 'tableHeader', fontSize: 10},
         {text:'Коментарі',style: 'tableHeader', fontSize: 10}
     ],]
+
+    const tempOrders = [...getOrdData].sort((a,b) => (Number(a.clID) > Number(b.clID)) ? 1 : ((Number(b.clID) > Number(a.clID)) ? -1 : 0))
       
-        getOrdData.forEach((row) => {
-            if( row.status !== 8){
-            const foundClient = clientsList.find((obj) => obj.id === row.clID);
+        tempOrders.forEach((row) => {
+            if(row.status === 6 ){
+            const foundClient = clientsList.find((obj) => obj.id === row.clID);            
         table.push(
             [
                 {text: `${row.ordID}`, fontSize: 10}, 

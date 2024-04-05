@@ -10,7 +10,7 @@ import { useState } from "react";
 import OrderDeleteModal from "../components/orderComp/orderModalTabs/OrderDeleteModal";
 import Slide from '@mui/material/Slide';
 import ButtonGroupMainPage from "../components/ButtonGroupMainPage";
-import { fetchCollNames, setMainPageSearch } from "../components/store/GloabalOrdersList";
+import { setMainPageSearch } from "../components/store/GloabalOrdersList";
 import HiddenAdminSideBar from "../components/adminSidebar/HiddenAdminSideBar";
 import SearchIcon from '@mui/icons-material/Search';
 
@@ -38,12 +38,6 @@ const MainPage = () => {
     setTempSearchValue("")
     setSearch("")
   }
-
-  useEffect(()=>{
-    dispatch(fetchCollNames());
-    // dispatch(fetchClients());
-    // dispatch(fetchOrders());
-  })
 
   return (
     <div>

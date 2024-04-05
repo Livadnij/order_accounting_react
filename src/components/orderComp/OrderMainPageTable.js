@@ -23,7 +23,7 @@ import pdfMake from "pdfmake/build/pdfmake";
 import moment from "moment";
 import dayjs from "dayjs";
 import "dayjs/locale/uk"
-import { FormControl, MenuItem, Select, Switch, TextField, Tooltip } from "@mui/material";
+import { MenuItem, Select, Switch, Tooltip } from "@mui/material";
 import MainTableStatus from "./MainTableStatus";
 import MainPageTableSorting from "./MainPageTableSorting";
 import { fetchOrders } from "../store/GloabalOrdersList";
@@ -121,23 +121,10 @@ function Row(props) {
           {row.paidOnCard?"На картку":""}
           </Box>
           </TableCell>
-        <TableCell sx={style} align="left">{isPaid()}</TableCell>
+        <TableCell sx={style} align="center">{isPaid()}</TableCell>
         <TableCell align="left"
-        sx={{...style, maxWidth: '350px'}}>
-          <FormControl>
-        <TextField
-          fullWidth
-          InputProps={{
-            disableUnderline: true,
-          }}
-          multiline
-          sx={{ width: "100%" }}
-          size="small"
-          variant="standard"
-        value={row.comments ? row.comments : ""}
-        >
-        </TextField>
-        </FormControl>
+        sx={{...style, maxWidth: '350px', whiteSpace:"pre-line"}}>
+        {row.comments ? row.comments : ""}
         </TableCell>
       </TableRow>
       <TableRow>

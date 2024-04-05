@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import {
   openModal,
@@ -6,14 +6,15 @@ import {
 } from "./store/toolkitSlice";
 import { useDispatch, useSelector } from "react-redux";
 import LibraryAddIcon from "@mui/icons-material/LibraryAdd";
-import { fetchClients, fetchOrders, handleExitOrders } from "./store/GloabalOrdersList";
+import { fetchClients, fetchCollNames, fetchOrders, handleExitOrders } from "./store/GloabalOrdersList";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import pdfMake from "pdfmake/build/pdfmake";
 import SearchIcon from "@mui/icons-material/Search";
-import ListAltIcon from "@mui/icons-material/ListAlt";
 import ViewSidebarIcon from '@mui/icons-material/ViewSidebar';
-import { Box, ButtonGroup, Divider, IconButton, Tooltip } from "@mui/material";
+import { Box, ButtonGroup, Divider, IconButton, MenuItem, Select, Tooltip } from "@mui/material";
 import { OrderUnfinishedTableGen } from "./orderComp/OrderUnfnishedTableGen";
+import PrintIcon from '@mui/icons-material/Print';
+import { OrderFinishedTableGen } from "./orderComp/OrderFinishedTableGen";
 
 const ButtonGroupMainPage = (status) => {
   const dispatch = useDispatch();
@@ -39,6 +40,7 @@ const ButtonGroupMainPage = (status) => {
     dispatch(openModal("orderModalState"));
   };
   const updateDB = () => {
+    dispatch(fetchCollNames());
     dispatch(handleExitOrders());
     dispatch(fetchClients());
     dispatch(fetchOrders());
@@ -49,17 +51,8 @@ const ButtonGroupMainPage = (status) => {
     status.searchClose()
   };
 
-  const unfinishedPrint = () => {
-    const table = OrderUnfinishedTableGen(clientsList, orderOrders);
-    pdfMake.createPdf(table).getDataUrl((data) => {
-      if (data) {
-        dispatch(orderSaveTable(data));
-        dispatch(openModal("orderPrintModalState"));
-      }
-    });
-  };
-
-  const openSideBar = () => {
+  const openSideBar = async () => {
+    await dispatch(fetchCollNames());
     status.sideBarStatusChanger(true)
   }
 
@@ -69,12 +62,6 @@ const ButtonGroupMainPage = (status) => {
       name: "Відкрити Бокову Панель",
       onClick: openSideBar,
       disabled: false,
-    },
-    {
-      icon: <ListAltIcon />,
-      name: "Друк невиконаних замовлень",
-      onClick: unfinishedPrint,
-      disabled: getOrdData.length ? false : true,
     },
     {
       icon: <PersonAddIcon />,
@@ -101,6 +88,33 @@ const ButtonGroupMainPage = (status) => {
       disabled: false,
     },
   ];
+
+  const [printValue, setPrintValue] = useState('1')
+
+  const unfinishedPrint = () => {
+    const table = OrderUnfinishedTableGen(clientsList, orderOrders);
+    pdfMake.createPdf(table).getDataUrl((data) => {
+      if (data) {
+        dispatch(orderSaveTable(data));
+        dispatch(openModal("orderPrintModalState"));
+      }
+    });
+  };
+
+  const printFrinished = () => {
+    const table = OrderFinishedTableGen(clientsList, orderOrders);
+    pdfMake.createPdf(table).getDataUrl((data) => {
+      if (data) {
+        dispatch(orderSaveTable(data));
+        dispatch(openModal("orderPrintModalState"));
+      }
+    });
+  };
+
+  const printItems = [
+    {value: 1, icon: <PrintIcon />, onClick: unfinishedPrint, disabled: getOrdData.length ? false : true, tooltip: "Друк не виконаних замовлень"},
+    {value: 2, icon: <PrintIcon />, onClick: printFrinished, disabled: getOrdData.length ? false : true, tooltip: "Друк виконаних замовлень"},
+]
 
   return (
     <Box sx={{ height: 320, transform: "translateZ(0px)", flexGrow: 1 }}>
@@ -131,6 +145,31 @@ const ButtonGroupMainPage = (status) => {
             </Tooltip>
           </Box>
         ))}
+        <Divider orientation="vertical" flexItem sx={{ height: "100%" }} />
+        <Select
+              variant="standard"
+              sx={{border:"none"}}
+              inputProps={{ IconComponent: () => null,  sx: { padding: '0 !important' } }}
+              size="small"
+              value={printValue}
+              onChange={(e)=>setPrintValue(e.target.value)}
+              >
+                 {printItems.map((item,index)=>
+                 <MenuItem sx={{maxWidth: 40, padding:0.1}} key={index} value={item.value}>
+                  <Tooltip title={item.tooltip}>
+                    <span>
+                  <IconButton
+                  disabled={item.disabled}
+                  onClick={() => {
+                    item.onClick();
+                  }}
+                  >
+                  {item.icon}
+                  </IconButton>
+                  </span>
+                  </Tooltip>
+                 </MenuItem>)}
+              </Select>
       </ButtonGroup>
     </Box>
   );

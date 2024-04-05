@@ -4,6 +4,7 @@ import Drawer from "@mui/material/Drawer";
 import { ImportAccordion } from "./ImportAccordion";
 import { CollectionAccordion } from "./CollectionAccordion";
 
+
 export default function HidenAdminSideBar(status) {
 
   const list = (anchor) => (
@@ -20,9 +21,10 @@ export default function HidenAdminSideBar(status) {
     <div>
       <React.Fragment>
         <Drawer
+        sx={{zIndex:1100}}
           anchor={"left"}
           open={status.sideBarStatus}
-          onClose={() => status.sideBarStatusChanger(false)}
+          onClose={() => (status.sideBarStatusChanger(false))}
         >
           {list("left")}
         </Drawer>

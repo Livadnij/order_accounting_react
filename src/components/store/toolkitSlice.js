@@ -74,6 +74,14 @@ const toolkitSlice = createSlice({
                 phoneNum: cPhoneNum
             });
         },
+        uploadNewColl(initialState, data){
+            const id = data.payload.id.toString()
+            const name = data.payload.Name.toString()
+            setDoc(doc(db, "CollectionNames", id), {
+                name: name,
+                id: id,
+            });
+        },
         uploadEditClient(initialState, {payload:data}){
             deleteDoc(doc(db, "clients", data.id));
             setDoc(doc(db, "clients", data.id), {
@@ -248,6 +256,7 @@ const toolkitSlice = createSlice({
 export default toolkitSlice.reducer
 export const {changeCurrentCollInClients, 
     orderDeleteMaterial, 
+    uploadNewColl,
     uploadEditClient, 
     orderDeleteStatusUpdate, 
     orderModalHandleClose, 

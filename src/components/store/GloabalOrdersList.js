@@ -78,6 +78,7 @@ const GlobalOrderList = createSlice({
             initialState.collNames = action.payload;
             initialState.err = null;
             initialState.isLoading = false;
+            console.log('CollNames fetch done');
           },
           [fetchCollNames.rejected]: (initialState, action) => {
             initialState.status = 'error';
