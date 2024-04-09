@@ -8,7 +8,7 @@ import { fetchOrders } from "./GloabalOrdersList";
 const toolkitSlice = createSlice({
     name: "toolkit",
     initialState: {
-        currentCollName: {id: '1', name: "newOrders"}, 
+        currentCollName: {id: '0', name: "orders"}, 
         err: "",
         isLoading: "",
         clientAddModalState: false,
@@ -16,10 +16,13 @@ const toolkitSlice = createSlice({
         clientModalState: false,
         orderDeleteModal: false,
         clientEditIndex: "",
+        orderSearch: "",
         orderModalState: false,
         orderMainPageSearch: false,
         clientsDeleteModal: false,
         clientsCurrentDelete: "",
+        searchModalState: false,
+        sideBarState: false,
         orderCloseModal:false,
         orderPrintModalState: false,
         orderMaterialAdditionalState: false,
@@ -49,6 +52,9 @@ const toolkitSlice = createSlice({
         ]
     },
     reducers : {
+        setOrderSearch(initialState,{payload:data}){
+            initialState.orderSearch = data
+        },
         changeCurrentCollInClients(initialState, {payload:data}) {
               initialState.currentCollName = data
           },
@@ -255,6 +261,7 @@ const toolkitSlice = createSlice({
 
 export default toolkitSlice.reducer
 export const {changeCurrentCollInClients, 
+    setOrderSearch,
     orderDeleteMaterial, 
     uploadNewColl,
     uploadEditClient, 

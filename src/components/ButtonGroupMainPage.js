@@ -47,13 +47,12 @@ const ButtonGroupMainPage = (status) => {
   };
 
   const openSearch = () => {
-    dispatch(openModal("orderMainPageSearch"));
-    status.searchClose()
+    dispatch(openModal("searchModalState"))
   };
 
-  const openSideBar = async () => {
-    await dispatch(fetchCollNames());
-    status.sideBarStatusChanger(true)
+  const openSideBar = () => {
+    dispatch(fetchCollNames());
+    dispatch(openModal("sideBarState"));
   }
 
   const actions = [

@@ -8,11 +8,13 @@ import { ClientAddModal } from "../components/clientList/ClientAddModal";
 import OrderPrintModal from "../components/orderComp/OrderPrintModal";
 import { useState } from "react";
 import OrderDeleteModal from "../components/orderComp/orderModalTabs/OrderDeleteModal";
-import Slide from '@mui/material/Slide';
 import ButtonGroupMainPage from "../components/ButtonGroupMainPage";
 import { setMainPageSearch } from "../components/store/GloabalOrdersList";
 import HiddenAdminSideBar from "../components/adminSidebar/HiddenAdminSideBar";
+import { SearchModal } from "../components/searchModal/SearchModal";
 import SearchIcon from '@mui/icons-material/Search';
+import { setOrderSearch } from "../components/store/toolkitSlice";
+
 
 
 //проверка на вход в систему
@@ -22,59 +24,52 @@ const MainPage = () => {
 
   const checked = useSelector((state) => state.toolkit.orderMainPageSearch);
   const [sideBarStatus, setSideBarStatus] = useState(false)
-  const [tempSearchValue, setTempSearchValue] = useState("")
   const [search, setSearch] = useState("")
+
 
   useEffect(()=>{
     dispatch(setMainPageSearch(''))
   }, [checked])
 
-
   const sideBarStatusChanger = (message) => {
     setSideBarStatus(message);
   }
 
-  const searchClose = () => {
-    setTempSearchValue("")
-    setSearch("")
-  }
 
   return (
     <div>
       <Box style={{ position: "absolute", right: "5%", top: "-235px" }}>
         <NestedClientsListModal />
         <OrderDeleteModal/>
+        <SearchModal/>
         <ClientAddModal />
         <OrderCreateModal />
         <OrderPrintModal />
-         <ButtonGroupMainPage sideBarStatusChanger={sideBarStatusChanger} searchClose={searchClose}/>
+        <ButtonGroupMainPage sideBarStatusChanger={sideBarStatusChanger}/>
+        <HiddenAdminSideBar sideBarStatus={sideBarStatus} sideBarStatusChanger={sideBarStatusChanger}/>
       </Box>
       <Box sx={{ zIndex: 2}}>
-        <Slide direction="down" in={checked} mountOnEnter unmountOnExit>
-        <Box sx={{display:"flex",alignItems:"center",position: "absolute" ,boxSizing: "border-box",p:1.25, paddingTop: '20px',backgroundColor:"white", width:"30%", mb:1.5, borderRadius:'0 0 4px 4px', left:"35%", top: "0px"}}>
+      <Box sx={{display:"flex",alignItems:"center",position: "absolute" ,boxSizing: "border-box",p:1.25, paddingTop: '20px',backgroundColor:"white", width:"30%", mb:1.5, borderRadius:'0 0 4px 4px', left:"35%", top: "0px"}}>
         <TextField
-        value={tempSearchValue}
+        value={search}
         fullWidth
         variant="outlined"
         size='small'
-        label="Пошук"
-        onChange={(e)=>{setTempSearchValue(e.target.value)}}
+        label="Пошук за номером"
+        onChange={(e)=>{setSearch(e.target.value)}}
         />
-        <Button
+          <Button
         sx={{marginLeft:2}}
         variant="contained"
         color="success"
         onClick={()=>{
-          setSearch(tempSearchValue)
+          dispatch(setOrderSearch(search))
         }}
         >
           <SearchIcon/>
         </Button>
         </Box>
-        </Slide>
-        <HiddenAdminSideBar sideBarStatus={sideBarStatus} sideBarStatusChanger={sideBarStatusChanger}/>
-
-        <CollapsibleTable search={search}/>
+        <CollapsibleTable/>
       </Box>
     </div>
   );

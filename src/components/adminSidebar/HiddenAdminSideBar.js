@@ -3,9 +3,13 @@ import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
 import { ImportAccordion } from "./ImportAccordion";
 import { CollectionAccordion } from "./CollectionAccordion";
+import { useDispatch, useSelector } from "react-redux";
+import { openModal } from "../store/toolkitSlice";
 
 
-export default function HidenAdminSideBar(status) {
+export default function HidenAdminSideBar() {
+  
+  const dispatch = useDispatch();
 
   const list = (anchor) => (
     <Box
@@ -23,8 +27,8 @@ export default function HidenAdminSideBar(status) {
         <Drawer
         sx={{zIndex:1100}}
           anchor={"left"}
-          open={status.sideBarStatus}
-          onClose={() => (status.sideBarStatusChanger(false))}
+          open={useSelector((state) => state.toolkit.sideBarState)}
+          onClose={() => (dispatch(openModal("sideBarState")))}
         >
           {list("left")}
         </Drawer>

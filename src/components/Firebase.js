@@ -3,7 +3,7 @@ import { getFirestore, collection, getDocs, query, where } from "firebase/firest
 import { getAuth } from "firebase/auth";
 
 
-// steklolux new DB
+// steklolux test DB
 const firebaseConfig = {
   apiKey: "AIzaSyA32GpnmcjtQPDmRS4B15VpFJlcCHylUWM",
   authDomain: "steklolux-data.firebaseapp.com",
@@ -53,11 +53,13 @@ export async function getCollNames(db) {
   return namesList;
 }
 
-export async function queryData(db, search, key, currentCol) {
-  const q = query(collection(db, currentCol), where(key, "in", search));
+export async function getQueryData(db, search, key, currentCol) {
+  const q = query(collection(db, currentCol), where(key, "==", search));
   const querySnapshot  = await getDocs(q);
+  const temp = []
   querySnapshot.forEach((doc) => {
     // doc.data() is never undefined for query doc snapshots
-    console.log(doc.id, " => ", doc.data());
+  temp.push(doc.data());
   });
+  return temp
 }
