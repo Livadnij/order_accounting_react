@@ -1,44 +1,47 @@
-import { Accordion, AccordionDetails, AccordionSummary, Box, Button, FormControl, Icon, InputLabel, MenuItem, Select, Typography } from '@mui/material';
+import { Accordion, AccordionDetails, AccordionSummary, Box, Button, Divider, FormControl, Icon, InputLabel, MenuItem, Select, TextField, Typography } from '@mui/material';
 import React, { useState } from 'react'
-import { changeCurrentCollInOrders, fetchClients, fetchCollNames, fetchOrders } from "../store/GloabalOrdersList";
+import { changeCurrentCollInOrders, fetchClients, fetchCollNames, fetchOrders, handleExitOrders } from "../store/GloabalOrdersList";
 import CollectionsBookmarkIcon from '@mui/icons-material/CollectionsBookmark';
 import { useDispatch, useSelector } from 'react-redux';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import { changeCurrentCollInClients } from '../store/toolkitSlice';
+import { changeCurrentCollInClients, uploadNewColl } from '../store/toolkitSlice';
+
 
 export const CollectionAccordion = () => {
 
     const dispatch = useDispatch();
 
     const collectionList = useSelector((state) => state.globalOrders.collNames)
-  
+    const collLastElement = collectionList.length ? collectionList.reduce(
+      (prevObj, currObj) => { return Number(prevObj.id) > Number(currObj.id) ? prevObj : currObj;}
+      ): {id: 0};
+    const collArrayLength = Number(collLastElement.id)+1
+
     const [currentColl, setCurrentColl] = useState(
       useSelector((state) => state.globalOrders.currentCollName).id
       );
+    const [newCollName, setNewCollName] = useState("");
 
     const getCollNames = () => {
       dispatch(fetchCollNames());
     };
 
-    const emptyPlug = () => {
-
-    }
-  
-    const CollActions = [
-      {
-        name: "Оновити список колецій",
-        onClick: getCollNames,
-      },
-      {
-        name: "Додати колекцію",
-        onClick: emptyPlug,
+    const addColl = () => {
+      const newColl = {
+        Name: newCollName,
+        id: collArrayLength,
+      };
+      if (newCollName && collArrayLength) {
+        dispatch(uploadNewColl(newColl));
+        dispatch(fetchCollNames());
+        setNewCollName("")
       }
-    ];
+    };
 
     const handleCollChange = (value) => {
-      console.log(value)
       dispatch(changeCurrentCollInOrders(collectionList[value]))
       dispatch(changeCurrentCollInClients(collectionList[value]))
+      dispatch(handleExitOrders())
       dispatch(fetchOrders());
       dispatch(fetchClients())
       };
@@ -55,6 +58,7 @@ export const CollectionAccordion = () => {
           <Typography>Коллекції</Typography>
           </Box>
         </AccordionSummary>
+        <Divider/>
         <AccordionDetails key={"Обрати Колекцію"}>
         <FormControl fullWidth>
             <InputLabel>Обрана Колекція</InputLabel>
@@ -72,18 +76,38 @@ export const CollectionAccordion = () => {
             </Select>
           </FormControl>
           </AccordionDetails>
-        {CollActions.map((action) => (
-          <AccordionDetails key={action.name}>
+          <AccordionDetails key={"Оновити список колецій"}>
               <Button
+              variant="outlined"
                 fullWidth
                 onClick={() => {
-                  action.onClick();
+                  getCollNames();
                 }}
               >
-                <Typography>{action.name}</Typography>
+                <Typography>{"Оновити список колецій"}</Typography>
               </Button>
           </AccordionDetails>
-        ))}
+          <Divider/>
+          <AccordionDetails key={"Ім'я нової колекції"}>
+        <FormControl fullWidth>
+            <TextField
+            label="Ім'я нової колекції"
+            onChange={(e)=>setNewCollName(e.target.value)}
+            value={newCollName}
+            />
+          </FormControl>
+          </AccordionDetails>
+          <AccordionDetails key={"Додати колекцію"}>
+              <Button
+              variant="outlined"
+                fullWidth
+                onClick={() => {
+                  addColl();
+                }}
+              >
+                <Typography>{"Додати нову колекцію"}</Typography>
+              </Button>
+          </AccordionDetails>
       </Accordion>
   )
 }

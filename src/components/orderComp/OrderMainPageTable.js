@@ -23,9 +23,8 @@ import pdfMake from "pdfmake/build/pdfmake";
 import moment from "moment";
 import dayjs from "dayjs";
 import "dayjs/locale/uk"
-import { FormControl, MenuItem, Select, Switch, TextField, Tooltip } from "@mui/material";
+import { CircularProgress, MenuItem, Select, Switch, Tooltip } from "@mui/material";
 import MainTableStatus from "./MainTableStatus";
-import MainPageTableSorting from "./MainPageTableSorting";
 import { fetchOrders } from "../store/GloabalOrdersList";
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import HandymanIcon from '@mui/icons-material/Handyman';
@@ -42,6 +41,7 @@ function Row(props) {
   const { row } = props;
   const [open, setOpen] = React.useState(false);
   const clientsList = useSelector((state) => state.globalOrders.clientsAllList);
+  const getOrdData = useSelector((state) => state.globalOrders.orders)
   const foundClient = clientsList.find((obj) => obj.id === row.clID);
   const deadline = new Date(row.dateFinish) - Date.now();
   const rowColor = () => {
@@ -95,6 +95,7 @@ function Row(props) {
       <TableRow sx={{ "& > *": { borderBottom: "unset" }, backgroundColor: rowColor }}>
         <TableCell sx={style}>
           <IconButton
+            color={getOrdData.length > 500 ?"error" : ""}
             aria-label="expand row"
             size="small"
             onClick={() => setOpen(!open)}
@@ -121,23 +122,10 @@ function Row(props) {
           {row.paidOnCard?"На картку":""}
           </Box>
           </TableCell>
-        <TableCell sx={style} align="left">{isPaid()}</TableCell>
+        <TableCell sx={style} align="center">{isPaid()}</TableCell>
         <TableCell align="left"
-        sx={{...style, maxWidth: '350px'}}>
-          <FormControl>
-        <TextField
-          fullWidth
-          InputProps={{
-            disableUnderline: true,
-          }}
-          multiline
-          sx={{ width: "100%" }}
-          size="small"
-          variant="standard"
-        value={row.comments ? row.comments : ""}
-        >
-        </TextField>
-        </FormControl>
+        sx={{...style, maxWidth: '350px', whiteSpace:"pre-line"}}>
+        {row.comments ? row.comments : ""}
         </TableCell>
       </TableRow>
       <TableRow>
@@ -207,43 +195,53 @@ function Row(props) {
   );
 }
 
-export default function CollapsibleTable({search}) {
+export default function CollapsibleTable() {
+  const search = useSelector((state) => state.toolkit.orderSearch);
   const getClientsData = useSelector((state) => state.globalOrders.clientsAllList);
   const getOrdData = useSelector((state) => state.globalOrders.orders)
-  const [plugValue, setPlugValue]=useState('')
+  let ordDataForSorting = [...getOrdData]
+  const [plugValue, setPlugValue]=useState(false)
   const [sortBy, setSortBy]=useState(1)
 
   const totalOrders = useMemo(() => {
-    const sortedOrders = MainPageTableSorting(search, getOrdData, getClientsData)
-    const arrayForSort = sortedOrders === 'notFound' || sortedOrders === 'noOrders'? "notFound" : [...sortedOrders]
+       if (!isNaN(search)) {
+              // index case
+              ordDataForSorting = ordDataForSorting.filter((obj) => obj.ordID.includes(search));
+              console.log("order index search")
+          }  
 
-    if (sortedOrders === 'notFound' || sortedOrders === 'noOrders') {setPlugValue(sortedOrders); return []
-    } else if (getOrdData.length && sortBy === 1) {
-      setPlugValue("")
-      const ordersData = arrayForSort.sort(
-        (b,a) => (Number(a.mater) > Number(b.ordID)) ? 1 : ((Number(b.ordID) > Number(a.ordID)) ? -1 : 0)
-        )
-      return ordersData
-    } else if (getOrdData.length && sortBy === 2) {
-      const ordersData = arrayForSort.sort(
-        (a,b) => (Number(a.ordID) > Number(b.ordID)) ? 1 : ((Number(b.ordID) > Number(a.ordID)
-        ) ? -1 : 0))
-        return ordersData
-    } else if (getOrdData.length && sortBy === 3) {
+    if (ordDataForSorting.length === 0){
+      console.log("case 0")
+      setPlugValue(true)
+      return []
+    } else if (ordDataForSorting.length && sortBy === 1) {
+      console.log("case 1")
+      setPlugValue(false)
       let ordersData = []
-      ordersData = ordersData.concat(arrayForSort.filter((item)=> item.status !== 8))
-      ordersData = ordersData.sort(
-        (b,a) => (Number(a.ordID) > Number(b.ordID)) ? 1 : ((Number(b.ordID) > Number(a.ordID)
-        ) ? -1 : 0))
+      ordersData = ordersData.concat(ordDataForSorting.filter((item)=> item.status !== 8))
+      ordersData = ordersData.sort((b,a) => (Number(a.mater) > Number(b.ordID)) ? 1 : ((Number(b.ordID) > Number(a.ordID)) ? -1 : 0))
+      return ordersData
+    } else if (ordDataForSorting.length && sortBy === 2) {
+      console.log("case 2")
+      setPlugValue(false)
+      let ordersData = []
+      ordersData = ordersData.concat(ordDataForSorting.filter((item)=> item.status !== 8))
+      ordersData = ordersData.sort((a,b) => (Number(a.ordID) > Number(b.ordID)) ? 1 : ((Number(b.ordID) > Number(a.ordID)) ? -1 : 0))
+        return ordersData
+    } else if (ordDataForSorting.length && sortBy === 3) {
+      console.log("case 3")
+      setPlugValue(false)
+      let ordersData = []
+      ordersData = ordersData.concat(ordDataForSorting.filter((item)=> item.status === 8))
+      ordersData = ordersData.sort((b,a) => (Number(a.ordID) > Number(b.ordID)) ? 1 : ((Number(b.ordID) > Number(a.ordID)) ? -1 : 0))
         return ordersData
     }
+    console.log(ordDataForSorting)
     return []
-  }, [search, getClientsData, getOrdData, sortBy]);
+  }, [getClientsData, getOrdData, sortBy, search]);
 
   const emplyPlug = () => {
-    if(plugValue === "notFound"){
-      return <caption> Не було знайдено підходящих замовлень. </caption>
-    } else if (plugValue === "noOrders"){
+    if(plugValue){
       return <caption> Оновіть список замовлень або додайте перше замовлення, щоб це повідомлення зникло. </caption>
     } else {return ""}
   }
@@ -254,9 +252,11 @@ export default function CollapsibleTable({search}) {
     {value: 3, prop: <HandymanIcon/>},
 ]
 
+const ordersLoading = useSelector((state) => state.globalOrders.ordersAreLoading);
+
   return (
-    <TableContainer component={Paper} sx={{maxHeight: "85vh"}}>
-      <Table stickyHeader aria-label="collapsible table" size="small">
+    <TableContainer component={Paper} sx={{height: "85vh"}}>
+      <Table stickyHeader aria-label="collapsible table" size="small" > 
         <TableHead>
           <TableRow>
             <TableCell sx={style} align="center">
@@ -284,10 +284,13 @@ export default function CollapsibleTable({search}) {
           </TableRow>
         </TableHead>
         <TableBody >
-          { totalOrders.length ? totalOrders.map((row, index) => <Row key={index} row={row} />) : null}
+          { getOrdData.length !== 0 ? totalOrders.map((row, index) => <Row key={index} row={row} />) : null}
         </TableBody>
-        {emplyPlug()}
+        {ordersLoading? '' :  emplyPlug()}
       </Table>
+      {ordersLoading?<Box sx={{ display: 'flex', left: '50%', top : "50%" , position: "absolute", zIndex: 1500}}>
+      <CircularProgress />
+    </Box>: ""}
     </TableContainer>
   );
 }

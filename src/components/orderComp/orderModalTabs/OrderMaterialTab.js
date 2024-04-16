@@ -153,7 +153,7 @@ const OrderMaterialTab = () => {
                             materialChange(index, "edge", e.target.value);
                           }}
                         >
-                          {edgeDecode.map((item)=><MenuItem value={item.value}>{item.prop}</MenuItem>)}
+                          {edgeDecode.map((item, index)=><MenuItem key={index} value={item.value}>{item.prop}</MenuItem>)}
                         </Select>
                       </TableCell>
                       <TableCell sx={{ display: dispDrill }}>

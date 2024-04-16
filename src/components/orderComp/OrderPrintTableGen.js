@@ -45,6 +45,13 @@ export const OrderPrintTableGen = (row, foundClient) => {
             )
       }
 
+      const edgeMap = (edge) => {
+        console.log(edge)
+        const temp = edgeDecode.find((base)=>base.value === edge)
+        console.log(temp)
+        return temp.prop
+      }
+
       const temperingSearch = (row) => {
         const tempering = row.painting.find(obj => obj.work ===  6)
         return(tempering?{text:"ТАК", bold: true}:{text:""})
@@ -56,11 +63,11 @@ export const OrderPrintTableGen = (row, foundClient) => {
         [{text:'Матеріал (Дов. * Шир.)',style: 'tableHeader',rowSpan: 2},{text:'Кіль.',style: 'tableHeader',rowSpan: 2},{text:'Обробка Кромки',style: 'tableHeader',rowSpan: 2},{text:'Свердлення',style: 'tableHeader',colSpan: 2},{},{text:'Гарт.',style: 'tableHeader',rowSpan: 2},{text:'Додаткові Роботи',style: 'tableHeader',rowSpan: 2}],
                         ['','','',{text:'діам.'},{text:'кіль.'},'',''],
     ]
-      
+
     materialSorted.map((row) => (
         table.push(
             [
-                {text: `${materialDecode[row.material-1].prop} "${row.thickness}" (${row.height}*${row.width})`},{text:`${row.count}`},{text:`${edgeDecode[row.edge-1].prop}`},drillingMap(row, 'holeDiam'),drillingMap(row, ''),temperingSearch(row),additionalMap(row)
+                {text: `${materialDecode[row.material-1].prop} "${row.thickness}" (${row.height}*${row.width})`},{text:`${row.count}`},{text:`${edgeMap(row.edge)}`},drillingMap(row, 'holeDiam'),drillingMap(row, ''),temperingSearch(row),additionalMap(row)
             ],
         )
       ))

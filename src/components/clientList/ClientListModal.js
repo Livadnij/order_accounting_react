@@ -8,6 +8,8 @@ import { Checkbox, Divider, Grid, IconButton, TextField } from "@mui/material";
 import DeleteIcon from '@mui/icons-material/Delete';
 import ClientsDeleteModal from "./ClientsDeleteModal";
 import SettingsIcon from '@mui/icons-material/Settings';
+import { fetchClients } from "../store/GloabalOrdersList";
+import RotateLeftIcon from '@mui/icons-material/RotateLeft';
 
 
 const style = {
@@ -232,6 +234,14 @@ const NestedClientsListModal = (state) => {
         >
           Додати Клієнта
         </Button>
+        <Box>
+        <IconButton
+        onClick={() => {
+          dispatch(fetchClients())
+        }}
+        >
+          <RotateLeftIcon/>
+        </IconButton>
         <IconButton
         sx={{
           display: orderSelectClient ? "none" : ""
@@ -243,6 +253,7 @@ const NestedClientsListModal = (state) => {
         >
          <SettingsIcon/>
         </IconButton>
+        </Box>
         </Box>
         <ClientsDeleteModal/>
         </Box>
