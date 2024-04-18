@@ -2,6 +2,7 @@ import pdfMake from "pdfmake/build/pdfmake";
 import pdfFont from "pdfmake/build/vfs_fonts"
 import moment from "moment";
 import dayjs from "dayjs";
+import "dayjs/locale/uk"
 pdfMake.vfs = pdfFont.pdfMake.vfs
 
 export const OrderFinishedTableGen = (valueClients, valueOrders) => {
@@ -63,7 +64,7 @@ export const OrderFinishedTableGen = (valueClients, valueOrders) => {
         table.push(
             [
                 {text: `${row.ordID}`, fontSize: 10}, 
-                {text:`${foundClient.Name} \n ${foundClient.phoneNum}`, fontSize: 10}, 
+                {text:`${foundClient?foundClient.Name:"Клієнта не знайдено"} \n ${foundClient?foundClient.phoneNum:''}`, fontSize: 10},  
                 {text: `${dateConvert(row.dateStart)}`, fontSize: 10}, 
                 {text: `${dateConvert(row.dateFinish)}`, fontSize: 10}, 
                 {text:`${statusValue(row)}`, fontSize: 10},

@@ -1,16 +1,17 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { deleteDoc, doc, setDoc } from "firebase/firestore";
-import { db } from "../Firebase";
 import { nanoid } from "nanoid";
 import { toast } from "react-toastify";
-import { fetchOrders } from "./GloabalOrdersList";
+import { dbForTests, dbForWork } from "../Firebase";
 
 const toolkitSlice = createSlice({
     name: "toolkit",
     initialState: {
+        dbSelected : true,
         currentCollName: {id: '0', name: "orders"}, 
         err: "",
         isLoading: "",
+        dbModalState: true,
         clientAddModalState: false,
         clientAddModalName: '',
         clientModalState: false,
@@ -28,6 +29,7 @@ const toolkitSlice = createSlice({
         orderMaterialAdditionalState: false,
         orderMaterialAdditionalIndex: '',
         orderSelectClient: false,
+        lastOrderRanID: "",
         orderPrintTable:"",
         makeThemRed: false,
         orderMaterialDelete: false,
@@ -52,6 +54,9 @@ const toolkitSlice = createSlice({
         ]
     },
     reducers : {
+        setDBInClients (initialState, {payload:data}){
+            initialState.dbSelected = data
+          },
         setOrderSearch(initialState,{payload:data}){
             initialState.orderSearch = data
         },
@@ -73,7 +78,7 @@ const toolkitSlice = createSlice({
             const cDiscount = data.payload.discount
             const cId = data.payload.id.toString()
             const cPhoneNum = data.payload.phoneNum.toString()
-            setDoc(doc(db, "clients", id), {
+            setDoc(doc(initialState.dbSelected?dbForWork:dbForTests, "clients", id), {
                 Name: cName,
                 discount: cDiscount,
                 id: cId,
@@ -83,14 +88,14 @@ const toolkitSlice = createSlice({
         uploadNewColl(initialState, data){
             const id = data.payload.id.toString()
             const name = data.payload.Name.toString()
-            setDoc(doc(db, "CollectionNames", id), {
+            setDoc(doc(initialState.db, "CollectionNames", id), {
                 name: name,
                 id: id,
             });
         },
         uploadEditClient(initialState, {payload:data}){
-            deleteDoc(doc(db, "clients", data.id));
-            setDoc(doc(db, "clients", data.id), {
+            deleteDoc(doc(initialState.dbSelected?dbForWork:dbForTests, "clients", data.id));
+            setDoc(doc(initialState.dbSelected?dbForWork:dbForTests, "clients", data.id), {
                 Name: data.Name,
                 discount: data.discount,
                 id: data.id,
@@ -101,7 +106,8 @@ const toolkitSlice = createSlice({
             const notify = (e) => toast(e);
             if(initialState.tempOrderInfo.ordID&&initialState.tempOrderInfo.dateStart&&initialState.tempOrderInfo&&initialState.tempOrderInfo.dateFinish&&initialState.tempOrderInfo.clID&&initialState.tempOrderInfo.status) {
             const ranID = nanoid()
-            setDoc(doc(db, initialState.currentCollName.name, ranID), {
+            initialState.lastOrderRanID = ranID
+            setDoc(doc(initialState.dbSelected?dbForWork:dbForTests, initialState.currentCollName.name, ranID), {
             ranID,
             ordID:initialState.tempOrderInfo.ordID,
             dateStart:initialState.tempOrderInfo.dateStart,
@@ -169,7 +175,6 @@ const toolkitSlice = createSlice({
         }
         },
         tempOrderSave(initialState, {payload:order}) {
-            console.log(order)
             initialState.tempOrderInfo = order
             initialState.tempMaterialInfo = order.material
         },
@@ -203,7 +208,7 @@ const toolkitSlice = createSlice({
             initialState.orderModalState = !initialState.orderModalState
         },
         orderDelete(initialState){
-            deleteDoc(doc(db, initialState.currentCollName.name, initialState.tempOrderInfo.ranID));
+            deleteDoc(doc(initialState.dbSelected?dbForWork:dbForTests, initialState.currentCollName.name, initialState.tempOrderInfo.ranID));
             Object.keys(initialState.tempOrderInfo).forEach(k => initialState.tempOrderInfo[k] = '');
             initialState.tempMaterialInfo = [];   
             initialState.orderModalState = !initialState.orderModalState;
@@ -211,13 +216,12 @@ const toolkitSlice = createSlice({
             initialState.tempOrderInfo.delivery = false
             initialState.tempOrderInfo.installation = false
             initialState.tempOrderInfo.fullPaid = false
-            fetchOrders()
         },
         orderUpdate(initialState){
             const notify = (e) => toast(e);
             if(initialState.tempOrderInfo.ordID&&initialState.tempOrderInfo.dateStart&&initialState.tempOrderInfo.dateFinish&&initialState.tempOrderInfo.clID&&initialState.tempOrderInfo.status) {
-            deleteDoc(doc(db, initialState.currentCollName.name, initialState.tempOrderInfo.ranID));
-            setDoc(doc(db, initialState.currentCollName.name, initialState.tempOrderInfo.ranID), {
+            deleteDoc(doc(initialState.dbSelected?dbForWork:dbForTests, initialState.currentCollName.name, initialState.tempOrderInfo.ranID));
+            setDoc(doc(initialState.dbSelected?dbForWork:dbForTests, initialState.currentCollName.name, initialState.tempOrderInfo.ranID), {
                 ranID:initialState.tempOrderInfo.ranID,
                 ordID:initialState.tempOrderInfo.ordID,
                 dateStart:initialState.tempOrderInfo.dateStart,
@@ -254,7 +258,7 @@ const toolkitSlice = createSlice({
             initialState.orderPrintTable = table
         },
         clientsDelete(initialState){
-            deleteDoc(doc(db, "clients", initialState.clientsCurrentDelete));
+            deleteDoc(doc(initialState.dbSelected?dbForWork:dbForTests, "clients", initialState.clientsCurrentDelete));
         }
         },
 })
@@ -262,6 +266,7 @@ const toolkitSlice = createSlice({
 export default toolkitSlice.reducer
 export const {changeCurrentCollInClients, 
     setOrderSearch,
+    setDBInClients,
     orderDeleteMaterial, 
     uploadNewColl,
     uploadEditClient, 

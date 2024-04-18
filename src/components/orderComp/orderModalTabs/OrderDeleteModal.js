@@ -2,7 +2,7 @@ import React from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { openModal, orderDelete } from '../../store/toolkitSlice';
 import { Box, Button, Modal } from '@mui/material';
-import { fetchOrders } from '../../store/GloabalOrdersList';
+import { deleteOrder } from '../../store/GloabalOrdersList';
 
 const style = {
     boxSizing: 'borderBox',
@@ -23,9 +23,11 @@ export default function OrderDeleteModal () {
     const handleClose = () => {
         dispatch(openModal('orderDeleteModal'))};
 
+        const selectedOrder = useSelector((state) => state.toolkit.tempOrderInfo)
+
         const handleDelete = async () => {
          await dispatch(orderDelete());
-          dispatch(fetchOrders()); 
+         dispatch(deleteOrder(selectedOrder))
           dispatch(openModal('orderDeleteModal'))
       }
 

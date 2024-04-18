@@ -1,16 +1,16 @@
 import React from 'react'
 import ImportExportIcon from '@mui/icons-material/ImportExport';
-import clientsDBList from '../data/clients8-9-2023.json' 
-import ordersDBList from '../data/orders8-9-2023.json' 
+import clientsDBList from '../data/clients11-4-2024.json'
+import ordersDBList from '../data/orders11-4-2024.json'
 import { doc, setDoc } from "firebase/firestore";
-import { db } from "../Firebase";
 import { useSelector } from 'react-redux';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { Accordion, AccordionDetails, AccordionSummary, Box, Button, Icon, Typography } from '@mui/material';
+import { dbForTests } from '../Firebase';
 
 export const ImportAccordion = () => {
 
-    const clientsList = useSelector((state) => state.toolkit.clientsAllList);
+    const clientsList = useSelector((state) => state.globalOrders.clientsAllList);
     const getOrdData = useSelector((state) => state.globalOrders.orders);
     const date = new Date();
   
@@ -44,14 +44,14 @@ export const ImportAccordion = () => {
     const importClients = () => {
       const clientsLength = clientsDBList.length
       for (let i = 1; i <= clientsLength; i++) {
-        setDoc(doc(db, "clients", clientsDBList[i-1].id), clientsDBList[i-1])
+        setDoc(doc(dbForTests, "clients", clientsDBList[i-1].id), clientsDBList[i-1])
       }
     }
   
     const importOrders = () => {
       const ordersLength = ordersDBList.length
       for (let k = 1; k <= ordersLength; k++) {
-        setDoc(doc(db, "orders", ordersDBList[k-1].ranID), ordersDBList[k-1])
+        setDoc(doc(dbForTests, "orders", ordersDBList[k-1].ranID), ordersDBList[k-1])
       }
     }
 

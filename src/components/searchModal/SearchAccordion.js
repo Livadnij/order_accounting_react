@@ -4,7 +4,7 @@ import AccordionDetails from '@mui/material/AccordionDetails';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import Typography from '@mui/material/Typography';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import { Box,  IconButton,  Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
+import { Box,  Button,  IconButton,  Table, TableBody, TableCell, TableContainer, TableHead, TableRow} from '@mui/material';
 import Paper from '@mui/material/Paper';
 import { useDispatch, useSelector } from 'react-redux';
 import { queryData, setQueryRequest } from '../store/GloabalOrdersList';
@@ -13,7 +13,9 @@ import dayjs from "dayjs";
 import "dayjs/locale/uk"
 import moment from 'moment';
 import SettingsIcon from "@mui/icons-material/Settings";
-import { orderModalEdit } from '../store/toolkitSlice';
+import { openModal, orderModalEdit, orderSaveTable } from '../store/toolkitSlice';
+import pdfMake from "pdfmake/build/pdfmake";
+import { OrderUnfinishedTableGen } from '../orderComp/OrderUnfnishedTableGen';
 
 export default function SearchAccordion(status) {
   const dispatch = useDispatch();
@@ -53,7 +55,6 @@ export default function SearchAccordion(status) {
       setExpanded(isExpanded ? index : false);
 
       if(isExpanded){
-        console.log(status)
         dispatch(setQueryRequest({
           search: status.client.id,
           key: 'clID',
@@ -67,6 +68,16 @@ export default function SearchAccordion(status) {
 
     const tempOrders = useSelector((state) => state.globalOrders.ordersQuery)
 
+    const printOrders = () => {
+      const table = OrderUnfinishedTableGen([status.client], tempOrders);
+      pdfMake.createPdf(table).getDataUrl((data) => {
+        if (data) {
+          dispatch(orderSaveTable(data));
+          dispatch(openModal("orderPrintModalState"));
+        }
+      });
+    };
+
     return <Accordion key={status.index} expanded={expanded === status.index} onChange={handleChange(status.index)}>
     <AccordionSummary
       expandIcon={<ExpandMoreIcon />}
@@ -79,7 +90,7 @@ export default function SearchAccordion(status) {
       <Typography sx={{ color: 'text.secondary' }}>{status.client.phoneNum}</Typography>
     </AccordionSummary>
     <AccordionDetails sx={{padding:0, maxHeight: "60vh"}}>
-    <TableContainer component={Paper} sx={{maxHeight: "50vh"}}>
+    <TableContainer component={Paper} elevation={6} sx={{maxHeight: "50vh"}}>
         <Table aria-label="collapsible table" size="small" stickyHeader>
         <TableHead>
           <TableRow>
@@ -101,7 +112,6 @@ export default function SearchAccordion(status) {
         {order.comments ? order.comments : ""}
         </TableCell>
         <TableCell align="center">
-          <IconButton>
           <IconButton
                   size="small"
                   variant="contained"
@@ -111,17 +121,25 @@ export default function SearchAccordion(status) {
                 >
                   <SettingsIcon />
                 </IconButton>
-          </IconButton>
         </TableCell>
         </TableRow>) : null}
       </TableBody>
       </Table>
       </TableContainer>
-      {queryIsLoading?<Box sx={{height:"5vh"}}>
+      {queryIsLoading?<Box sx={{height:"10vh"}}>
       <Box sx={{ display: 'flex', left: '50%', top : "50%" , position: "absolute", zIndex: 1500}}>
         <CircularProgress />
         </Box>
         </Box>:""}
+        <Box sx={{display:"flex", float:'right'}}>
+        <Button 
+        variant="contained" 
+        sx={{ display: !queryIsLoading?"":'none', margin: 2}}
+        onClick={()=>{printOrders()}}
+        >
+              Друк Замовлень
+            </Button>
+            </Box>
     </AccordionDetails>
   </Accordion>
   }

@@ -39,28 +39,13 @@ export const SearchModal = () => {
        if (isNaN(search)) {
             // name case
             console.log("name search")
-
             setClientsFound(clientsList.filter((obj) => obj.Name.includes(search)))
-
-            // let ordersFoundByClientsName = []
-            // for (let i = 1; i <= nameSearch.length; i++){
-            //     const temp = orders.filter((obj) => obj.clID.includes(nameSearch[i-1].id));
-            //     filteredOrders = ordersFoundByClientsName.concat(temp)
-            // }
         } 
         else if (!isNaN(search) ) {
             // phone number case
             console.log("phoneNum search")
-
             setClientsFound(clientsList.filter((obj) => obj.phoneNum.includes(search)))
-
-            // let ordersFoundByClientsPhone = []
-            // for (let i = 1; i <= phoneNumSearch.length; i++){
-            //     const temp = orders.filter((obj) => obj.clID.includes(phoneNumSearch[i-1].id));
-            //     filteredOrders = ordersFoundByClientsPhone.concat(temp)
-            // }
         } else { setClientsFound([]) }
-        console.log(clientsFound)
     }
 
   return (
@@ -73,6 +58,7 @@ export const SearchModal = () => {
     <Box sx={style}>
         <Box sx={{display:"flex"}}>
         <TextField
+        label={`Вкажіть ім'я клієнта, або номер телефону`}
         value={search}
         onChange={(e)=>{setSearch(e.target.value)}}
         fullWidth

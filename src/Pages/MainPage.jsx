@@ -14,6 +14,7 @@ import HiddenAdminSideBar from "../components/adminSidebar/HiddenAdminSideBar";
 import { SearchModal } from "../components/searchModal/SearchModal";
 import SearchIcon from '@mui/icons-material/Search';
 import { setOrderSearch } from "../components/store/toolkitSlice";
+import DBModal from "../components/dbSelectorModal/DBModal";
 
 
 
@@ -35,13 +36,13 @@ const MainPage = () => {
     setSideBarStatus(message);
   }
 
-
   return (
     <div>
       <Box style={{ position: "absolute", right: "5%", top: "-235px" }}>
         <NestedClientsListModal />
         <OrderDeleteModal/>
         <SearchModal/>
+        <DBModal/>
         <ClientAddModal />
         <OrderCreateModal />
         <OrderPrintModal />

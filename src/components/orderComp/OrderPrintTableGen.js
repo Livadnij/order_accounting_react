@@ -3,10 +3,10 @@ import pdfFont from "pdfmake/build/vfs_fonts"
 import { edgeDecode, materialDecode, sandblastingDecode, workDecode } from "../WorkDecoding";
 import moment from "moment";
 import dayjs from "dayjs";
+import "dayjs/locale/uk"
 pdfMake.vfs = pdfFont.pdfMake.vfs
 
 export const OrderPrintTableGen = (row, foundClient) => {
-    console.log(row)
     const materialSorted = [...row.material].sort((a,b) => (Number(a.material) > Number(b.material)) ? 1 : ((Number(b.material) > Number(a.material)) ? -1 : 0))
     const dateConvert = (date) => {
         require('dayjs/locale/uk')
@@ -46,9 +46,7 @@ export const OrderPrintTableGen = (row, foundClient) => {
       }
 
       const edgeMap = (edge) => {
-        console.log(edge)
         const temp = edgeDecode.find((base)=>base.value === edge)
-        console.log(temp)
         return temp.prop
       }
 

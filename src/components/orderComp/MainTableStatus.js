@@ -3,10 +3,11 @@ import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { changeStatus } from '../store/GloabalOrdersList'
 import { deleteDoc, doc, setDoc } from 'firebase/firestore'
-import { db } from '../Firebase'
 import { statusDecode } from '../WorkDecoding'
+import { dbForTests, dbForWork } from "../Firebase";
 
 const MainTableStatus = ({infoRow}) => {
+    const dbSelected = useSelector((state) => state.globalOrders.dbSelected);
     const dispatch = useDispatch();
     const getOrdData = useSelector((state) => state.globalOrders.orders)
     const currentCollName = useSelector((state) => state.globalOrders.currentCollName)
@@ -14,8 +15,8 @@ const MainTableStatus = ({infoRow}) => {
     const onChange = (value) => {
         if(getOrdData.length && indexOfOrder !== -1){
         dispatch(changeStatus({index: indexOfOrder, value: value }))
-        deleteDoc(doc(db, currentCollName.name, infoRow.ranID));
-        setDoc(doc(db, currentCollName.name, infoRow.ranID), {
+        deleteDoc(doc(dbSelected?dbForWork:dbForTests, currentCollName.name, infoRow.ranID));
+        setDoc(doc(dbSelected?dbForWork:dbForTests, currentCollName.name, infoRow.ranID), {
             ranID:infoRow.ranID,
             ordID:infoRow.ordID,
             dateStart:infoRow.dateStart,

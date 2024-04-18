@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { openCloseModal, openModal, orderModalHandleClose, orderUpdate, uploadNewOrder } from '../../store/toolkitSlice';
 import OrderTabs from '../OrderTabs';
 import { Button } from '@mui/material';
-import { fetchOrders } from '../../store/GloabalOrdersList';
+import { queryOrder, setQueryRequest } from '../../store/GloabalOrdersList';
 
 const style = {
   position: 'absolute',
@@ -76,6 +76,9 @@ export default function OrderCreateModal() {
         );
       }
 
+      const currentCol = useSelector((state) => state.globalOrders.currentCollName);
+      const lastOrderRanID = useSelector((state) => state.toolkit.lastOrderRanID)
+
   return (
     <div>
       <Modal
@@ -90,14 +93,30 @@ export default function OrderCreateModal() {
         <Button
         sx={{position: 'absolute', bottom: 10, margin: "10px 0 10px 25px",width:100, display: tempOrdSave.ranID? 'none' : '' }}
         variant="contained"
-        onClick={() => {dispatch(uploadNewOrder()); dispatch(fetchOrders())}}
+        onClick={() => {
+          dispatch(uploadNewOrder()); 
+          dispatch(setQueryRequest({
+            search: lastOrderRanID,
+            key: 'ranID',
+            currentCol: currentCol.name
+          }))
+          dispatch(queryOrder())
+        }}
       >
         Додати
       </Button>
       <Button
         sx={{position: 'absolute', bottom: 65, margin: "10px 0 10px 25px",width:100, display: editCheck }}
         variant="contained"
-        onClick={() => {dispatch(orderUpdate());dispatch( fetchOrders())}}
+        onClick={() => {
+          dispatch(orderUpdate());
+          dispatch(setQueryRequest({
+            search: tempOrdSave.ranID,
+            key: 'ranID',
+            currentCol: currentCol.name
+          }))
+          dispatch(queryOrder())
+        }}
       >
         Оновити
       </Button>

@@ -35,8 +35,6 @@ const ButtonGroupMainPage = (status) => {
     dispatch(openModal("clientModalState"));
   };
   const openOrderModal = async () => {
-    dispatch(fetchClients());
-    dispatch(fetchOrders());
     dispatch(openModal("orderModalState"));
   };
   const updateDB = () => {
@@ -47,6 +45,7 @@ const ButtonGroupMainPage = (status) => {
   };
 
   const openSearch = () => {
+    dispatch(fetchCollNames());
     dispatch(openModal("searchModalState"))
   };
 
